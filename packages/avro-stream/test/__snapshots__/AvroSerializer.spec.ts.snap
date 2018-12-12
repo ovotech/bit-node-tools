@@ -1,0 +1,93 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Integration test Test Serialier 1`] = `
+Array [
+  Object {
+    "messages": Array [
+      Object {
+        "data": Array [
+          0,
+          0,
+          0,
+          0,
+          1,
+          6,
+          49,
+          49,
+          49,
+        ],
+        "type": "Buffer",
+      },
+      Object {
+        "data": Array [
+          0,
+          0,
+          0,
+          0,
+          1,
+          6,
+          50,
+          50,
+          50,
+        ],
+        "type": "Buffer",
+      },
+    ],
+    "schema": Object {
+      "fields": Array [
+        Object {
+          "name": "accountId",
+          "type": "string",
+        },
+      ],
+      "name": "TestSchema1",
+      "type": "record",
+    },
+    "topic": "test-topic-1",
+  },
+  Object {
+    "messages": Array [
+      Object {
+        "data": Array [
+          0,
+          0,
+          0,
+          0,
+          2,
+          174,
+          148,
+          2,
+        ],
+        "type": "Buffer",
+      },
+      Object {
+        "data": Array [
+          0,
+          0,
+          0,
+          0,
+          2,
+          190,
+          146,
+          2,
+        ],
+        "type": "Buffer",
+      },
+    ],
+    "schema": Object {
+      "fields": Array [
+        Object {
+          "name": "effectiveEnrollmentDate",
+          "type": Object {
+            "logicalType": "date",
+            "type": "int",
+          },
+        },
+      ],
+      "name": "TestSchema2",
+      "type": "record",
+    },
+    "topic": "test-topic-2",
+  },
+]
+`;

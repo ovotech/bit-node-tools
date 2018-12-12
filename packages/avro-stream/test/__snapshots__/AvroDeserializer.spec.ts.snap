@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AvroDeserializer test Test stream transform 1`] = `
+Array [
+  TestSchema1 {
+    "accountId": "111",
+  },
+  TestSchema1 {
+    "accountId": "222",
+  },
+  TestSchema2 {
+    "effectiveEnrollmentDate": 17687,
+  },
+  TestSchema2 {
+    "effectiveEnrollmentDate": 17567,
+  },
+]
+`;
