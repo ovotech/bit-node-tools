@@ -32,4 +32,4 @@ workflows:
   version: 2
   test:
     jobs:
-      - tests
+      - test
