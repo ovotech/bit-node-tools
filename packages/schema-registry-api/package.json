@@ -7,7 +7,6 @@
   "author": "Ivan Kerin <ikerin@gmail.com>",
   "license": "Apache-2.0",
   "dependencies": {
-    "avsc": "^5.4.7",
     "node-fetch": "^2.3.0"
   },
   "scripts": {
@@ -17,7 +16,11 @@
     "lint": "yarn lint-prettier && yarn lint-tslint",
     "build": "tsc --outDir dist --declaration"
   },
+  "peerDependencies": {
+    "avsc": "5.x"
+  },
   "devDependencies": {
+    "avsc": "^5.4.7",
     "@types/jest": "^23.3.10",
     "@types/node": "^10.12.12",
     "@types/node-fetch": "^2.1.4",

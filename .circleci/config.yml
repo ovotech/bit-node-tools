@@ -1,0 +1,35 @@
+version: 2
+
+restore-cache: &restore-cache
+  restore_cache:
+    keys:
+      - v1-{{ checksum "yarn.lock" }}
+
+save-cache: &save-cache
+  save_cache:
+    key: v1-{{ checksum "yarn.lock" }}
+    paths:
+      - ~/.cache
+
+jobs:
+  test:
+    docker:
+      - image: circleci/node:8.10.0
+    steps:
+      - checkout
+      - setup_remote_docker
+      - *restore-cache
+      - run: yarn config set yarn-offline-mirror ~/.cache/yarn
+      - run: yarn
+      - *save-cache
+      - run:
+          command: docker-compose up
+          background: true
+      - run: .circleci/wait-for-server.sh
+      - run: yarn test
+
+workflows:
+  version: 2
+  tests:
+    jobs:
+      - tests
