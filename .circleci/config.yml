@@ -35,6 +35,7 @@ jobs:
       - run: yarn config set yarn-offline-mirror ~/.cache/yarn
       - run: yarn
       - *save-cache
+      - run: yarn build
       - run: .circleci/wait-for-server.sh
       - run: yarn test
 
