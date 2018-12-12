@@ -1,6 +1,5 @@
 {
   "name": "bit-kafka-tools",
-  "version": "1.0.0",
   "main": "index.js",
   "author": "Ivan Kerin <ikerin@gmail.com>",
   "license": "Apache-2.0",
