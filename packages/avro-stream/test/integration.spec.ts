@@ -1,11 +1,13 @@
+import { Type } from 'avsc';
 import { readdirSync, readFileSync } from 'fs';
 import { ConsumerGroupStream, KafkaClient, Producer, ProducerStream } from 'kafka-node';
 import { join } from 'path';
 import { Readable } from 'stream';
 import { ReadableMock, WritableMock } from 'stream-mock';
 import * as uuid from 'uuid';
-import { AvroDeserializer } from '../src';
+import { AvroDeserializer, constructMessage, deconstructMessage } from '../src';
 import { AvroSerializer } from '../src';
+import { checkSubjectRegistered, toSubject, idToSchema } from '@ovotech/schema-registry-api';
 
 const createTopics = async (topics: string[]) => {
   const producer = new Producer(new KafkaClient({ kafkaHost: 'localhost:29092' }));
@@ -48,8 +50,19 @@ describe('Integration test', () => {
     sourceStream.pipe(serializer).pipe(sinkStream);
 
     await new Promise(resolve => {
-      sinkStream.on('finish', () => {
-        expect(sinkStream.data).toMatchSnapshot();
+      sinkStream.on('finish', async () => {
+        for (const [itemIndex, item] of sinkStream.data.entries()) {
+          const type = Type.forSchema(item.schema);
+          for (const [messageIndex, message] of item.messages.entries()) {
+            const messageParts = deconstructMessage(message);
+            const schemaMessage = await idToSchema('http://localhost:8081', messageParts.schemaId);
+            const content = type.fromBuffer(messageParts.buffer);
+
+            expect(schemaMessage).toEqual(item.schema);
+            expect(content).toEqual(sourceData[itemIndex].messages[messageIndex]);
+          }
+        }
+
         resolve();
       });
     });
