@@ -21,11 +21,11 @@
     "avsc": "5.x"
   },
   "devDependencies": {
-    "avsc": "^5.4.7",
     "@types/jest": "^23.3.10",
     "@types/node": "^10.12.12",
     "@types/node-fetch": "^2.1.4",
     "@types/uuid": "^3.4.4",
+    "avsc": "^5.4.7",
     "jest": "^23.6.0",
     "prettier": "^1.15.3",
     "ts-jest": "^23.10.5",
