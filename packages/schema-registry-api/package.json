@@ -1,5 +1,6 @@
 {
   "name": "@ovotech/schema-registry-api",
+  "description": "A simple typescript node-fetch wrapper on the confluent schema-registry api",
   "version": "1.0.1",
   "main": "dist/index.js",
   "source": "src/index.ts",

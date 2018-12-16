@@ -1,0 +1,7 @@
+{
+  "kafkaClient": {
+    "kafkaHost": "localhost:29092"
+  },
+  "schemaRegistry": "http://localhost:8081",
+  "pg": "postgresql://postgres:dev-pass@0.0.0.0:5432/postgres"
+}

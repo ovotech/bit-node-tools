@@ -1,0 +1,9 @@
+{
+  "extends": "../../tslint.base.json",
+  "rules": {
+    "interface-name": [true, "never-prefix"],
+    "member-access": false,
+    "object-literal-sort-keys": false,
+    "no-console": false
+  }
+}

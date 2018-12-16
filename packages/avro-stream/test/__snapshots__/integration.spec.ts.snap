@@ -1,8 +1,56 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Integration test Test Deserializer with kafka 1`] = `
-Array [
-  BalanceMigrationCompletedEvent {
+Object {
+  "highWaterOffset": 4,
+  "key": null,
+  "offset": 0,
+  "partition": 0,
+  "schema": Object {
+    "doc": "Signals that a siemens balance and transaction history was migrated to the new balance platform. Triggered by Balance Service",
+    "fields": Array [
+      Object {
+        "name": "metadata",
+        "type": Object {
+          "doc": "Metadata, to be used in each event class",
+          "fields": Array [
+            Object {
+              "doc": "A globally unique ID for this Kafka message",
+              "name": "eventId",
+              "type": "string",
+            },
+            Object {
+              "doc": "An ID that can be used to link all the requests and Kafka messages in a given transaction. If you already have a trace token from a previous event/request, you should copy it here. If this is the very start of a transaction, you should generate a fresh trace token and put it here. A UUID is suitable",
+              "name": "traceToken",
+              "type": "string",
+            },
+            Object {
+              "doc": "A timestamp for when the event was created (in epoch millis)",
+              "name": "createdAt",
+              "type": Object {
+                "logicalType": "timestamp-millis",
+                "type": "long",
+              },
+            },
+          ],
+          "name": "EventMetadata",
+          "namespace": "com.ovoenergy.kafka.common.event",
+          "type": "record",
+        },
+      },
+      Object {
+        "doc": "7 digit unique identifier for the customer",
+        "name": "accountId",
+        "type": "string",
+      },
+    ],
+    "name": "BalanceMigrationCompletedEvent",
+    "namespace": "uk.co.boostpower.support.kafka.messages",
+    "type": "record",
+  },
+  "timestamp": Any<Date>,
+  "topic": Any<String>,
+  "value": BalanceMigrationCompletedEvent {
     "accountId": "***REMOVED***",
     "metadata": EventMetadata {
       "createdAt": 1525478400000,
@@ -10,7 +58,60 @@ Array [
       "traceToken": "8115ef8a-71c8-4814-aea4-0b7984eae263",
     },
   },
-  BalanceMigrationCompletedEvent {
+}
+`;
+
+exports[`Integration test Test Deserializer with kafka 2`] = `
+Object {
+  "highWaterOffset": 4,
+  "key": null,
+  "offset": 1,
+  "partition": 0,
+  "schema": Object {
+    "doc": "Signals that a siemens balance and transaction history was migrated to the new balance platform. Triggered by Balance Service",
+    "fields": Array [
+      Object {
+        "name": "metadata",
+        "type": Object {
+          "doc": "Metadata, to be used in each event class",
+          "fields": Array [
+            Object {
+              "doc": "A globally unique ID for this Kafka message",
+              "name": "eventId",
+              "type": "string",
+            },
+            Object {
+              "doc": "An ID that can be used to link all the requests and Kafka messages in a given transaction. If you already have a trace token from a previous event/request, you should copy it here. If this is the very start of a transaction, you should generate a fresh trace token and put it here. A UUID is suitable",
+              "name": "traceToken",
+              "type": "string",
+            },
+            Object {
+              "doc": "A timestamp for when the event was created (in epoch millis)",
+              "name": "createdAt",
+              "type": Object {
+                "logicalType": "timestamp-millis",
+                "type": "long",
+              },
+            },
+          ],
+          "name": "EventMetadata",
+          "namespace": "com.ovoenergy.kafka.common.event",
+          "type": "record",
+        },
+      },
+      Object {
+        "doc": "7 digit unique identifier for the customer",
+        "name": "accountId",
+        "type": "string",
+      },
+    ],
+    "name": "BalanceMigrationCompletedEvent",
+    "namespace": "uk.co.boostpower.support.kafka.messages",
+    "type": "record",
+  },
+  "timestamp": Any<Date>,
+  "topic": Any<String>,
+  "value": BalanceMigrationCompletedEvent {
     "accountId": "***REMOVED***",
     "metadata": EventMetadata {
       "createdAt": 1525478400000,
@@ -18,7 +119,60 @@ Array [
       "traceToken": "8115ef8a-71c8-4814-aea4-0b7984eae263",
     },
   },
-  BalanceMigrationCompletedEvent {
+}
+`;
+
+exports[`Integration test Test Deserializer with kafka 3`] = `
+Object {
+  "highWaterOffset": 4,
+  "key": null,
+  "offset": 2,
+  "partition": 0,
+  "schema": Object {
+    "doc": "Signals that a siemens balance and transaction history was migrated to the new balance platform. Triggered by Balance Service",
+    "fields": Array [
+      Object {
+        "name": "metadata",
+        "type": Object {
+          "doc": "Metadata, to be used in each event class",
+          "fields": Array [
+            Object {
+              "doc": "A globally unique ID for this Kafka message",
+              "name": "eventId",
+              "type": "string",
+            },
+            Object {
+              "doc": "An ID that can be used to link all the requests and Kafka messages in a given transaction. If you already have a trace token from a previous event/request, you should copy it here. If this is the very start of a transaction, you should generate a fresh trace token and put it here. A UUID is suitable",
+              "name": "traceToken",
+              "type": "string",
+            },
+            Object {
+              "doc": "A timestamp for when the event was created (in epoch millis)",
+              "name": "createdAt",
+              "type": Object {
+                "logicalType": "timestamp-millis",
+                "type": "long",
+              },
+            },
+          ],
+          "name": "EventMetadata",
+          "namespace": "com.ovoenergy.kafka.common.event",
+          "type": "record",
+        },
+      },
+      Object {
+        "doc": "7 digit unique identifier for the customer",
+        "name": "accountId",
+        "type": "string",
+      },
+    ],
+    "name": "BalanceMigrationCompletedEvent",
+    "namespace": "uk.co.boostpower.support.kafka.messages",
+    "type": "record",
+  },
+  "timestamp": Any<Date>,
+  "topic": Any<String>,
+  "value": BalanceMigrationCompletedEvent {
     "accountId": "***REMOVED***",
     "metadata": EventMetadata {
       "createdAt": 1525478400000,
@@ -26,7 +180,60 @@ Array [
       "traceToken": "8115ef8a-71c8-4814-aea4-0b7984eae263",
     },
   },
-  BalanceMigrationCompletedEvent {
+}
+`;
+
+exports[`Integration test Test Deserializer with kafka 4`] = `
+Object {
+  "highWaterOffset": 4,
+  "key": null,
+  "offset": 3,
+  "partition": 0,
+  "schema": Object {
+    "doc": "Signals that a siemens balance and transaction history was migrated to the new balance platform. Triggered by Balance Service",
+    "fields": Array [
+      Object {
+        "name": "metadata",
+        "type": Object {
+          "doc": "Metadata, to be used in each event class",
+          "fields": Array [
+            Object {
+              "doc": "A globally unique ID for this Kafka message",
+              "name": "eventId",
+              "type": "string",
+            },
+            Object {
+              "doc": "An ID that can be used to link all the requests and Kafka messages in a given transaction. If you already have a trace token from a previous event/request, you should copy it here. If this is the very start of a transaction, you should generate a fresh trace token and put it here. A UUID is suitable",
+              "name": "traceToken",
+              "type": "string",
+            },
+            Object {
+              "doc": "A timestamp for when the event was created (in epoch millis)",
+              "name": "createdAt",
+              "type": Object {
+                "logicalType": "timestamp-millis",
+                "type": "long",
+              },
+            },
+          ],
+          "name": "EventMetadata",
+          "namespace": "com.ovoenergy.kafka.common.event",
+          "type": "record",
+        },
+      },
+      Object {
+        "doc": "7 digit unique identifier for the customer",
+        "name": "accountId",
+        "type": "string",
+      },
+    ],
+    "name": "BalanceMigrationCompletedEvent",
+    "namespace": "uk.co.boostpower.support.kafka.messages",
+    "type": "record",
+  },
+  "timestamp": Any<Date>,
+  "topic": Any<String>,
+  "value": BalanceMigrationCompletedEvent {
     "accountId": "***REMOVED***",
     "metadata": EventMetadata {
       "createdAt": 1525478400000,
@@ -34,7 +241,86 @@ Array [
       "traceToken": "8115ef8a-71c8-4814-aea4-0b7984eae263",
     },
   },
-  AccountMigrationScheduledEvent {
+}
+`;
+
+exports[`Integration test Test Deserializer with kafka 5`] = `
+Object {
+  "highWaterOffset": 2,
+  "key": null,
+  "offset": 0,
+  "partition": 0,
+  "schema": Object {
+    "doc": "Signals that a siemens account migration has been initiated. Triggered by Migration Service",
+    "fields": Array [
+      Object {
+        "name": "metadata",
+        "type": Object {
+          "doc": "Metadata, to be used in each event class",
+          "fields": Array [
+            Object {
+              "doc": "A globally unique ID for this Kafka message",
+              "name": "eventId",
+              "type": "string",
+            },
+            Object {
+              "doc": "An ID that can be used to link all the requests and Kafka messages in a given transaction. If you already have a trace token from a previous event/request, you should copy it here. If this is the very start of a transaction, you should generate a fresh trace token and put it here. A UUID is suitable",
+              "name": "traceToken",
+              "type": "string",
+            },
+            Object {
+              "doc": "A timestamp for when the event was created (in epoch millis)",
+              "name": "createdAt",
+              "type": Object {
+                "logicalType": "timestamp-millis",
+                "type": "long",
+              },
+            },
+          ],
+          "name": "EventMetadata",
+          "namespace": "com.ovoenergy.kafka.common.event",
+          "type": "record",
+        },
+      },
+      Object {
+        "doc": "7 digit unique identifier for the customer",
+        "name": "accountId",
+        "type": "string",
+      },
+      Object {
+        "doc": "The unique national reference for a Metering System",
+        "name": "mpan",
+        "type": "string",
+      },
+      Object {
+        "doc": "The unique identifier used to identify a meter",
+        "name": "msn",
+        "type": "string",
+      },
+      Object {
+        "doc": "The date when the customer came on supply with Boost (in epoch days)",
+        "name": "supplyStartDate",
+        "type": Object {
+          "logicalType": "date",
+          "type": "int",
+        },
+      },
+      Object {
+        "doc": "The date when the account enrolled for the new balance platform (in epoch days)",
+        "name": "effectiveEnrollmentDate",
+        "type": Object {
+          "logicalType": "date",
+          "type": "int",
+        },
+      },
+    ],
+    "name": "AccountMigrationScheduledEvent",
+    "namespace": "uk.co.boostpower.support.kafka.messages",
+    "type": "record",
+  },
+  "timestamp": Any<Date>,
+  "topic": Any<String>,
+  "value": AccountMigrationScheduledEvent {
     "accountId": "***REMOVED***",
     "effectiveEnrollmentDate": 17656,
     "metadata": EventMetadata {
@@ -46,7 +332,86 @@ Array [
     "msn": "10.0",
     "supplyStartDate": 17687,
   },
-  AccountMigrationScheduledEvent {
+}
+`;
+
+exports[`Integration test Test Deserializer with kafka 6`] = `
+Object {
+  "highWaterOffset": 2,
+  "key": null,
+  "offset": 1,
+  "partition": 0,
+  "schema": Object {
+    "doc": "Signals that a siemens account migration has been initiated. Triggered by Migration Service",
+    "fields": Array [
+      Object {
+        "name": "metadata",
+        "type": Object {
+          "doc": "Metadata, to be used in each event class",
+          "fields": Array [
+            Object {
+              "doc": "A globally unique ID for this Kafka message",
+              "name": "eventId",
+              "type": "string",
+            },
+            Object {
+              "doc": "An ID that can be used to link all the requests and Kafka messages in a given transaction. If you already have a trace token from a previous event/request, you should copy it here. If this is the very start of a transaction, you should generate a fresh trace token and put it here. A UUID is suitable",
+              "name": "traceToken",
+              "type": "string",
+            },
+            Object {
+              "doc": "A timestamp for when the event was created (in epoch millis)",
+              "name": "createdAt",
+              "type": Object {
+                "logicalType": "timestamp-millis",
+                "type": "long",
+              },
+            },
+          ],
+          "name": "EventMetadata",
+          "namespace": "com.ovoenergy.kafka.common.event",
+          "type": "record",
+        },
+      },
+      Object {
+        "doc": "7 digit unique identifier for the customer",
+        "name": "accountId",
+        "type": "string",
+      },
+      Object {
+        "doc": "The unique national reference for a Metering System",
+        "name": "mpan",
+        "type": "string",
+      },
+      Object {
+        "doc": "The unique identifier used to identify a meter",
+        "name": "msn",
+        "type": "string",
+      },
+      Object {
+        "doc": "The date when the customer came on supply with Boost (in epoch days)",
+        "name": "supplyStartDate",
+        "type": Object {
+          "logicalType": "date",
+          "type": "int",
+        },
+      },
+      Object {
+        "doc": "The date when the account enrolled for the new balance platform (in epoch days)",
+        "name": "effectiveEnrollmentDate",
+        "type": Object {
+          "logicalType": "date",
+          "type": "int",
+        },
+      },
+    ],
+    "name": "AccountMigrationScheduledEvent",
+    "namespace": "uk.co.boostpower.support.kafka.messages",
+    "type": "record",
+  },
+  "timestamp": Any<Date>,
+  "topic": Any<String>,
+  "value": AccountMigrationScheduledEvent {
     "accountId": "***REMOVED***",
     "effectiveEnrollmentDate": 17567,
     "metadata": EventMetadata {
@@ -58,5 +423,5 @@ Array [
     "msn": "12.0",
     "supplyStartDate": 17687,
   },
-]
+}
 `;

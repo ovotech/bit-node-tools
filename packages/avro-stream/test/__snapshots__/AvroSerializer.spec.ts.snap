@@ -3,6 +3,7 @@
 exports[`Integration test Test Serialier 1`] = `
 Array [
   Object {
+    "key": "key-1",
     "messages": Array [
       Object {
         "data": Array [
@@ -33,6 +34,7 @@ Array [
         "type": "Buffer",
       },
     ],
+    "partition": 0,
     "schema": Object {
       "fields": Array [
         Object {
@@ -46,6 +48,7 @@ Array [
     "topic": "test-topic-1",
   },
   Object {
+    "key": "key-2",
     "messages": Array [
       Object {
         "data": Array [
@@ -74,6 +77,7 @@ Array [
         "type": "Buffer",
       },
     ],
+    "partition": 1,
     "schema": Object {
       "fields": Array [
         Object {

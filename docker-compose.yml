@@ -37,3 +37,12 @@ services:
     environment:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: 'zookeeper:2181'
+
+  postgres:
+    image: circleci/postgres:10-alpine
+    hostname: pg
+    container_name: pg
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: dev-pass

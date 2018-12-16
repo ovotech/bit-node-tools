@@ -1,11 +1,5 @@
 {
-  "compilerOptions": {
-    "strict": true,
-    "module": "commonjs",
-    "target": "es2018",
-    "sourceMap": false,
-    "lib": ["es2018", "esnext.asynciterable", "dom"]
-  },
+  "extends": "../../tsconfig.base.json",
   "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }
