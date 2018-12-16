@@ -50,7 +50,7 @@ jobs:
       - image: circleci/node:8.10.0
     steps:
       - checkout
-      - *restore-yarn-cache
+      - *restore-cache
       - *npmrc
       - run: yarn config set yarn-offline-mirror ~/.cache/yarn
       - run: yarn --frozen-lockfile
