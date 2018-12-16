@@ -1,13 +1,14 @@
 {
   "name": "@ovotech/avro-stream",
-  "version": "1.0.0",
+  "description": "Serialize/deserialize kafka-node streams with avro data, using confluent schema-registry to hold the schemas",
+  "version": "1.0.3",
   "main": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
   "author": "Ivan Kerin <ikerin@gmail.com>",
   "license": "Apache-2.0",
   "dependencies": {
-    "@ovotech/schema-registry-api": "^1.0.1",
+    "@ovotech/schema-registry-api": "^1.0.3",
     "avsc": "^5.4.7"
   },
   "scripts": {
@@ -16,6 +17,9 @@
     "lint-tslint": "tslint --config tslint.json '{src,test}/**/*.ts'",
     "lint": "yarn lint-prettier && yarn lint-tslint",
     "build": "tsc --outDir dist --declaration"
+  },
+  "peerDependencies": {
+    "kafka-node": "*"
   },
   "devDependencies": {
     "@types/jest": "^23.3.10",

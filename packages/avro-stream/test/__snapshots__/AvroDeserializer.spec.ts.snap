@@ -2,17 +2,75 @@
 
 exports[`AvroDeserializer test Test stream transform 1`] = `
 Array [
-  TestSchema1 {
-    "accountId": "111",
+  Object {
+    "schema": Object {
+      "fields": Array [
+        Object {
+          "name": "accountId",
+          "type": "string",
+        },
+      ],
+      "name": "TestSchema1",
+      "type": "record",
+    },
+    "topic": "test-topic-1",
+    "value": TestSchema1 {
+      "accountId": "111",
+    },
   },
-  TestSchema1 {
-    "accountId": "222",
+  Object {
+    "schema": Object {
+      "fields": Array [
+        Object {
+          "name": "accountId",
+          "type": "string",
+        },
+      ],
+      "name": "TestSchema1",
+      "type": "record",
+    },
+    "topic": "test-topic-1",
+    "value": TestSchema1 {
+      "accountId": "222",
+    },
   },
-  TestSchema2 {
-    "effectiveEnrollmentDate": 17687,
+  Object {
+    "schema": Object {
+      "fields": Array [
+        Object {
+          "name": "effectiveEnrollmentDate",
+          "type": Object {
+            "logicalType": "date",
+            "type": "int",
+          },
+        },
+      ],
+      "name": "TestSchema2",
+      "type": "record",
+    },
+    "topic": "test-topic-2",
+    "value": TestSchema2 {
+      "effectiveEnrollmentDate": 17687,
+    },
   },
-  TestSchema2 {
-    "effectiveEnrollmentDate": 17567,
+  Object {
+    "schema": Object {
+      "fields": Array [
+        Object {
+          "name": "effectiveEnrollmentDate",
+          "type": Object {
+            "logicalType": "date",
+            "type": "int",
+          },
+        },
+      ],
+      "name": "TestSchema2",
+      "type": "record",
+    },
+    "topic": "test-topic-2",
+    "value": TestSchema2 {
+      "effectiveEnrollmentDate": 17567,
+    },
   },
 ]
 `;

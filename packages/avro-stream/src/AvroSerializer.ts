@@ -1,14 +1,8 @@
-import { Schema, Type } from 'avsc';
-import { ProduceRequest } from 'kafka-node';
+import { Type } from 'avsc';
 import { Transform, TransformCallback } from 'stream';
 import { constructMessage } from './message';
 import { SchemaRegistryResolver } from './SchemaRegistryResolver';
-import { SchemaResolver } from './types';
-
-export interface AvroProduceRequest extends ProduceRequest {
-  schema: Schema;
-  messages: any[];
-}
+import { AvroProduceRequest, SchemaResolver } from './types';
 
 export class AvroSerializer extends Transform {
   private resolver: SchemaResolver;

@@ -1,0 +1,164 @@
+{
+  "0": {
+    "topic": "migration-completed-2",
+    "schema": {
+      "type": "record",
+      "name": "BalanceMigrationCompletedEvent",
+      "namespace": "uk.co.boostpower.support.kafka.messages",
+      "doc": "Signals that a siemens balance and transaction history was migrated to the new balance platform. Triggered by Balance Service",
+      "fields": [
+        {
+          "name": "metadata",
+          "type": {
+            "type": "record",
+            "name": "EventMetadata",
+            "namespace": "com.ovoenergy.kafka.common.event",
+            "doc": "Metadata, to be used in each event class",
+            "fields": [
+              {
+                "name": "eventId",
+                "type": "string",
+                "doc": "A globally unique ID for this Kafka message"
+              },
+              {
+                "name": "traceToken",
+                "type": "string",
+                "doc": "An ID that can be used to link all the requests and Kafka messages in a given transaction. If you already have a trace token from a previous event/request, you should copy it here. If this is the very start of a transaction, you should generate a fresh trace token and put it here. A UUID is suitable"
+              },
+              {
+                "name": "createdAt",
+                "type": {
+                  "type": "long",
+                  "logicalType": "timestamp-millis"
+                },
+                "doc": "A timestamp for when the event was created (in epoch millis)"
+              }
+            ]
+          }
+        },
+        {
+          "name": "accountId",
+          "type": "string",
+          "doc": "7 digit unique identifier for the customer"
+        }
+      ]
+    },
+    "partition": 0,
+    "key": null,
+    "messages": [
+      {
+        "metadata": {
+          "eventId": "1049508-1328-4083-8613-queued",
+          "traceToken": "8115ef8a-71c8-4814-aea4-0b7984eae263",
+          "createdAt": 1525478400000
+        },
+        "accountId": "6709629"
+      },
+      {
+        "metadata": {
+          "eventId": "11f49508-1328-4083-8613-queued",
+          "traceToken": "8115ef8a-71c8-4814-aea4-0b7984eae263",
+          "createdAt": 1525478400000
+        },
+        "accountId": "5709629"
+      },
+      {
+        "metadata": {
+          "eventId": "12f49508-1328-4083-8613-queued",
+          "traceToken": "8115ef8a-71c8-4814-aea4-0b7984eae263",
+          "createdAt": 1525478400000
+        },
+        "accountId": "4709629"
+      },
+      {
+        "metadata": {
+          "eventId": "13f49508-1328-4083-8613-queued",
+          "traceToken": "8115ef8a-71c8-4814-aea4-0b7984eae263",
+          "createdAt": 1525478400000
+        },
+        "accountId": "3309629"
+      }
+    ]
+  },
+  "1": {
+    "topic": "migration-completed-2",
+    "schema": {
+      "type": "record",
+      "name": "BalanceMigrationCompletedEvent",
+      "namespace": "uk.co.boostpower.support.kafka.messages",
+      "doc": "Signals that a siemens balance and transaction history was migrated to the new balance platform. Triggered by Balance Service",
+      "fields": [
+        {
+          "name": "metadata",
+          "type": {
+            "type": "record",
+            "name": "EventMetadata",
+            "namespace": "com.ovoenergy.kafka.common.event",
+            "doc": "Metadata, to be used in each event class",
+            "fields": [
+              {
+                "name": "eventId",
+                "type": "string",
+                "doc": "A globally unique ID for this Kafka message"
+              },
+              {
+                "name": "traceToken",
+                "type": "string",
+                "doc": "An ID that can be used to link all the requests and Kafka messages in a given transaction. If you already have a trace token from a previous event/request, you should copy it here. If this is the very start of a transaction, you should generate a fresh trace token and put it here. A UUID is suitable"
+              },
+              {
+                "name": "createdAt",
+                "type": {
+                  "type": "long",
+                  "logicalType": "timestamp-millis"
+                },
+                "doc": "A timestamp for when the event was created (in epoch millis)"
+              }
+            ]
+          }
+        },
+        {
+          "name": "accountId",
+          "type": "string",
+          "doc": "7 digit unique identifier for the customer"
+        }
+      ]
+    },
+    "partition": 1,
+    "key": null,
+    "messages": [
+      {
+        "metadata": {
+          "eventId": "14f49508-1328-4083-8613-queued",
+          "traceToken": "8115ef8a-71c8-4814-aea4-0b7984eae263",
+          "createdAt": 1525478400000
+        },
+        "accountId": "2709629"
+      },
+      {
+        "metadata": {
+          "eventId": "15f49508-1328-4083-8613-queued",
+          "traceToken": "8115ef8a-71c8-4814-aea4-0b7984eae263",
+          "createdAt": 1525478400000
+        },
+        "accountId": "1709629"
+      },
+      {
+        "metadata": {
+          "eventId": "16f49508-1328-4083-8613-queued",
+          "traceToken": "8115ef8a-71c8-4814-aea4-0b7984eae263",
+          "createdAt": 1525478400000
+        },
+        "accountId": "1109629"
+      },
+      {
+        "metadata": {
+          "eventId": "17f49508-1328-4083-8613-queued",
+          "traceToken": "8115ef8a-71c8-4814-aea4-0b7984eae263",
+          "createdAt": 1525478400000
+        },
+        "accountId": "2209629"
+      }
+    ]
+  }
+}

@@ -1,3 +1,4 @@
+import { idToSchema } from '@ovotech/schema-registry-api';
 import { Type } from 'avsc';
 import { readdirSync, readFileSync } from 'fs';
 import { ConsumerGroupStream, KafkaClient, Producer, ProducerStream } from 'kafka-node';
@@ -5,9 +6,8 @@ import { join } from 'path';
 import { Readable } from 'stream';
 import { ReadableMock, WritableMock } from 'stream-mock';
 import * as uuid from 'uuid';
-import { AvroDeserializer, constructMessage, deconstructMessage } from '../src';
+import { AvroDeserializer, deconstructMessage } from '../src';
 import { AvroSerializer } from '../src';
-import { checkSubjectRegistered, toSubject, idToSchema } from '@ovotech/schema-registry-api';
 
 const createTopics = async (topics: string[]) => {
   const producer = new Producer(new KafkaClient({ kafkaHost: 'localhost:29092' }));
@@ -96,7 +96,13 @@ describe('Integration test', () => {
 
     await new Promise(resolve => {
       sinkStream.on('finish', () => {
-        expect(sinkStream.data).toMatchSnapshot();
+        for (let index = 0; index < messagesCount; index++) {
+          expect(sinkStream.data[index]).toMatchSnapshot({
+            topic: expect.any(String),
+            timestamp: expect.any(Date),
+          });
+        }
+
         producerStream.close();
         consumerStream.close(resolve);
       });

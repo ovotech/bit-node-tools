@@ -3,7 +3,7 @@ import { Message } from 'kafka-node';
 import { Transform, TransformCallback } from 'stream';
 import { deconstructMessage } from './message';
 import { SchemaRegistryResolver } from './SchemaRegistryResolver';
-import { SchemaResolver } from './types';
+import { AvroMessage, SchemaResolver } from './types';
 
 export class AvroDeserializer extends Transform {
   private resolver: SchemaResolver;
@@ -21,7 +21,8 @@ export class AvroDeserializer extends Transform {
 
       const { schemaId, buffer } = deconstructMessage(message.value);
       const schema = await this.resolver.fromId(schemaId);
-      callback(undefined, Type.forSchema(schema).fromBuffer(buffer));
+      const transformedMessage: AvroMessage = { ...message, schema, value: Type.forSchema(schema).fromBuffer(buffer) };
+      callback(undefined, transformedMessage);
     } catch (error) {
       callback(error);
     }
