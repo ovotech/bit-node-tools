@@ -19,9 +19,10 @@ import { PGSinkStream } from '@ovotech/kafka-pg-sink';
 import { ConsumerGroupStream, Message } from 'kafka-node';
 import { Client } from 'pg';
 
-const consumerStream = new ConsumerGroupStream({ kafkaHost: 'localhost:29092', groupId: 'my-group' }, [
-  'migration-completed',
-]);
+const consumerStream = new ConsumerGroupStream(
+  { kafkaHost: 'localhost:29092', groupId: 'my-group', encoding: 'buffer' },
+  ['migration-completed'],
+);
 
 const pg = new Client('postgresql://postgres:dev-pass@0.0.0.0:5432/postgres');
 const pgSink = new PGSinkStream({
@@ -50,7 +51,7 @@ import { PGSinkStream } from '@ovotech/kafka-pg-sink';
 import { ConsumerGroupStream } from 'kafka-node';
 
 const consumerStream = new ConsumerGroupStream(
-  { kafkaHost: 'localhost:29092', groupId: 'my-group' },
+  { kafkaHost: 'localhost:29092', groupId: 'my-group', encoding: 'buffer' },
   ['migration-completed'],
 );
 const deserializer = new AvroDeserializer('http://localhost:8080');
@@ -60,9 +61,9 @@ const pgSink = new PGSinkStream({
   topics: {
     'migration-completed': {
       table: 'migration_completed',
-      resolver: (message: AvroMessage) => [message.value.accountId]',
-    }
-  }
+      resolver: (message: AvroMessage) => [message.value.accountId],
+    },
+  },
 });
 
 consumerStream.pipe(deserializer).pipe(pgSink);
