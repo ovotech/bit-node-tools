@@ -1,5 +1,7 @@
 # BIT Kafka Tools
 
+[![CircleCI](https://circleci.com/gh/ovotech/bit-kafka-tools.svg?style=svg&circle-token=ae40b0f9ff7943343688a0319478e70091e37fbe)](https://circleci.com/gh/ovotech/bit-kafka-tools)
+
 BIT Team tools for working with Kafka and Avro
 
 ## Using
