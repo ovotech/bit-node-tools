@@ -27,9 +27,10 @@ import { AvroDeserializer } from '@ovotech/avro-stream';
 import { WritableMock } from 'stream-mock';
 import { ConsumerGroupStream } from 'kafka-node';
 
-const consumerStream = new ConsumerGroupStream({ kafkaHost: 'karka.example.com:29092', encoding: 'buffer' }, [
-  'migration-completed',
-]);
+const consumerStream = new ConsumerGroupStream(
+  { kafkaHost: 'karka.example.com:29092', groupId: 'my-group', encoding: 'buffer' },
+  ['migration-completed'],
+);
 const deserializer = new AvroDeserializer('https://schema-registry.example.com:8081');
 const sinkStream = new WritableMock({ objectMode: true });
 
@@ -51,7 +52,7 @@ import { ConsumerGroupStream, Message } from 'kafka-node';
 import { Client } from 'pg';
 
 const consumerStream = new ConsumerGroupStream(
-  { kafkaHost: 'karka.example.com:29092', groupId: 'my-group' },
+  { kafkaHost: 'karka.example.com:29092', groupId: 'my-group', encoding: 'buffer' },
   ['migration-completed'],
 );
 
@@ -63,10 +64,10 @@ const pgSink = new PGSinkStream({
       table: 'migration_completed',
       resolver: (message: Message) => {
         const data = getDataSomehow(message.value);
-        return [data.column1, data.column2, data]
-      }',
-    }
-  }
+        return [data.column1, data.column2, data];
+      },
+    },
+  },
 });
 
 consumerStream.pipe(pgSink);
