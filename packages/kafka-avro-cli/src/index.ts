@@ -7,4 +7,4 @@ export {
   FileReadable,
   StopOnFinishProgressTransform,
 } from './stream';
-export { Args, Config, ConsumeArgs, CreateTopicArgs, ProduceArgs, SchemaArgs, TopicArgs } from './cli';
+export { Args, Config, ConsumeArgs, CreateTopicArgs, ProduceArgs, SchemaArgs, TopicArgs, filterSearch } from './cli';

@@ -4,8 +4,7 @@ import * as supportsColor from 'supports-color';
 import { URL } from 'url';
 import { inspect } from 'util';
 import { CommandModule } from 'yargs';
-import { loadConfig } from '../config';
-import { Args } from '../types';
+import { Args, filterSearch, loadConfig } from '..';
 
 export interface SchemaArgs extends Args {
   subject: string;
@@ -28,7 +27,7 @@ export const schema: CommandModule = {
     console.log(chalk.gray('Searching for'), searchText, chalk.gray('in'), url.host);
     const subjects = await getSubjects(schemaRegistry);
 
-    const matchingSubjects = args.subject ? subjects.filter(subject => subject.includes(args.subject)) : subjects;
+    const matchingSubjects = filterSearch(args.subject, subjects);
 
     switch (matchingSubjects.length) {
       case 0:

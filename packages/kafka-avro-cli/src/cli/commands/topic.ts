@@ -3,9 +3,8 @@ import { KafkaClient } from 'kafka-node';
 import * as supportsColor from 'supports-color';
 import { inspect } from 'util';
 import { CommandModule } from 'yargs';
+import { Args, filterSearch, loadConfig } from '..';
 import { MetadataResult } from '../../types';
-import { loadConfig } from '../config';
-import { Args } from '../types';
 
 export interface TopicArgs extends Args {
   name: string;
@@ -37,7 +36,7 @@ export const topic: CommandModule = {
     );
 
     const topics = Object.keys(metadata);
-    const matchingTopics = args.name ? topics.filter(item => item.includes(args.name)) : topics;
+    const matchingTopics = filterSearch(args.name, topics);
 
     switch (matchingTopics.length) {
       case 0:
