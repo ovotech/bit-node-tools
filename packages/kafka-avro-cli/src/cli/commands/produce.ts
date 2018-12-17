@@ -1,5 +1,4 @@
-import { AvroProduceRequest, AvroSerializer } from '@ovotech/avro-stream';
-import chalk from 'chalk';
+import { AvroSerializer } from '@ovotech/avro-stream';
 import { ProducerStream } from 'kafka-node';
 import { CommandModule } from 'yargs';
 import { FileReadable, LogProducerTransform } from '../../';
@@ -23,6 +22,10 @@ export const produce: CommandModule = {
     const fileReadable = new FileReadable(args.file);
     const serializer = new AvroSerializer(schemaRegistry);
     const logProducer = new LogProducerTransform();
+
+    producerStream.on('finish', () => {
+      producerStream.close();
+    });
 
     fileReadable
       .pipe(logProducer)
