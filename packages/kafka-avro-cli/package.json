@@ -27,7 +27,8 @@
     "lint-prettier": "prettier --list-different {src,test}/**/*.ts",
     "lint-tslint": "tslint --config tslint.json '{src,test}/**/*.ts'",
     "lint": "yarn lint-prettier && yarn lint-tslint",
-    "build": "tsc --outDir dist --declaration"
+    "build": "tsc --outDir dist --declaration",
+    "kac": "ts-node src/cli/kac.ts"
   },
   "devDependencies": {
     "@types/jest": "^23.3.10",

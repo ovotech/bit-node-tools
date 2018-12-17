@@ -27,9 +27,9 @@ describe('schema test', () => {
     await addSubjectVersion(schemaRegistry!, subjects[1], schemas[0]);
     await addSubjectVersion(schemaRegistry!, subjects[2], schemas[1]);
 
-    const allResults = String(execSync('scripts/kac --config test/config.json schema'));
-    const tmpResults = String(execSync('scripts/kac --config test/config.json schema tmp'));
-    const singleResult = String(execSync(`scripts/kac --config test/config.json schema ${subjects[2]}`));
+    const allResults = String(execSync('yarn kac --config test/config.json schema'));
+    const tmpResults = String(execSync('yarn kac --config test/config.json schema tmp'));
+    const singleResult = String(execSync(`yarn kac --config test/config.json schema ${subjects[2]}`));
 
     expect(allResults).toContain(subjects[0]);
     expect(allResults).toContain(subjects[1]);

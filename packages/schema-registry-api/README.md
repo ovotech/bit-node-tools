@@ -19,8 +19,8 @@ const schema: Schema = {
 };
 
 const subjects = await getSubjects(schemaRegistryUrl);
-const newVersion = await addSubjectVersion(baseUrl, 'clients', schema);
-const foundSchema = await getSchema(baseUrl, newVersion.id);
+const newVersion = await addSubjectVersion(schemaRegistryUrl, 'clients', schema);
+const foundSchema = await getSchema(schemaRegistryUrl, newVersion.id);
 ```
 
 The api rest endpoint are directly translated into functions calling node-fetch:

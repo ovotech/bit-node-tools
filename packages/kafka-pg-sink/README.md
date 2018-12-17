@@ -17,6 +17,7 @@ INSERT INTO tableName VALUES (column1Value, column2Value ...) ON CONFLICT DO NOT
 ```typescript
 import { PGSinkStream } from '@ovotech/kafka-pg-sink';
 import { ConsumerGroupStream, Message } from 'kafka-node';
+import { Client } from 'pg';
 
 const consumerStream = new ConsumerGroupStream(
   { kafkaHost: 'localhost:29092', groupId: 'my-group' },
