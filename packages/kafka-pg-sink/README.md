@@ -19,10 +19,9 @@ import { PGSinkStream } from '@ovotech/kafka-pg-sink';
 import { ConsumerGroupStream, Message } from 'kafka-node';
 import { Client } from 'pg';
 
-const consumerStream = new ConsumerGroupStream(
-  { kafkaHost: 'localhost:29092', groupId: 'my-group' },
-  ['migration-completed'],
-);
+const consumerStream = new ConsumerGroupStream({ kafkaHost: 'localhost:29092', groupId: 'my-group' }, [
+  'migration-completed',
+]);
 
 const pg = new Client('postgresql://postgres:dev-pass@0.0.0.0:5432/postgres');
 const pgSink = new PGSinkStream({
@@ -32,10 +31,10 @@ const pgSink = new PGSinkStream({
       table: 'migration_completed',
       resolver: (message: Message) => {
         const data = getDataSomehow(message.value);
-        return [data.column1, data.column2, data]
-      }',
-    }
-  }
+        return [data.column1, data.column2, data];
+      },
+    },
+  },
 });
 
 consumerStream.pipe(pgSink);
