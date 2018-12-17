@@ -24,11 +24,6 @@ export const produce: CommandModule = {
     const serializer = new AvroSerializer(schemaRegistry);
     const logProducer = new LogProducerTransform();
 
-    producerStream.on('finish', () => {
-      console.log(chalk.green('Finished.'));
-      producerStream.close();
-    });
-
     fileReadable
       .pipe(logProducer)
       .pipe(serializer)
