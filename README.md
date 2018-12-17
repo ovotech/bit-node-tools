@@ -2,13 +2,9 @@
 
 [![CircleCI](https://circleci.com/gh/ovotech/bit-kafka-tools.svg?style=svg&circle-token=ae40b0f9ff7943343688a0319478e70091e37fbe)](https://circleci.com/gh/ovotech/bit-kafka-tools)
 
-BIT Team tools for working with Kafka and Avro
+BIT Team tools for working with Kafka and Avro. They are split into several independent packages that can be imported as needed
 
-## Using
-
-This is split into several independent packages that can be imported as needed
-
-## CLI
+## Kafka Avro CLI
 
 A CLI for inspecting the [confluent schema-registry](https://docs.confluent.io/current/schema-registry/docs/index.html), produce and consume avro kafka events.
 ![packages/kafka-avro-cli/README.md](assets/kac.gif)
@@ -131,7 +127,7 @@ All package versions are synchronized, but it will only publish the versions of 
 
 Have a bug? File an issue with a simple example that reproduces this so we can take a look & confirm.
 
-Want to make a change? Submit a PR, explain why it's useful, and make sure you've updated the docs (this file) and the tests (see `test/integration.spec.ts`).
+Want to make a change? Submit a PR, explain why it's useful, and make sure you've updated the docs (this file) and the tests.
 
 ## Responsible Team
 
