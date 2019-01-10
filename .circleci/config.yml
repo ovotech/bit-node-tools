@@ -74,4 +74,5 @@ workflows:
             branches:
               only: master
       - publish:
-          requires: test
+          requires:
+            - test
