@@ -45,7 +45,7 @@ jobs:
       - run: .circleci/wait-for-server.sh
       - run: yarn test
 
-  deploy:
+  publish:
     docker:
       - image: circleci/node:8.10.0
     steps:
@@ -57,18 +57,21 @@ jobs:
       - run: yarn build
       - run: git config user.email "ovotech-ci@ovoenergy.com"
       - run: git config user.name "Ovotech CI"
-      - run: yarn lerna publish $CIRCLE_TAG --yes
+      - run: yarn lerna publish from-package --yes
 
 workflows:
   version: 2
-  deploy:
-    jobs:
-      - deploy:
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              ignore: /.*/
   test:
     jobs:
-      - test
+      - test:
+          filters:
+            branches:
+              ignore: master
+  deploy:
+    jobs:
+      - test:
+          filters:
+            branches:
+              only: master
+      - publish:
+          requires: test

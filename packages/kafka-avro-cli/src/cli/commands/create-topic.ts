@@ -29,26 +29,30 @@ export const createTopic: CommandModule = {
 
     await new Promise(resolve => client.on('ready', resolve));
 
-    await new Promise((resolve, reject) =>
-      (client as any).createTopics([{ topic, partitions, replicationFactor }], (error: Error | null, data: any) => {
-        if (error) {
-          reject(error);
-        } else {
-          if (data[0] && data[0].error) {
-            reject(new Error(data[0].error));
+    try {
+      await new Promise((resolve, reject) =>
+        (client as any).createTopics([{ topic, partitions, replicationFactor }], (error: Error | null, data: any) => {
+          if (error) {
+            reject(error);
           } else {
-            console.log(
-              chalk.green('Topic created'),
-              topic,
-              chalk.green('partitions'),
-              partitions,
-              chalk.green('replication factor'),
-              replicationFactor,
-            );
-            client.close(resolve);
+            if (data[0] && data[0].error) {
+              reject(new Error(data[0].error));
+            } else {
+              console.log(
+                chalk.green('Topic created'),
+                topic,
+                chalk.green('partitions'),
+                partitions,
+                chalk.green('replication factor'),
+                replicationFactor,
+              );
+              client.close(resolve);
+            }
           }
-        }
-      }),
-    );
+        }),
+      );
+    } catch (error) {
+      console.log(chalk.red('Error'), error.message);
+    }
   },
 };

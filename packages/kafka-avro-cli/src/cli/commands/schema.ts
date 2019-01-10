@@ -25,31 +25,35 @@ export const schema: CommandModule = {
     const searchText = `"${args.subject ? args.subject : '<all>'}"`;
 
     console.log(chalk.gray('Searching for'), searchText, chalk.gray('in'), url.host);
-    const subjects = await getSubjects(schemaRegistry);
+    try {
+      const subjects = await getSubjects(schemaRegistry);
 
-    const matchingSubjects = filterSearch(args.subject, subjects);
+      const matchingSubjects = filterSearch(args.subject, subjects);
 
-    switch (matchingSubjects.length) {
-      case 0:
-        console.log(chalk.red('No subject matching'), chalk.redBright(searchText), chalk.red('found'));
-        break;
-      case 1:
-        const subject = matchingSubjects[0];
-        const versions = await getSubjectVersions(schemaRegistry, subject);
-        console.log(chalk.gray('Subject'), subject, chalk.gray('found'), versions, chalk.gray('versions'));
-        for (const version of versions) {
-          const result = await getSubjectVersionSchema(schemaRegistry, subject, version);
-          console.log(chalk.yellow('Version:'), version, chalk.yellow('----------------------------------------'));
-          console.log(inspect(result, false, 7, Boolean(supportsColor.stdout)));
-        }
-        break;
-      default:
-        console.log(chalk.gray('Found'), matchingSubjects.length, chalk.gray('matching'), searchText);
-        console.log(chalk.gray('----------------------------------------'));
+      switch (matchingSubjects.length) {
+        case 0:
+          console.log(chalk.red('No subject matching'), chalk.redBright(searchText), chalk.red('found'));
+          break;
+        case 1:
+          const subject = matchingSubjects[0];
+          const versions = await getSubjectVersions(schemaRegistry, subject);
+          console.log(chalk.gray('Subject'), subject, chalk.gray('found'), versions, chalk.gray('versions'));
+          for (const version of versions) {
+            const result = await getSubjectVersionSchema(schemaRegistry, subject, version);
+            console.log(chalk.yellow('Version:'), version, chalk.yellow('----------------------------------------'));
+            console.log(inspect(result, false, 7, Boolean(supportsColor.stdout)));
+          }
+          break;
+        default:
+          console.log(chalk.gray('Found'), matchingSubjects.length, chalk.gray('matching'), searchText);
+          console.log(chalk.gray('----------------------------------------'));
 
-        for (const item of matchingSubjects) {
-          console.log(item);
-        }
+          for (const item of matchingSubjects) {
+            console.log(item);
+          }
+      }
+    } catch (error) {
+      console.log(chalk.red('Error'), error.message);
     }
   },
 };

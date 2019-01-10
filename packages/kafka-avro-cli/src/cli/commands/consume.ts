@@ -57,6 +57,19 @@ export const consume: CommandModule = {
     const stopOnFinishProgress = new StopOnFinishProgressTransform(consumerStream, !args.tail);
     const logConsumerProgress = new LogConsumerProgressTransform(!args['output-file']);
 
+    const errorHandler = (title: string) => (error: Error) => {
+      console.log(chalk.red(`Error in ${title}`), error.message);
+      consumerStream.close(() => {
+        console.log('Consumer closed');
+      });
+    };
+
+    consumerStream.on('error', errorHandler('kafka consumer'));
+    deserialier.on('error', errorHandler('deserializer'));
+    consumerProgress.on('error', errorHandler('progress bar'));
+    stopOnFinishProgress.on('error', errorHandler('stop on finish counter'));
+    logConsumerProgress.on('error', errorHandler('logger'));
+
     const stream = consumerStream
       .pipe(consumerProgress)
       .pipe(stopOnFinishProgress)

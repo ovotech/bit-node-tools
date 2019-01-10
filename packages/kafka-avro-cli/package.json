@@ -1,7 +1,7 @@
 {
   "name": "@ovotech/kafka-avro-cli",
   "description": "A CLI for inspecting the confluent schema-registry, produce and consume avro kafka events",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "main": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
@@ -11,7 +11,7 @@
     "kac": "./scripts/kac"
   },
   "dependencies": {
-    "@ovotech/avro-stream": "^1.0.3",
+    "@ovotech/avro-stream": "^1.0.4",
     "@ovotech/schema-registry-api": "^1.0.3",
     "@types/progress": "^2.0.3",
     "avsc": "^5.4.7",

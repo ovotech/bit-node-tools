@@ -1,4 +1,5 @@
 import { AvroSerializer } from '@ovotech/avro-stream';
+import chalk from 'chalk';
 import { ProducerStream } from 'kafka-node';
 import { CommandModule } from 'yargs';
 import { FileReadable, LogProducerTransform } from '../../';
@@ -23,9 +24,19 @@ export const produce: CommandModule = {
     const serializer = new AvroSerializer(schemaRegistry);
     const logProducer = new LogProducerTransform();
 
+    const errorHandler = (title: string) => (error: Error) => {
+      console.log(chalk.red(`Error in ${title}`), error.message);
+      producerStream.close();
+    };
+
     producerStream.on('finish', () => {
       producerStream.close();
     });
+
+    fileReadable.on('error', errorHandler('reading file data'));
+    logProducer.on('error', errorHandler('logging'));
+    serializer.on('error', errorHandler('serializing'));
+    producerStream.on('error', errorHandler('producing kafka event'));
 
     fileReadable
       .pipe(logProducer)

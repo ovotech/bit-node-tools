@@ -84,6 +84,17 @@ const serializer = new AvroSerializer(resolver);
 const deserializer = new AvroDeserializer(resolver);
 ```
 
+## Passing avro schema options
+
+Sometimes you'll want to pass some options to the creation of the avro type from the schema, for example to pass in logical type resolvers. You can do that with the second argument to the constructors.
+
+```typescript
+import { AvroSerializer, AvroDeserializer } from '@ovotech/avro-stream';
+
+const serializer new AvroSerializer('...', { logicalTypes: ... });
+const deserializer new AvroDeserializer('...', { logicalTypes: ... });
+```
+
 ## Gotchas
 
 A thing to be aware of is that node streams unpipe in an event of an error, which means that you'll need to provide your own error handling and repipe the streams if you want it to be resilient to errors.
