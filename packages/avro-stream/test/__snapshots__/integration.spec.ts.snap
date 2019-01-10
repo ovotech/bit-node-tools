@@ -53,7 +53,7 @@ Object {
   "value": BalanceMigrationCompletedEvent {
     "accountId": "***REMOVED***",
     "metadata": EventMetadata {
-      "createdAt": 1525478400000,
+      "createdAt": "2018-05-05T00:00:00.000Z",
       "eventId": "75f49508-1328-4083-8613-queued",
       "traceToken": "8115ef8a-71c8-4814-aea4-0b7984eae263",
     },
@@ -114,7 +114,7 @@ Object {
   "value": BalanceMigrationCompletedEvent {
     "accountId": "***REMOVED***",
     "metadata": EventMetadata {
-      "createdAt": 1525478400000,
+      "createdAt": "2018-05-05T00:00:00.000Z",
       "eventId": "75f49508-1328-4083-8613-queued",
       "traceToken": "8115ef8a-71c8-4814-aea4-0b7984eae263",
     },
@@ -175,7 +175,7 @@ Object {
   "value": BalanceMigrationCompletedEvent {
     "accountId": "***REMOVED***",
     "metadata": EventMetadata {
-      "createdAt": 1525478400000,
+      "createdAt": "2018-05-05T00:00:00.000Z",
       "eventId": "75f49508-1328-4083-8613-queued",
       "traceToken": "8115ef8a-71c8-4814-aea4-0b7984eae263",
     },
@@ -236,7 +236,7 @@ Object {
   "value": BalanceMigrationCompletedEvent {
     "accountId": "***REMOVED***",
     "metadata": EventMetadata {
-      "createdAt": 1525478400000,
+      "createdAt": "2018-05-05T00:00:00.000Z",
       "eventId": "75f49508-1328-4083-8613-queued",
       "traceToken": "8115ef8a-71c8-4814-aea4-0b7984eae263",
     },
@@ -322,15 +322,15 @@ Object {
   "topic": Any<String>,
   "value": AccountMigrationScheduledEvent {
     "accountId": "***REMOVED***",
-    "effectiveEnrollmentDate": 17656,
+    "effectiveEnrollmentDate": "2018-05-05T00:00:00.000Z",
     "metadata": EventMetadata {
-      "createdAt": 1525478400000,
+      "createdAt": "2018-05-05T00:00:00.000Z",
       "eventId": "75f49508-1328-4083-8613-queued",
       "traceToken": "8115ef8a-71c8-4814-aea4-0b7984eae263",
     },
     "mpan": "6893550d-4221-40ff-a87e-02d8f8fe706d",
     "msn": "10.0",
-    "supplyStartDate": 17687,
+    "supplyStartDate": "2018-06-05T00:00:00.000Z",
   },
 }
 `;
@@ -413,15 +413,15 @@ Object {
   "topic": Any<String>,
   "value": AccountMigrationScheduledEvent {
     "accountId": "***REMOVED***",
-    "effectiveEnrollmentDate": 17567,
+    "effectiveEnrollmentDate": "2018-02-05T00:00:00.000Z",
     "metadata": EventMetadata {
-      "createdAt": 1525478400000,
+      "createdAt": "2018-05-05T00:00:00.000Z",
       "eventId": "95f49508-1328-4083-8613-queued",
       "traceToken": "9115ef8a-71c8-4814-aea4-0b7984eae263",
     },
     "mpan": "223344123123",
     "msn": "12.0",
-    "supplyStartDate": 17687,
+    "supplyStartDate": "2018-06-05T00:00:00.000Z",
   },
 }
 `;

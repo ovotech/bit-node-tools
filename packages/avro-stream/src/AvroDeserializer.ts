@@ -1,18 +1,10 @@
-import { ForSchemaOptions, Type } from 'avsc';
 import { Message } from 'kafka-node';
-import { Transform, TransformCallback } from 'stream';
+import { TransformCallback } from 'stream';
+import { AvroSchemaTransform } from './AvroSchemaTransform';
 import { deconstructMessage } from './message';
-import { SchemaRegistryResolver } from './SchemaRegistryResolver';
-import { AvroMessage, SchemaResolver } from './types';
+import { AvroMessage } from './types';
 
-export class AvroDeserializer extends Transform {
-  private resolver: SchemaResolver;
-
-  constructor(resolver: SchemaResolver | string, private schemaOptions?: Partial<ForSchemaOptions>) {
-    super({ objectMode: true });
-    this.resolver = typeof resolver === 'string' ? new SchemaRegistryResolver(resolver) : resolver;
-  }
-
+export class AvroDeserializer extends AvroSchemaTransform {
   async _transform(message: Message, encoding: string, callback: TransformCallback) {
     try {
       if (typeof message.value === 'string') {
@@ -21,7 +13,7 @@ export class AvroDeserializer extends Transform {
 
       const { schemaId, buffer } = deconstructMessage(message.value);
       const schema = await this.resolver.fromId(schemaId);
-      const type = Type.forSchema(schema, this.schemaOptions);
+      const type = this.typeForSchema(schema);
       const transformedMessage: AvroMessage = { ...message, schema, value: type.fromBuffer(buffer) };
       callback(undefined, transformedMessage);
     } catch (error) {

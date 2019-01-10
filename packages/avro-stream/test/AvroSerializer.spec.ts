@@ -1,6 +1,7 @@
 import { Schema } from 'avsc';
 import { ReadableMock, WritableMock } from 'stream-mock';
 import { AvroProduceRequest, AvroSerializer, SchemaResolver } from '../src';
+import { DateType } from './DateType';
 
 describe('Integration test', () => {
   it('Test Serialier', async () => {
@@ -25,7 +26,10 @@ describe('Integration test', () => {
           name: 'TestSchema2',
           fields: [{ name: 'effectiveEnrollmentDate', type: { type: 'int', logicalType: 'date' } }],
         } as Schema,
-        messages: [{ effectiveEnrollmentDate: 17687 }, { effectiveEnrollmentDate: 17567 }],
+        messages: [
+          { effectiveEnrollmentDate: new Date('2018-06-05') },
+          { effectiveEnrollmentDate: new Date('2018-02-05') },
+        ],
       },
     ];
 
@@ -39,7 +43,7 @@ describe('Integration test', () => {
 
     const sourceStream = new ReadableMock(sourceData, { objectMode: true });
     const sinkStream = new WritableMock({ objectMode: true });
-    const serializer = new AvroSerializer(schemaResolverMock);
+    const serializer = new AvroSerializer(schemaResolverMock, { logicalTypes: { date: DateType } });
 
     sourceStream.pipe(serializer).pipe(sinkStream);
 

@@ -1,5 +1,6 @@
 import { ReadableMock, WritableMock } from 'stream-mock';
 import { AvroDeserializer, SchemaResolver } from '../src';
+import { DateType } from './DateType';
 
 describe('AvroDeserializer test', () => {
   it('Test stream transform', async () => {
@@ -35,7 +36,7 @@ describe('AvroDeserializer test', () => {
 
     const sourceStream = new ReadableMock(sourceData, { objectMode: true });
     const sinkStream = new WritableMock({ objectMode: true });
-    const serializer = new AvroDeserializer(schemaResolverMock);
+    const serializer = new AvroDeserializer(schemaResolverMock, { logicalTypes: { date: DateType } });
 
     sourceStream.pipe(serializer).pipe(sinkStream);
 

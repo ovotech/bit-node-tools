@@ -8,6 +8,8 @@ import { ReadableMock, WritableMock } from 'stream-mock';
 import * as uuid from 'uuid';
 import { AvroDeserializer, deconstructMessage } from '../src';
 import { AvroSerializer } from '../src';
+import { DateType } from './DateType';
+import { TimestampType } from './TimestampType';
 
 const createTopics = async (topics: string[]) => {
   const producer = new Producer(new KafkaClient({ kafkaHost: 'localhost:29092' }));
@@ -45,7 +47,9 @@ describe('Integration test', () => {
   it('Test Serialier', async () => {
     const sourceStream = new ReadableMock(sourceData, { objectMode: true });
     const sinkStream = new WritableMock({ objectMode: true });
-    const serializer = new AvroSerializer('http://localhost:8081');
+    const serializer = new AvroSerializer('http://localhost:8081', {
+      logicalTypes: { date: DateType, 'timestamp-millis': TimestampType },
+    });
 
     sourceStream.pipe(serializer).pipe(sinkStream);
 
@@ -73,8 +77,12 @@ describe('Integration test', () => {
     const sinkStream = new WritableMock({ objectMode: true });
     const topics = unqiueSourceData.map(item => item.topic);
 
-    const deserializer = new AvroDeserializer('http://localhost:8081');
-    const serializer = new AvroSerializer('http://localhost:8081');
+    const deserializer = new AvroDeserializer('http://localhost:8081', {
+      logicalTypes: { date: DateType, 'timestamp-millis': TimestampType },
+    });
+    const serializer = new AvroSerializer('http://localhost:8081', {
+      logicalTypes: { date: DateType, 'timestamp-millis': TimestampType },
+    });
 
     await createTopics(topics);
 

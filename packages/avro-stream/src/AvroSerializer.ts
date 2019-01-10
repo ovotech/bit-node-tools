@@ -1,20 +1,12 @@
-import { ForSchemaOptions, Type } from 'avsc';
-import { Transform, TransformCallback } from 'stream';
+import { TransformCallback } from 'stream';
+import { AvroSchemaTransform } from './AvroSchemaTransform';
 import { constructMessage } from './message';
-import { SchemaRegistryResolver } from './SchemaRegistryResolver';
-import { AvroProduceRequest, SchemaResolver } from './types';
+import { AvroProduceRequest } from './types';
 
-export class AvroSerializer extends Transform {
-  private resolver: SchemaResolver;
-
-  constructor(resolver: SchemaResolver | string, private schemaOptions?: Partial<ForSchemaOptions>) {
-    super({ objectMode: true });
-    this.resolver = typeof resolver === 'string' ? new SchemaRegistryResolver(resolver) : resolver;
-  }
-
+export class AvroSerializer extends AvroSchemaTransform {
   async _transform(request: AvroProduceRequest, encoding: string, callback: TransformCallback) {
     try {
-      const type = Type.forSchema(request.schema, this.schemaOptions);
+      const type = this.typeForSchema(request.schema);
       const schemaId = await this.resolver.toId(request.topic, request.schema);
 
       callback(undefined, {
