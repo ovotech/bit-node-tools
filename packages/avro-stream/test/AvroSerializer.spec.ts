@@ -1,7 +1,7 @@
+import { DateType } from '@ovotech/avro-logical-types';
 import { Schema } from 'avsc';
 import { ReadableMock, WritableMock } from 'stream-mock';
 import { AvroProduceRequest, AvroSerializer, SchemaResolver } from '../src';
-import { DateType } from './DateType';
 
 describe('Integration test', () => {
   it('Test Serialier', async () => {

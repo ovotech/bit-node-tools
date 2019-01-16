@@ -32,15 +32,12 @@ export class LogConsumerProgressTransform extends Transform {
     if (this.progressBar) {
       this.progressBar.terminate();
     }
-    console.log(chalk.green('Consumed'), chalk.yellow(String(this.progress.totalCount)), chalk.green('messages'));
+    process.stdout.write(chalk`{green Consumed} {yellow ${String(this.progress.totalCount)}} {green messages}\n`);
 
     for (const [partition, item] of Object.entries(this.progress.partitions)) {
-      console.log(
-        chalk.green(' - Partition'),
-        chalk.cyan(String(partition)),
-        chalk.green(':'),
-        chalk.yellow(String(item.offset + 1)),
-        chalk.green('messages.'),
+      const offset = String(item.offset + 1);
+      process.stdout.write(
+        chalk`{green  - Partition} {cyan ${String(partition)}} {green :} {yellow ${offset}} {green messages}\n`,
       );
     }
     callback();
@@ -57,7 +54,7 @@ export class LogConsumerProgressTransform extends Transform {
       if (this.progressBar) {
         this.progressBar.interrupt(logMessage);
       } else {
-        console.log(logMessage);
+        process.stdout.write(`${logMessage}\n`);
       }
     }
     callback(undefined, message);

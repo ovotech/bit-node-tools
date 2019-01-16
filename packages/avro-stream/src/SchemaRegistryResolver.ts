@@ -1,5 +1,5 @@
 import { idToSchema, schemaToId, toSubject } from '@ovotech/schema-registry-api';
-import { Schema } from 'avsc/types';
+import { Schema } from 'avsc';
 import { SchemaResolver } from './types';
 
 export class SchemaRegistryResolver implements SchemaResolver {

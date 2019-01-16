@@ -8,19 +8,18 @@ export class LogProducerTransform extends Transform {
   }
 
   _flush(callback: TransformCallback) {
-    console.log(chalk.green('Finished'));
+    process.stdout.write(chalk`{green Finished}\n`);
     callback();
   }
 
   _transform(request: AvroProduceRequest, encoding: string, callback: TransformCallback) {
-    console.log(
-      chalk.gray('Produce'),
-      request.messages.length,
-      chalk.gray('messages in'),
-      request.partition,
-      chalk.gray('partition, for'),
-      request.topic,
-      chalk.gray('topic'),
+    const count = String(request.messages.length);
+    const partition = String(request.partition);
+
+    process.stdout.write(
+      chalk`{gray Produce} ${count} {gray messages in} ${partition} {gray partition, for} ${
+        request.topic
+      } {gray topic}\n`,
     );
 
     callback(undefined, request);

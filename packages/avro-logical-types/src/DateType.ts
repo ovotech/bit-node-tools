@@ -1,10 +1,10 @@
 import { Type, types } from 'avsc';
-/**
- * Custom logical type used to encode native Date objects as int.
- */
 
 const millisecondsInADay = 8.64e7;
 
+/**
+ * Custom logical type used to encode native Date objects as int.
+ */
 export class DateType extends types.LogicalType {
   _fromValue(val: number) {
     return new Date(val * millisecondsInADay).toISOString();

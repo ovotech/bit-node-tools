@@ -71,16 +71,17 @@ kac --config my/config.json ...
 ### schema command
 
 ```bash
-kac schema [subject]
+kac.ts schema [subject]
 
 Used to search for, filter and get details of a particular schema in the schema
 registry. [subject] is a partial name of a subject. If no subject if provided,
 all subjects are returned.
 
 Options:
-  --version     Show version number                                    [boolean]
-  --config, -c  Path to the configuration file      [default: "kac.config.json"]
-  --help        Show help
+  --version         Show version number                                [boolean]
+  --config, -c      Path to the configuration file  [default: "kac.config.json"]
+  --help            Show help                                          [boolean]
+  --output-dir, -o  Save the results into a folder. One file per version
 ```
 
 If more than one subject is found, it will result in a list of partial matches.

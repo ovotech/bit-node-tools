@@ -36,11 +36,7 @@ export const consume: CommandModule = {
     },
   },
   handler: (args: ConsumeArgs) => {
-    const { kafkaClient, schemaRegistry } = loadConfig(args);
-
-    if (!kafkaClient || !schemaRegistry) {
-      throw new Error('Configuration for kafkaClient and schemaRegistryis required, add it to the config file');
-    }
+    const { kafkaClient, schemaRegistry } = loadConfig(args, ['kafkaClient', 'schemaRegistry']);
 
     const consumerStream = new ConsumerGroupStream(
       {
@@ -52,15 +48,15 @@ export const consume: CommandModule = {
       [args.topic],
     );
 
-    const deserialier = new AvroDeserializer(schemaRegistry);
+    const deserialier = new AvroDeserializer(schemaRegistry!);
     const consumerProgress = new ConsumerProgressTransform(consumerStream);
     const stopOnFinishProgress = new StopOnFinishProgressTransform(consumerStream, !args.tail);
     const logConsumerProgress = new LogConsumerProgressTransform(!args['output-file']);
 
     const errorHandler = (title: string) => (error: Error) => {
-      console.log(chalk.red(`Error in ${title}`), error.message);
+      process.stderr.write(chalk(`{red Error in ${title} ${error.message}}\n`));
       consumerStream.close(() => {
-        console.log('Consumer closed');
+        process.stderr.write('Consumer closed\n');
       });
     };
 
@@ -79,15 +75,15 @@ export const consume: CommandModule = {
     if (args['output-file']) {
       const fileWritable = new FileWritable(args['output-file']);
 
-      console.log(chalk.gray('Writing to file'), args['output-file'], chalk.gray('from topic'), args.topic);
-      console.log(chalk.gray('----------------------------------------'));
+      process.stdout.write(chalk`{gray Writing to file} ${args['output-file']} {gray from topic} ${args.topic}\n`);
+      process.stdout.write(chalk`{gray ----------------------------------------}`);
 
       stream.pipe(fileWritable);
     } else {
       const end = new NullWritable();
 
-      console.log(chalk.gray('Consume messages in'), args.topic);
-      console.log(chalk.gray('----------------------------------------'));
+      process.stdout.write(chalk`{gray Consume messages in} ${args.topic}\n`);
+      process.stdout.write(chalk`{gray ----------------------------------------}\n`);
 
       stream.pipe(end);
     }

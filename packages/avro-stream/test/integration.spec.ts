@@ -1,3 +1,4 @@
+import { DateType, TimestampType } from '@ovotech/avro-logical-types';
 import { idToSchema } from '@ovotech/schema-registry-api';
 import { Type } from 'avsc';
 import { readdirSync, readFileSync } from 'fs';
@@ -8,8 +9,6 @@ import { ReadableMock, WritableMock } from 'stream-mock';
 import * as uuid from 'uuid';
 import { AvroDeserializer, deconstructMessage } from '../src';
 import { AvroSerializer } from '../src';
-import { DateType } from './DateType';
-import { TimestampType } from './TimestampType';
 
 const createTopics = async (topics: string[]) => {
   const producer = new Producer(new KafkaClient({ kafkaHost: 'localhost:29092' }));

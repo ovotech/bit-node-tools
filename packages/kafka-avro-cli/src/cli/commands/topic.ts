@@ -15,15 +15,11 @@ export const topic: CommandModule = {
   describe:
     'Used to search for, filter and get details of a particular topic in the kafka server. [name] is a partial name of a topic. If no name if provided, all topics are returned.',
   handler: async (args: TopicArgs) => {
-    const { kafkaClient } = loadConfig(args);
-
-    if (!kafkaClient) {
-      throw new Error('Configuration for schemaRegistry is required, add it to the config file');
-    }
+    const { kafkaClient } = loadConfig(args, ['kafkaClient']);
 
     const searchText = `"${args.name ? args.name : '<all>'}"`;
 
-    console.log(chalk.gray('Searching for'), searchText, chalk.gray('in'), kafkaClient.kafkaHost);
+    process.stdout.write(chalk`{gray Searching for} ${searchText} {gray in} ${String(kafkaClient!.kafkaHost)}\n`);
 
     const client = new KafkaClient(kafkaClient);
 
@@ -40,20 +36,20 @@ export const topic: CommandModule = {
 
     switch (matchingTopics.length) {
       case 0:
-        console.log(chalk.red('No topic matching'), chalk.redBright(searchText), chalk.red('found'));
+        process.stdout.write(chalk`{red No topic matching} {redBright ${searchText}} {red found}\n`);
         break;
       case 1:
         const data = metadata[matchingTopics[0]];
-        console.log(chalk.gray('Metadata for'), matchingTopics[0]);
-        console.log(chalk.gray('----------------------------------------'));
-        console.log(inspect(data, false, 7, Boolean(supportsColor.stdout)));
+        process.stdout.write(chalk`{gray Metadata for} ${matchingTopics[0]}\n`);
+        process.stdout.write(chalk`{gray ----------------------------------------}\n`);
+        process.stdout.write(inspect(data, false, 7, Boolean(supportsColor.stdout)) + '\n');
         break;
       default:
-        console.log(chalk.gray('Found'), matchingTopics.length, chalk.gray('matching'), searchText);
-        console.log(chalk.gray('----------------------------------------'));
+        process.stdout.write(chalk`{gray Found} ${String(matchingTopics.length)} {gray matching} ${searchText}\n`);
+        process.stdout.write(chalk`{gray ----------------------------------------}\n`);
 
         for (const item of matchingTopics) {
-          console.log(item);
+          process.stdout.write(`${item}\n`);
         }
     }
 

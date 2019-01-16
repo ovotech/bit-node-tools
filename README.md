@@ -94,6 +94,33 @@ const foundSchema = await getSchema(baseUrl, newVersion.id);
 More documentation inside the package:
 [@ovotech/schema-registry-api](packages/schema-registry-api/README.md)
 
+## Postgres sql migrate
+
+A very small library for running sql migrations with postgres. It differs from the numerous other libs in this domain by being very minimal, using only raw timestamped sql files. No "down" migrations are provided by design, as that is usually a bad idea in production anyway.
+
+It is split into [@ovotech/pg-sql-migrate](packages/pg-sql-migrate) which is a library that handles the migration, and [@ovotech/pg-sql-migrate-cli](packages/pg-sql-migrate-cli) which allows creating and running migrations from the command line.
+
+This makes it possible to import this library to your project to run migrations on server start without the dependency of `yargs` and all the other packages that handle cli. Zero external dependencies.
+
+Example library:
+
+```typescript
+import { migrate } from '@ovotech/pg-sql-migrate';
+
+const results = await migrate();
+```
+
+Example cli:
+
+```bash
+yarn pg-sql-migrate create my_migration
+yarn pg-sql-migrate execute
+```
+
+More documentation inside the packages:
+[@ovotech/pg-sql-migrate](packages/pg-sql-migrate/README.md)
+[@ovotech/pg-sql-migrate-sql](packages/pg-sql-migrate-sql/README.md)
+
 ## Running the tests
 
 The tests require a running schema registry service, and we're using docker compose to start it, alongside kafka, zookeeper and postgres.

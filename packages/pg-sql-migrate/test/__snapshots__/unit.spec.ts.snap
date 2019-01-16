@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Unit test Should await migrate function to run streams 1`] = `
+Array [
+  Object {
+    "content": "CREATE TABLE my_test (id INTEGER PRIMARY KEY, name VARCHAR);
+",
+    "id": "2018-12-31T11:12:39.672Z",
+    "name": "test-things.pgsql",
+  },
+  Object {
+    "content": "ALTER TABLE my_test ADD COLUMN additional VARCHAR;
+",
+    "id": "2018-12-31T11:57:10.022Z",
+    "name": "test-things2.pgsql",
+  },
+]
+`;

@@ -18,11 +18,7 @@ export const createTopic: CommandModule = {
     'replication-factor': { type: 'number', default: 1 },
   },
   handler: async (args: CreateTopicArgs) => {
-    const { kafkaClient } = loadConfig(args);
-
-    if (!kafkaClient) {
-      throw new Error('Configuration for kafkaClient required, add it to the config file');
-    }
+    const { kafkaClient } = loadConfig(args, ['kafkaClient']);
 
     const client = new KafkaClient(kafkaClient);
     const { topic, partitions, 'replication-factor': replicationFactor } = args;
@@ -38,13 +34,10 @@ export const createTopic: CommandModule = {
             if (data[0] && data[0].error) {
               reject(new Error(data[0].error));
             } else {
-              console.log(
-                chalk.green('Topic created'),
-                topic,
-                chalk.green('partitions'),
-                partitions,
-                chalk.green('replication factor'),
-                replicationFactor,
+              process.stdout.write(
+                chalk`{green Topic created} ${topic} {green partitions} ${String(
+                  partitions,
+                )} {green replication factor} ${String(replicationFactor)}\n`,
               );
               client.close(resolve);
             }
@@ -52,7 +45,7 @@ export const createTopic: CommandModule = {
         }),
       );
     } catch (error) {
-      console.log(chalk.red('Error'), error.message);
+      process.stderr.write(chalk`{red Error ${error.message}}\n`);
     }
   },
 };

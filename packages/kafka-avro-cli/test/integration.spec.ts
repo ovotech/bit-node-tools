@@ -1,6 +1,6 @@
 import { AvroProduceRequest } from '@ovotech/avro-stream';
 import { execSync } from 'child_process';
-import { readFileSync, unlinkSync, writeFileSync } from 'fs';
+import { mkdirSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import { inspect } from 'util';
@@ -36,9 +36,11 @@ describe('Integration test', () => {
   it('Should use cli to produce and consume some messages', async () => {
     const filename = join(tmpdir(), testTopic);
     const resultFilename = join(tmpdir(), `${testTopic}-result`);
+    const schemaDir = join(tmpdir(), `${testTopic}-schema`);
 
     writeFileSync(filename, JSON.stringify(file));
     writeFileSync(resultFilename, JSON.stringify({}));
+    mkdirSync(schemaDir);
 
     const findMissingTopic = String(execSync(`yarn kac --config test/config.json topic ${testTopic}`));
 
@@ -60,6 +62,17 @@ describe('Integration test', () => {
     expect(produce).toContain(`Produce 3 messages in 0 partition, for ${testTopic}`);
     expect(produce).toContain(`Produce 2 messages in 1 partition, for ${testTopic}`);
     expect(produce).toContain(`Finished`);
+
+    const schema = String(execSync(`yarn kac --config test/config.json schema ${testTopic}`, { timeout: 40000 }));
+    expect(schema).toContain(`Subject ${testTopic}-value found 1 versions`);
+    expect(schema).toContain(inspect(file[0].schema, false, 5));
+
+    const schemaFile = String(
+      execSync(`yarn kac --config test/config.json schema ${testTopic} --output-dir ${schemaDir}`, { timeout: 40000 }),
+    );
+    expect(schemaFile).toContain(`Subject ${testTopic}-value found 1 versions`);
+    const schemaOutput = JSON.parse(String(readFileSync(join(schemaDir, `${file[0].topic}-value.1.avsc`))));
+    expect(schemaOutput).toEqual(file[0].schema);
 
     const consume = String(execSync(`yarn kac --config test/config.json consume ${testTopic}`, { timeout: 40000 }));
 

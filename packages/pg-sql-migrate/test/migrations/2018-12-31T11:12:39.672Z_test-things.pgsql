@@ -1,0 +1,1 @@
+CREATE TABLE my_test (id INTEGER PRIMARY KEY, name VARCHAR);

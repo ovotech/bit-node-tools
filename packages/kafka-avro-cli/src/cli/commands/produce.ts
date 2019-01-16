@@ -14,18 +14,15 @@ export const produce: CommandModule = {
   command: 'produce [file]',
   describe: 'Produce events in kafka topic from a file',
   handler: (args: ProduceArgs) => {
-    const { kafkaClient, schemaRegistry } = loadConfig(args);
+    const { kafkaClient, schemaRegistry } = loadConfig(args, ['kafkaClient', 'schemaRegistry']);
 
-    if (!kafkaClient || !schemaRegistry) {
-      throw new Error('Configuration for kafkaClient and schemaRegistryis required, add it to the config file');
-    }
     const producerStream = new ProducerStream({ kafkaClient });
     const fileReadable = new FileReadable(args.file);
-    const serializer = new AvroSerializer(schemaRegistry);
+    const serializer = new AvroSerializer(schemaRegistry!);
     const logProducer = new LogProducerTransform();
 
     const errorHandler = (title: string) => (error: Error) => {
-      console.log(chalk.red(`Error in ${title}`), error.message);
+      process.stderr.write(chalk`{red Error in ${title} error.message}`);
       producerStream.close();
     };
 
