@@ -119,7 +119,27 @@ yarn pg-sql-migrate execute
 
 More documentation inside the packages:
 [@ovotech/pg-sql-migrate](packages/pg-sql-migrate/README.md)
-[@ovotech/pg-sql-migrate-sql](packages/pg-sql-migrate-sql/README.md)
+[@ovotech/pg-sql-migrate-cli](packages/pg-sql-migrate-cli/README.md)
+
+## Avro TS
+
+Generate typescript from avro types.
+
+It consists of a very quick sequential, functional parser. No dependencies.
+
+Example usage:
+
+```typescript
+import { avroTs } from '@ovotech/avro-ts';
+
+const avro: RecordType = JSON.parse(String(readFileSync('avroSchema.avsc')));
+const ts = avroTs(avro, { 'timestamp-millis': 'string', date: 'string' });
+
+console.log(ts);
+```
+
+More documentation inside the packages:
+[@ovotech/avro-ts](packages/pg-sql-migrate/README.md)
 
 ## Running the tests
 
