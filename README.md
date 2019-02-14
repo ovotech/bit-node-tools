@@ -113,19 +113,36 @@ const results = await migrate();
 Example cli:
 
 ```bash
-yarn pg-sql-migrate create my_migration
-yarn pg-sql-migrate execute
+yarn pg-migrate create my_migration
+yarn pg-migrate execute
 ```
 
 More documentation inside the packages:
 [@ovotech/pg-sql-migrate](packages/pg-sql-migrate/README.md)
 [@ovotech/pg-sql-migrate-cli](packages/pg-sql-migrate-cli/README.md)
 
-## Avro TS
+## Avro TS CLI
 
-Generate typescript from avro types.
+Generate typescript from avro schemas.
 
-It consists of a very quick sequential, functional parser. No dependencies.
+```bash
+yarn add @ovotech/avro-ts-cli
+yarn avro-ts convert avro/*.avsc --output-dir __generated__/
+```
+
+If no output dir is provided, the avsc files will be generated alongside the source files
+
+```bash
+yarn avro-ts convert avro/*.avsc
+```
+
+Logical types are also supported:
+
+```bash
+yarn avro-ts convert avro/*.avsc --logical-type date=string --logical-type timestamp-millis=string
+```
+
+Using it as a library:
 
 Example usage:
 
@@ -139,7 +156,8 @@ console.log(ts);
 ```
 
 More documentation inside the packages:
-[@ovotech/avro-ts](packages/pg-sql-migrate/README.md)
+[@ovotech/avro-ts](packages/avro-ts/README.md)
+[@ovotech/avro-ts-cli](packages/avro-ts-cli/README.md)
 
 ## Running the tests
 

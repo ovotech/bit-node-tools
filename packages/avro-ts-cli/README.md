@@ -1,26 +1,24 @@
-# Postgres migration tool with plain sql
+# Avro Ts CLI
 
-A cli tool to simplify using [@ovotech/pg-sql-migrate](../pg-sql-migrate).
+CLI tool to convert avro schemas (avsc files) into typescript types, using [@ovotech/avro-ts](../avro-ts)
 
 ## Using with CLI
 
 ```bash
-yarn add @ovotech/pg-sql-migrate-sql
-yarn pg-migrate create my_migration
+yarn add @ovotech/avro-ts-cli
+yarn avro-ts convert avro/*.avsc --output-dir __generated__/
 ```
 
-add a configuration file, which by default is `./pg-sql-migrate.config.json` to configure the connection:
-
-```json
-{
-  "client": "postgresql://postgres:dev-pass@0.0.0.0:5432/postgres"
-}
-```
-
-This will create a file `migrations/<timestamp>_my_migration.pgsql` that you can place raw sql into. After that, you can run the migration(s) by calling
+If no output dir is provided, the avsc files will be generated alongside the source files
 
 ```bash
-yarn pg-migrate execute
+yarn avro-ts convert avro/*.avsc
+```
+
+Logical types are also supported:
+
+```bash
+yarn avro-ts convert avro/*.avsc --logical-type date=string --logical-type timestamp-millis=string
 ```
 
 ## Running the tests
@@ -42,7 +40,6 @@ yarn lint
 ## Deployment
 
 To deploy a new version, push to master and then create a new release. CircleCI will automatically build and deploy a the version to the npm registry.
-All package versions are synchronized, but it will only publish the versions of the packages that have changed.
 
 ## Contributing
 
