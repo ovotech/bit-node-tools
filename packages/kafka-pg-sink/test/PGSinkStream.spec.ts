@@ -1,5 +1,5 @@
 import { ReadableMock } from 'stream-mock';
-import { PGStreamError } from '../src';
+import { PGSinkError, PGSinkMultipleError } from '../src';
 import { groupChunks, insertQuery, PGSinkStream } from '../src/PGSinkStream';
 
 const sourceData = [
@@ -162,10 +162,11 @@ describe('Integration test', () => {
   });
 
   it('Should handle pg error', async () => {
+    const pgError = new Error('pg error');
     const pg = {
       query: jest
         .fn()
-        .mockRejectedValueOnce(new Error('pg error'))
+        .mockRejectedValueOnce(pgError)
         .mockResolvedValue({}),
     };
     const sourceStream = new ReadableMock(sourceData, { objectMode: true });
@@ -181,19 +182,26 @@ describe('Integration test', () => {
     sourceStream.pipe(pgSinkStream);
 
     await new Promise(resolve => {
-      pgSinkStream.on('error', error => {
-        expect(error).toEqual(new Error('pg error'));
+      pgSinkStream.on('error', (error: PGSinkError) => {
+        expect(error).toBeInstanceOf(PGSinkError);
+        expect(error).toMatchObject({
+          message: 'pg error',
+          chunk: { topic: 'test-topic-1', value: { accountId: '111', id: 10 } },
+          encoding: 'utf8',
+          originalError: pgError,
+        });
         resolve();
       });
     });
   });
 
   it('Should handle batch pg error', async () => {
+    const pgError = new Error('pg error');
     const pg = {
       query: jest
         .fn()
         .mockResolvedValueOnce({})
-        .mockRejectedValueOnce(new Error('pg error'))
+        .mockRejectedValueOnce(pgError)
         .mockResolvedValue({}),
     };
     const sourceStream = new ReadableMock(sourceData, { objectMode: true });
@@ -209,8 +217,30 @@ describe('Integration test', () => {
     sourceStream.pipe(pgSinkStream);
 
     await new Promise(resolve => {
-      pgSinkStream.on('error', error => {
-        expect(error).toEqual(new Error('pg error'));
+      pgSinkStream.on('error', (error: PGSinkMultipleError) => {
+        expect(error).toBeInstanceOf(PGSinkMultipleError);
+        expect(error).toMatchObject({
+          message: 'pg error',
+          originalError: pgError,
+        });
+
+        expect(error.chunks).toHaveLength(5);
+        expect(error.chunks[0]).toMatchObject({
+          chunk: { topic: 'test-topic-1', value: { accountId: '222', id: 11 } },
+        });
+        expect(error.chunks[1]).toMatchObject({
+          chunk: { topic: 'test-topic-1', value: { accountId: '333', id: 12 } },
+        });
+        expect(error.chunks[2]).toMatchObject({
+          chunk: { topic: 'test-topic-1', value: { accountId: '444', id: 13 } },
+        });
+        expect(error.chunks[3]).toMatchObject({
+          chunk: { topic: 'test-topic-2', value: { effectiveEnrollmentDate: 17687, ID: 20 } },
+        });
+        expect(error.chunks[4]).toMatchObject({
+          chunk: { topic: 'test-topic-2', value: { effectiveEnrollmentDate: 17567, ID: 22 } },
+        });
+
         resolve();
       });
     });
@@ -232,7 +262,7 @@ describe('Integration test', () => {
     await new Promise(resolve => {
       pgSinkStream.on('error', error => {
         expect(error).toEqual(
-          new PGStreamError(
+          new Error(
             `Config not found for topic "test-topic-1", you'll need to add it in the options for PGSinkStream constructor`,
           ),
         );

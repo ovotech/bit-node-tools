@@ -1,7 +1,7 @@
 import { DateType } from '@ovotech/avro-logical-types';
 import { Schema } from 'avsc';
 import { ReadableMock, WritableMock } from 'stream-mock';
-import { AvroProduceRequest, AvroSerializer, SchemaResolver } from '../src';
+import { AvroProduceRequest, AvroSerializer, AvroSerializerError, SchemaResolver } from '../src';
 
 describe('Integration test', () => {
   it('Test Serialier', async () => {
@@ -72,9 +72,9 @@ describe('Integration test', () => {
         messages: [{ accountId: '111' }, { accountId: '222' }],
       },
     ];
-
+    const schemaError = new Error('schema problem');
     const schemaResolverMock: SchemaResolver = {
-      toId: jest.fn().mockRejectedValueOnce(new Error('schema problem')),
+      toId: jest.fn().mockRejectedValueOnce(schemaError),
       fromId: jest.fn(),
     };
 
@@ -85,8 +85,20 @@ describe('Integration test', () => {
     sourceStream.pipe(serializer).pipe(sinkStream);
 
     await new Promise(resolve => {
-      serializer.on('error', (error: Error) => {
-        expect(error).toEqual(new Error('schema problem'));
+      serializer.on('error', (error: AvroSerializerError) => {
+        expect(error).toBeInstanceOf(AvroSerializerError);
+        expect(error).toMatchObject({
+          message: 'schema problem',
+          chunk: {
+            key: 'key-1',
+            messages: [{ accountId: '111' }, { accountId: '222' }],
+            partition: 0,
+            schema: { fields: [{ name: 'accountId', type: 'string' }], name: 'TestSchema1', type: 'record' },
+            topic: 'test-topic-1',
+          },
+          encoding: 'utf8',
+          originalError: schemaError,
+        });
         resolve();
       });
     });

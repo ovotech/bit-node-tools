@@ -15,8 +15,8 @@ INSERT INTO tableName VALUES (column1Value, column2Value ...) ON CONFLICT DO NOT
 ```
 
 ```typescript
-import { PGSinkStream } from '@ovotech/kafka-pg-sink';
-import { ConsumerGroupStream, Message } from 'kafka-node';
+import { PGSinkStream, Message } from '@ovotech/kafka-pg-sink';
+import { ConsumerGroupStream } from 'kafka-node';
 import { Client } from 'pg';
 
 const consumerStream = new ConsumerGroupStream(
@@ -39,6 +39,19 @@ const pgSink = new PGSinkStream({
 });
 
 consumerStream.pipe(pgSink);
+```
+
+`Message` is the same as the type from `kafka-node`, but is more lenient on the "value field". This allows you to pre-process the message before sending it off to pg-sink, by deserializing an using avro for example.
+
+```typescript
+export interface Message {
+  topic: string;
+  value: any;
+  offset?: number;
+  partition?: number;
+  highWaterOffset?: number;
+  key?: string;
+}
 ```
 
 ## Usage with a deserializer
@@ -67,6 +80,41 @@ const pgSink = new PGSinkStream({
 });
 
 consumerStream.pipe(deserializer).pipe(pgSink);
+```
+
+## Errors
+
+PGSinkStream can emit an `PGSinkError` and `PGSinkMultipleError` depending on whether it was processing batched or normal requests.
+
+### PGSinkError
+
+| Property      | Description                                                                   |
+| ------------- | ----------------------------------------------------------------------------- |
+| message       | Original error message                                                        |
+| chunk         | The event sent from the previous stream to be saved to the database (Message) |
+| encoding      | The buffer encoding                                                           |
+| originalError | The original error object that was triggered                                  |
+
+### PGSinkMultipleError
+
+| Property      | Description                                                |
+| ------------- | ---------------------------------------------------------- |
+| message       | Original error message                                     |
+| chunks        | An array of `{ chunk: Message, encoding: string }` objects |
+| originalError | The original error object that was triggered               |
+
+Example error handling:
+
+```typescript
+import { PGSinkStream, PGSinkError, PGSinkMultipleError } from '@ovotech/kafka-pg-sink';
+
+const pgSink = new PGSinkStream();
+
+pgSink.on('error', (error: PGSinkError | PGSinkMultipleError) => {
+  if (error instanceof PGSinkError) {
+    console.log(error.chunk);
+  }
+});
 ```
 
 ## Gotchas

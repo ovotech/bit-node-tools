@@ -1,5 +1,6 @@
 import { Message } from 'kafka-node';
 import { TransformCallback } from 'stream';
+import { AvroDeserializerError } from './AvroDeserializerError';
 import { AvroSchemaTransform } from './AvroSchemaTransform';
 import { deconstructMessage } from './message';
 import { AvroMessage } from './types';
@@ -17,7 +18,7 @@ export class AvroDeserializer extends AvroSchemaTransform {
       const transformedMessage: AvroMessage = { ...message, schema, value: type.fromBuffer(buffer) };
       callback(undefined, transformedMessage);
     } catch (error) {
-      callback(error);
+      callback(new AvroDeserializerError(error.message, message, encoding, error));
     }
   }
 }

@@ -1,7 +1,7 @@
-import { Message } from 'kafka-node';
 import { Client } from 'pg';
 import { Writable } from 'stream';
-import { PGStreamError } from './';
+import { PGSinkError, PGSinkMultipleError } from './';
+import { Message } from './types';
 
 export type PGSinkResolver = (message: Message) => any[];
 
@@ -52,7 +52,7 @@ export class PGSinkStream extends Writable {
   configForTopic(topic: string) {
     const config = this.topics[topic];
     if (!config) {
-      throw new PGStreamError(
+      throw new Error(
         `Config not found for topic "${topic}", you'll need to add it in the options for PGSinkStream constructor`,
       );
     }
@@ -65,7 +65,7 @@ export class PGSinkStream extends Writable {
       await this.pg.query(...insertQuery(config.table, [config.resolver(chunk)]));
       callback(null);
     } catch (error) {
-      callback(error);
+      callback(new PGSinkError(error.message, chunk, encoding, error));
     }
   }
 
@@ -80,7 +80,7 @@ export class PGSinkStream extends Writable {
 
       callback(null);
     } catch (error) {
-      callback(error);
+      callback(new PGSinkMultipleError(error.message, chunks, error));
     }
   }
 }

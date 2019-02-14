@@ -1,6 +1,6 @@
 import { DateType } from '@ovotech/avro-logical-types';
 import { ReadableMock, WritableMock } from 'stream-mock';
-import { AvroDeserializer, SchemaResolver } from '../src';
+import { AvroDeserializer, AvroDeserializerError, SchemaResolver } from '../src';
 
 describe('AvroDeserializer test', () => {
   it('Test stream transform', async () => {
@@ -62,8 +62,15 @@ describe('AvroDeserializer test', () => {
     sourceStream.pipe(serializer).pipe(sinkStream);
 
     await new Promise(resolve => {
-      serializer.on('error', (error: Error) => {
-        expect(error).toEqual(new Error('ConsumerGroupStream for topic "t1" must set the encoding to "buffer"'));
+      serializer.on('error', (error: AvroDeserializerError) => {
+        expect(error).toBeInstanceOf(AvroDeserializerError);
+        expect(error).toMatchObject({
+          message: 'ConsumerGroupStream for topic "t1" must set the encoding to "buffer"',
+          chunk: { topic: 't1', value: 'test' },
+          encoding: 'utf8',
+          originalError: new Error('ConsumerGroupStream for topic "t1" must set the encoding to "buffer"'),
+        });
+
         resolve();
       });
     });

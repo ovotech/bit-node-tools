@@ -1,5 +1,6 @@
 import { TransformCallback } from 'stream';
 import { AvroSchemaTransform } from './AvroSchemaTransform';
+import { AvroSerializerError } from './AvroSerializerError';
 import { constructMessage } from './message';
 import { AvroProduceRequest } from './types';
 
@@ -14,7 +15,7 @@ export class AvroSerializer extends AvroSchemaTransform {
         messages: request.messages.map(message => constructMessage({ schemaId, buffer: type.toBuffer(message) })),
       });
     } catch (error) {
-      callback(error);
+      callback(new AvroSerializerError(error.message, request, encoding, error));
     }
   }
 }

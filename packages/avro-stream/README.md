@@ -95,6 +95,40 @@ const serializer new AvroSerializer('...', { logicalTypes: ... });
 const deserializer new AvroDeserializer('...', { logicalTypes: ... });
 ```
 
+## Errors
+
+AvroSerializer can emit an `AvroSerializerError`, and subsequently AvroDeserializer - `AvroDeserializerError`. They are as follows:
+
+### AvroSerializerError
+
+| Property      | Description                                                                   |
+| ------------- | ----------------------------------------------------------------------------- |
+| message       | Original error message                                                        |
+| chunk         | The event sent from the previous stream to be serialized (AvroProduceRequest) |
+| encoding      | The buffer encoding                                                           |
+| originalError | The original error object that was triggered                                  |
+
+### AvroDeserializer
+
+| Property      | Description                                                                |
+| ------------- | -------------------------------------------------------------------------- |
+| message       | Original error message                                                     |
+| chunk         | The event sent from the previous stream to be deserialized from kafka-node |
+| encoding      | The buffer encoding                                                        |
+| originalError | The original error object that was triggered                               |
+
+Example error handling:
+
+```typescript
+import { AvroSerializer, AvroSerializerError } from '@ovotech/avro-stream';
+
+const serializer new AvroSerializer('...');
+
+serializer.on('error', (error: AvroSerializerError) => {
+  console.log(error.chunk);
+})
+```
+
 ## Gotchas
 
 A thing to be aware of is that node streams unpipe in an event of an error, which means that you'll need to provide your own error handling and repipe the streams if you want it to be resilient to errors.
