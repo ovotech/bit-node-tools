@@ -3,30 +3,32 @@ import { Writable } from 'stream';
 import { PGSinkError, PGSinkMultipleError } from './';
 import { Message } from './types';
 
-export type PGSinkResolver = (message: Message) => any[];
+export type PGSinkResolver<TValue = any> = (message: Message<TValue>) => any[];
 
-export interface PGSinkConfig {
+export interface PGSinkConfig<TValue = any> {
   table: string;
-  resolver: PGSinkResolver;
+  resolver: PGSinkResolver<TValue>;
 }
 
-export interface PGSinkStreamOptions {
+export interface PGSinkStreamOptions<TValue = any> {
   pg: Client;
-  topics: { [topic: string]: PGSinkConfig };
+  topics: { [topic: string]: PGSinkConfig<TValue> };
   highWaterMark?: number;
 }
 
-export interface GroupedChunks {
-  [topic: string]: Message[];
+export interface GroupedChunks<TValue = any> {
+  [topic: string]: Array<Message<TValue>>;
 }
 
-export const groupChunks = (chunks: Array<{ chunk: Message; encoding: string }>): GroupedChunks => {
+export const groupChunks = <TValue = any>(
+  chunks: Array<{ chunk: Message<TValue>; encoding: string }>,
+): GroupedChunks<TValue> => {
   return chunks.reduce(
     (acc, current) => ({
       ...acc,
       [current.chunk.topic]: [...(acc[current.chunk.topic] || []), current.chunk],
     }),
-    {} as GroupedChunks,
+    {} as GroupedChunks<TValue>,
   );
 };
 
@@ -39,11 +41,11 @@ export const insertQuery = (table: string, valuesMap: any[][]): [string, any[]] 
   return [`INSERT INTO ${table} VALUES ${query} ON CONFLICT DO NOTHING`, flatValues];
 };
 
-export class PGSinkStream extends Writable {
+export class PGSinkStream<TValue = any> extends Writable {
   private pg: Client;
   private topics: PGSinkStreamOptions['topics'];
 
-  constructor({ pg, topics, highWaterMark = 200 }: PGSinkStreamOptions) {
+  constructor({ pg, topics, highWaterMark = 200 }: PGSinkStreamOptions<TValue>) {
     super({ objectMode: true, highWaterMark });
     this.pg = pg;
     this.topics = topics;
@@ -59,17 +61,20 @@ export class PGSinkStream extends Writable {
     return config;
   }
 
-  async _write(chunk: Message, encoding: string, callback: (error?: Error | null) => void) {
+  async _write(chunk: Message<TValue>, encoding: string, callback: (error?: Error | null) => void) {
     try {
       const config = this.configForTopic(chunk.topic);
       await this.pg.query(...insertQuery(config.table, [config.resolver(chunk)]));
       callback(null);
     } catch (error) {
-      callback(new PGSinkError(error.message, chunk, encoding, error));
+      callback(new PGSinkError<TValue>(error.message, chunk, encoding, error));
     }
   }
 
-  async _writev?(chunks: Array<{ chunk: Message; encoding: string }>, callback: (error?: Error | null) => void) {
+  async _writev?(
+    chunks: Array<{ chunk: Message<TValue>; encoding: string }>,
+    callback: (error?: Error | null) => void,
+  ) {
     try {
       const topics = groupChunks(chunks);
 
@@ -80,7 +85,7 @@ export class PGSinkStream extends Writable {
 
       callback(null);
     } catch (error) {
-      callback(new PGSinkMultipleError(error.message, chunks, error));
+      callback(new PGSinkMultipleError<TValue>(error.message, chunks, error));
     }
   }
 }

@@ -4,8 +4,8 @@ import { AvroSerializerError } from './AvroSerializerError';
 import { constructMessage } from './message';
 import { AvroProduceRequest } from './types';
 
-export class AvroSerializer extends AvroSchemaTransform {
-  async _transform(request: AvroProduceRequest, encoding: string, callback: TransformCallback) {
+export class AvroSerializer<TValue = any> extends AvroSchemaTransform {
+  async _transform(request: AvroProduceRequest<TValue>, encoding: string, callback: TransformCallback) {
     try {
       const type = this.typeForSchema(request.schema);
       const schemaId = await this.resolver.toId(request.topic, request.schema);
@@ -15,7 +15,7 @@ export class AvroSerializer extends AvroSchemaTransform {
         messages: request.messages.map(message => constructMessage({ schemaId, buffer: type.toBuffer(message) })),
       });
     } catch (error) {
-      callback(new AvroSerializerError(error.message, request, encoding, error));
+      callback(new AvroSerializerError<TValue>(error.message, request, encoding, error));
     }
   }
 }

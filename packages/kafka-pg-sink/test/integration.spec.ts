@@ -1,8 +1,18 @@
 import { Client } from 'pg';
 import { ReadableMock } from 'stream-mock';
-import { PGSinkStream } from '../src';
+import { Message, PGSinkStream } from '../src';
 
 let pg: Client;
+
+interface TValue1 {
+  id: number;
+  accountId: string;
+}
+
+interface TValue2 {
+  dd: number;
+  effectiveEnrollmentDate: number;
+}
 
 describe('Integration test', () => {
   beforeEach(async () => {
@@ -17,7 +27,7 @@ describe('Integration test', () => {
   afterEach(() => pg.end());
 
   it('Should use PGSinkStream to put data in postgres', async () => {
-    const sourceData = [
+    const sourceData: Array<Message<TValue1 | TValue2>> = [
       { topic: 'test-topic-1', value: { id: 10, accountId: '111' } },
       { topic: 'test-topic-1', value: { id: 11, accountId: '222' } },
       { topic: 'test-topic-1', value: { id: 12, accountId: '333' } },
@@ -27,11 +37,11 @@ describe('Integration test', () => {
     ];
 
     const sourceStream = new ReadableMock(sourceData, { objectMode: true });
-    const sink = new PGSinkStream({
+    const sink = new PGSinkStream<TValue1 | TValue2>({
       pg,
       topics: {
-        'test-topic-1': { table: 'test_1', resolver: msg => [(msg.value as any).id, msg.value as any] },
-        'test-topic-2': { table: 'test_2', resolver: msg => [(msg.value as any).dd, msg.value as any] },
+        'test-topic-1': { table: 'test_1', resolver: msg => [(msg.value as TValue1).id, msg.value] },
+        'test-topic-2': { table: 'test_2', resolver: msg => [(msg.value as TValue2).dd, msg.value] },
       },
     });
 

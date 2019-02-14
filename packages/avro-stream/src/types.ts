@@ -6,9 +6,9 @@ export interface SchemaResolver {
   fromId(id: number): Promise<Schema>;
 }
 
-export interface AvroProduceRequest extends ProduceRequest {
+export interface AvroProduceRequest<TValue = any> extends ProduceRequest {
   schema: Schema;
-  messages: any[];
+  messages: TValue[];
 }
 
 export interface AvroMessage extends Message {

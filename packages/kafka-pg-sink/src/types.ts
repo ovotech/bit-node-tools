@@ -1,6 +1,6 @@
-export interface Message {
+export interface Message<TValue = any> {
   topic: string;
-  value: any;
+  value: TValue;
   offset?: number;
   partition?: number;
   highWaterOffset?: number;

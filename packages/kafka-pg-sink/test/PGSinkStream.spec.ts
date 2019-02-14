@@ -1,8 +1,18 @@
 import { ReadableMock } from 'stream-mock';
-import { PGSinkError, PGSinkMultipleError } from '../src';
+import { Message, PGSinkError, PGSinkMultipleError } from '../src';
 import { groupChunks, insertQuery, PGSinkStream } from '../src/PGSinkStream';
 
-const sourceData = [
+interface TValue1 {
+  id: number;
+  accountId: string;
+}
+
+interface TValue2 {
+  ID: number;
+  effectiveEnrollmentDate: number;
+}
+
+const sourceData: Array<Message<TValue1 | TValue2>> = [
   { topic: 'test-topic-1', value: { id: 10, accountId: '111' } },
   { topic: 'test-topic-1', value: { id: 11, accountId: '222' } },
   { topic: 'test-topic-1', value: { id: 12, accountId: '333' } },
@@ -72,12 +82,12 @@ describe('Integration test', () => {
     const pg = { query: jest.fn().mockResolvedValue({}) };
     const sourceStream = new ReadableMock(sourceData, { objectMode: true });
 
-    const pgSinkStream = new PGSinkStream({
+    const pgSinkStream = new PGSinkStream<TValue1 | TValue2>({
       pg: pg as any,
       highWaterMark: 1,
       topics: {
-        'test-topic-1': { table: 'test_1', resolver: msg => [(msg.value as any).id, msg.value as any] },
-        'test-topic-2': { table: 'test_2', resolver: msg => [(msg.value as any).ID, msg.value as any] },
+        'test-topic-1': { table: 'test_1', resolver: msg => [(msg.value as TValue1).id, msg.value] },
+        'test-topic-2': { table: 'test_2', resolver: msg => [(msg.value as TValue2).ID, msg.value] },
       },
     });
 
@@ -126,12 +136,12 @@ describe('Integration test', () => {
     const pg = { query: jest.fn().mockResolvedValue({}) };
     const sourceStream = new ReadableMock(sourceData, { objectMode: true });
 
-    const pgSinkStream = new PGSinkStream({
+    const pgSinkStream = new PGSinkStream<TValue1 | TValue2>({
       pg: pg as any,
       highWaterMark: 100,
       topics: {
-        'test-topic-1': { table: 'test_1', resolver: msg => [(msg.value as any).id, msg.value as any] },
-        'test-topic-2': { table: 'test_2', resolver: msg => [(msg.value as any).ID, msg.value as any] },
+        'test-topic-1': { table: 'test_1', resolver: msg => [(msg.value as TValue1).id, msg.value] },
+        'test-topic-2': { table: 'test_2', resolver: msg => [(msg.value as TValue2).ID, msg.value] },
       },
     });
 
@@ -171,11 +181,11 @@ describe('Integration test', () => {
     };
     const sourceStream = new ReadableMock(sourceData, { objectMode: true });
 
-    const pgSinkStream = new PGSinkStream({
+    const pgSinkStream = new PGSinkStream<TValue1 | TValue2>({
       pg: pg as any,
       topics: {
-        'test-topic-1': { table: 'test_1', resolver: msg => [(msg.value as any).id, msg.value as any] },
-        'test-topic-2': { table: 'test_2', resolver: msg => [(msg.value as any).ID, msg.value as any] },
+        'test-topic-1': { table: 'test_1', resolver: msg => [(msg.value as TValue1).id, msg.value] },
+        'test-topic-2': { table: 'test_2', resolver: msg => [(msg.value as TValue2).ID, msg.value] },
       },
     });
 
@@ -206,11 +216,11 @@ describe('Integration test', () => {
     };
     const sourceStream = new ReadableMock(sourceData, { objectMode: true });
 
-    const pgSinkStream = new PGSinkStream({
+    const pgSinkStream = new PGSinkStream<TValue1 | TValue2>({
       pg: pg as any,
       topics: {
-        'test-topic-1': { table: 'test_1', resolver: msg => [(msg.value as any).id, msg.value as any] },
-        'test-topic-2': { table: 'test_2', resolver: msg => [(msg.value as any).ID, msg.value as any] },
+        'test-topic-1': { table: 'test_1', resolver: msg => [(msg.value as TValue1).id, msg.value] },
+        'test-topic-2': { table: 'test_2', resolver: msg => [(msg.value as TValue2).ID, msg.value] },
       },
     });
 
