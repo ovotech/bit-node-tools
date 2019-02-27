@@ -1,5 +1,5 @@
 {
-  "name": "bit-kafka-tools",
+  "name": "bit-node-tools",
   "main": "index.js",
   "author": "Ivan Kerin <ikerin@gmail.com>",
   "license": "Apache-2.0",

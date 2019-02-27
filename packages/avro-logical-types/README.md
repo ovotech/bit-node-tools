@@ -21,7 +21,7 @@ const type = Type.forSchema(
 );
 ```
 
-Or with [@ovotech/avro-stream](https://github.com/ovotech/bit-kafka-tools/tree/master/packages/avro-stream)
+Or with [@ovotech/avro-stream](https://github.com/ovotech/bit-node-tools/tree/master/packages/avro-stream)
 
 ```typescript
 import { AvroDeserializer } from '@ovotech/avro-stream';

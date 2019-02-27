@@ -1,6 +1,6 @@
 # BIT Kafka Tools
 
-[![CircleCI](https://circleci.com/gh/ovotech/bit-kafka-tools.svg?style=svg&circle-token=ae40b0f9ff7943343688a0319478e70091e37fbe)](https://circleci.com/gh/ovotech/bit-kafka-tools)
+[![CircleCI](https://circleci.com/gh/ovotech/bit-node-tools.svg?style=svg&circle-token=ae40b0f9ff7943343688a0319478e70091e37fbe)](https://circleci.com/gh/ovotech/bit-node-tools)
 
 BIT Team tools for working with Kafka and Avro. They are split into several independent packages that can be imported as needed
 
@@ -158,6 +158,30 @@ console.log(ts);
 More documentation inside the packages:
 [@ovotech/avro-ts](packages/avro-ts/README.md)
 [@ovotech/avro-ts-cli](packages/avro-ts-cli/README.md)
+
+## Winston Logger
+
+Wrap winston logger to hide graylog semantics and implement safe static meta contexts.
+
+```bash
+yarn add @ovotech/winston-wrapper
+```
+
+```typescript
+import { Logger } from '@ovotech/winston-wrapper';
+import * as winston from 'winston';
+
+const winstonLogger = winston.createLogger(...);
+
+const myRequestProcessor = (req: Request) =>{
+  const logger = new Logger(winstonLogger, { traceToken: req.headers['X-Trace-Token'] });
+
+  logger.info('test');
+}
+```
+
+More documentation inside the packages:
+[@ovotech/winston-logger](packages/winston-logger/README.md)
 
 ## Running the tests
 
