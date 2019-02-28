@@ -2,6 +2,8 @@
 
 A CLI for inspecting the [confluent schema-registry](https://docs.confluent.io/current/schema-registry/docs/index.html), produce and consume avro kafka events.
 
+![packages/kafka-avro-cli/README.md](assets/kac.gif)
+
 ## Usage
 
 You can install it locally for your project
