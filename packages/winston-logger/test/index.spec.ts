@@ -1,4 +1,4 @@
-import { Logger } from '../src';
+import { Logger, LoggerSanitizer } from '../src';
 
 describe('Winston Logger', () => {
   it.each`
@@ -28,6 +28,35 @@ describe('Winston Logger', () => {
 
     expect(winstonLogger.log).toHaveBeenNthCalledWith(2, level, message, {
       metadata: { test1: 'test2', test3: 'test4', test5: 'test6', ...meta },
+    });
+  });
+
+  it.each([
+    [{ email: 'test@example.com' }, { uri: '/test' }, { uri: '/test' }],
+    [{}, { error: new Error('test') }, {}],
+    [
+      { test1: 'test2' },
+      { error: new Error('test'), email: 'test@example.com', uri: '/test' },
+      { test1: 'test2', uri: '/test' },
+    ],
+  ])('Test sanitize', (init, meta, expected) => {
+    const winstonLogger: any = { log: jest.fn() };
+    const sanitizer1: LoggerSanitizer = data => {
+      const { error, ...rest } = data;
+      return rest;
+    };
+
+    const sanitizer2: LoggerSanitizer = data => {
+      const { email, ...rest } = data;
+      return rest;
+    };
+
+    const logger = new Logger(winstonLogger, init, [sanitizer1, sanitizer2]);
+
+    logger.info('Test 1', meta);
+
+    expect(winstonLogger.log).toHaveBeenNthCalledWith(1, 'info', 'Test 1', {
+      metadata: expected,
     });
   });
 });
