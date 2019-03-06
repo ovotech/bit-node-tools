@@ -6,11 +6,11 @@ export interface LoggerMeta {
    */
   traceToken?: string;
   /**
-   * For both request and response. If this contains any PII, such as email address, ensure it is redacted.
+   * Only for HTTP requests (200, 404, 500, ...)
    */
   status?: number;
   /**
-   * Only for HTTP requests (GET, POST, ...)
+   * For both request and response. If this contains any PII, such as email address, ensure it is redacted.
    */
   uri?: string;
   /**

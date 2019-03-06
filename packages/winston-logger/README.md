@@ -40,6 +40,41 @@ logger.error('test-message', { other: 'stuff' });
 logger.log('error', 'test-message', { other: 'stuff' });
 ```
 
+## Adding static meta
+
+You can add more static meta after the class has been instantiated. This however results in a new Logger with the additional (merged) static meta, and the old object is unaffected.
+
+```typescript
+import { Logger } from '@ovotech/winston-wrapper';
+import * as winston from 'winston';
+
+const winstonLogger = winston.createLogger(...);
+
+const logger = new Logger(winstonLogger, { uri: '/some-url' });
+const extendedLogger = logger.withStaticMeta({ additional: 'test' });
+```
+
+## Sanitizers
+
+You can add functions that modify the metadata just before the log is sent. This is use to redact sensitive info from the log.
+
+```typescript
+import { Logger, LoggerSanitizer } from '@ovotech/winston-wrapper';
+import * as winston from 'winston';
+
+const winstonLogger = winston.createLogger(...);
+
+const sanitize: LoggerSanitizer = (meta) => {
+  const { email, ...rest } = meta;
+  return rest;
+}
+
+const logger = new Logger(winstonLogger, {}, [sanitize]);
+logger.info("User logged in", { email: 'user@example.com' });
+```
+
+You can add additional sanitizers later on with the `withSanitizers` method, it will not modify the logger instance, but create a new one, with the additional sanitizers.
+
 ## Running the tests
 
 Then you can run the tests with:
