@@ -59,4 +59,30 @@ describe('Winston Logger', () => {
       metadata: expected,
     });
   });
+
+  it('Test withSanitizers', () => {
+    const winstonLogger: any = { log: jest.fn() };
+    const sanitizer1: LoggerSanitizer = data => {
+      const { error, ...rest } = data;
+      return rest;
+    };
+
+    const sanitizer2: LoggerSanitizer = data => {
+      const { email, ...rest } = data;
+      return rest;
+    };
+
+    const logger1 = new Logger(winstonLogger, { test: 'test2' }, [sanitizer1]);
+    const logger2 = logger1.withSanitizers([sanitizer2]);
+
+    logger1.info('Test 1', { error: new Error('test'), email: 'test@example.com' });
+    logger2.info('Test 2', { error: new Error('test'), email: 'test@example.com' });
+
+    expect(winstonLogger.log).toHaveBeenNthCalledWith(1, 'info', 'Test 1', {
+      metadata: { test: 'test2', email: 'test@example.com' },
+    });
+    expect(winstonLogger.log).toHaveBeenNthCalledWith(2, 'info', 'Test 2', {
+      metadata: { test: 'test2' },
+    });
+  });
 });

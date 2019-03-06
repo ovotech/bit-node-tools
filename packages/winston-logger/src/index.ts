@@ -39,7 +39,11 @@ export class Logger {
   ) {}
 
   withStaticMeta(meta: LoggerMeta) {
-    return new Logger(this.logger, { ...this.staticMeta, ...meta }, this.sanitizers);
+    return new Logger(this.logger, { ...this.staticMeta, ...meta }, [...this.sanitizers]);
+  }
+
+  withSanitizers(sanitizers: LoggerSanitizer[]) {
+    return new Logger(this.logger, { ...this.staticMeta }, [...this.sanitizers, ...sanitizers]);
   }
 
   log(level: string, message: string, meta?: LoggerMeta) {
