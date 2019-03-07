@@ -51,7 +51,7 @@ Object {
   "timestamp": Any<Date>,
   "topic": Any<String>,
   "value": BalanceMigrationCompletedEvent {
-    "accountId": "***REMOVED***",
+    "accountId": "6666666",
     "metadata": EventMetadata {
       "createdAt": "2018-05-05T00:00:00.000Z",
       "eventId": "75f49508-1328-4083-8613-queued",
@@ -112,7 +112,7 @@ Object {
   "timestamp": Any<Date>,
   "topic": Any<String>,
   "value": BalanceMigrationCompletedEvent {
-    "accountId": "***REMOVED***",
+    "accountId": "5555555",
     "metadata": EventMetadata {
       "createdAt": "2018-05-05T00:00:00.000Z",
       "eventId": "75f49508-1328-4083-8613-queued",
@@ -173,7 +173,7 @@ Object {
   "timestamp": Any<Date>,
   "topic": Any<String>,
   "value": BalanceMigrationCompletedEvent {
-    "accountId": "***REMOVED***",
+    "accountId": "4444444",
     "metadata": EventMetadata {
       "createdAt": "2018-05-05T00:00:00.000Z",
       "eventId": "75f49508-1328-4083-8613-queued",
@@ -234,7 +234,7 @@ Object {
   "timestamp": Any<Date>,
   "topic": Any<String>,
   "value": BalanceMigrationCompletedEvent {
-    "accountId": "***REMOVED***",
+    "accountId": "3333333",
     "metadata": EventMetadata {
       "createdAt": "2018-05-05T00:00:00.000Z",
       "eventId": "75f49508-1328-4083-8613-queued",
@@ -321,7 +321,7 @@ Object {
   "timestamp": Any<Date>,
   "topic": Any<String>,
   "value": AccountMigrationScheduledEvent {
-    "accountId": "***REMOVED***",
+    "accountId": "6666666",
     "effectiveEnrollmentDate": "2018-05-05T00:00:00.000Z",
     "metadata": EventMetadata {
       "createdAt": "2018-05-05T00:00:00.000Z",
@@ -412,7 +412,7 @@ Object {
   "timestamp": Any<Date>,
   "topic": Any<String>,
   "value": AccountMigrationScheduledEvent {
-    "accountId": "***REMOVED***",
+    "accountId": "2222222",
     "effectiveEnrollmentDate": "2018-02-05T00:00:00.000Z",
     "metadata": EventMetadata {
       "createdAt": "2018-05-05T00:00:00.000Z",

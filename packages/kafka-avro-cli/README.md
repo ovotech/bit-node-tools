@@ -255,19 +255,19 @@ Consume messages in migration-completed-2
 ----------------------------------------
 Offset 0/1 partition 0 key null
 BalanceMigrationCompletedEvent {
-  accountId: '***REMOVED***' }
+  accountId: '6666666' }
 ----------------------------------------
 Offset 1/1 partition 0 key null
 BalanceMigrationCompletedEvent {
-  accountId: '***REMOVED***' }
+  accountId: '5555555' }
 ----------------------------------------
 Offset 0/1 partition 1 key null
 BalanceMigrationCompletedEvent {
-  accountId: '***REMOVED***' }
+  accountId: '4444444' }
 ----------------------------------------
 Offset 1/1 partition 1 key null
 BalanceMigrationCompletedEvent {
-  accountId: '***REMOVED***' }
+  accountId: '3333333' }
 ----------------------------------------
 [============================================================] 100% Elapsed: 0.0s
 Consumed 4 messages

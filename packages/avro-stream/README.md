@@ -27,7 +27,7 @@ const data: AvroProduceRequest[] = [
       name: 'TestSchema',
       fields: [{ name: 'accountId', type: 'string' }],
     },
-    messages: [{ accountId: '***REMOVED***' }, { accountId: '***REMOVED***' }],
+    messages: [{ accountId: '6666666' }, { accountId: '5555555' }],
   },
 ];
 
