@@ -209,8 +209,7 @@ yarn lint
 
 ## Deployment
 
-To deploy a new version, push to master and then create a new release. CircleCI will automatically build and deploy a the version to the npm registry.
-All package versions are synchronized, but it will only publish the versions of the packages that have changed.
+Deployment is preferment by lerna automatically on merge / push to master, but you'll need to bump the package version numbers yourself. Only updated packages with newer versions will be pushed to the npm registry.
 
 ## Contributing
 

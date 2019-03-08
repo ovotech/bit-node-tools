@@ -74,7 +74,7 @@ Deployment is preferment by lerna automatically on merge / push to master, but y
 
 Have a bug? File an issue with a simple example that reproduces this so we can take a look & confirm.
 
-Want to make a change? Submit a PR, explain why it's useful, and make sure you've updated the docs (this file) and the tests (see [test/integration.spec.ts](test/integration.spec.ts)).
+Want to make a change? Submit a PR, explain why it's useful, and make sure you've updated the docs (this file) and the tests (see [test folder](test)).
 
 ## Responsible Team
 
