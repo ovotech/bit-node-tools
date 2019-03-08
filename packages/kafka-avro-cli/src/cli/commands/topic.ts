@@ -10,11 +10,11 @@ export interface TopicArgs extends Args {
   name: string;
 }
 
-export const topic: CommandModule = {
+export const topic: CommandModule<{}, TopicArgs> = {
   command: 'topic [name]',
   describe:
     'Used to search for, filter and get details of a particular topic in the kafka server. [name] is a partial name of a topic. If no name if provided, all topics are returned.',
-  handler: async (args: TopicArgs) => {
+  handler: async args => {
     const { kafkaClient } = loadConfig(args, ['kafkaClient']);
 
     const searchText = `"${args.name ? args.name : '<all>'}"`;

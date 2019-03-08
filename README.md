@@ -2,7 +2,7 @@
 
 [![CircleCI](https://circleci.com/gh/ovotech/bit-node-tools.svg?style=svg&circle-token=ae40b0f9ff7943343688a0319478e70091e37fbe)](https://circleci.com/gh/ovotech/bit-node-tools)
 
-BIT Team tools for working with Kafka and Avro. They are split into several independent packages that can be imported as needed
+BIT Team tools for working with Kafka, Avro and other misc stuff. They are split into several independent packages that can be imported a la carte.
 
 ## Kafka Avro CLI
 

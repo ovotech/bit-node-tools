@@ -13,7 +13,7 @@ export interface SchemaArgs extends Args {
   'output-dir': string;
 }
 
-export const schema: CommandModule = {
+export const schema: CommandModule<{}, SchemaArgs> = {
   command: 'schema [subject]',
   builder: {
     'output-dir': {
@@ -22,7 +22,7 @@ export const schema: CommandModule = {
     },
   },
   describe: `Used to search for, filter and get details of a particular schema in the schema registry. [subject] is a partial name of a subject. If no subject if provided, all subjects are returned.`,
-  handler: async (args: SchemaArgs) => {
+  handler: async args => {
     const { schemaRegistry } = loadConfig(args, ['schemaRegistry']);
 
     const url = new URL(schemaRegistry!);

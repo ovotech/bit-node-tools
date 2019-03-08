@@ -1,7 +1,7 @@
 {
   "name": "@ovotech/kafka-avro-cli",
   "description": "A CLI for inspecting the confluent schema-registry, produce and consume avro kafka events",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "main": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
@@ -16,12 +16,12 @@
     "@ovotech/schema-registry-api": "^1.0.3",
     "@types/progress": "^2.0.3",
     "avsc": "^5.4.7",
-    "chalk": "^2.4.1",
+    "chalk": "^2.4.2",
     "kafka-node": "^3.0.1",
     "progress": "^2.0.3",
-    "supports-color": "^5.5.0",
+    "supports-color": "^6.1.0",
     "uuid": "^3.3.2",
-    "yargs": "^12.0.5"
+    "yargs": "^13.2.2"
   },
   "scripts": {
     "test": "jest --runInBand",
@@ -32,20 +32,20 @@
     "kac": "ts-node src/cli/kac.ts"
   },
   "devDependencies": {
-    "@types/jest": "^23.3.10",
-    "@types/node": "^10.12.12",
-    "@types/node-fetch": "^2.1.4",
+    "@types/jest": "^24.0.9",
+    "@types/node": "^11.10.5",
+    "@types/node-fetch": "^2.1.6",
     "@types/supports-color": "^5.3.0",
     "@types/uuid": "^3.4.4",
-    "@types/yargs": "^12.0.1",
-    "jest": "^23.6.0",
-    "prettier": "^1.15.3",
+    "@types/yargs": "^12.0.9",
+    "jest": "^24.3.1",
+    "prettier": "^1.16.4",
     "stream-mock": "^1.2.0",
-    "ts-jest": "^23.10.5",
-    "ts-node": "^7.0.1",
-    "tslint": "^5.11.0",
-    "tslint-config-prettier": "^1.17.0",
-    "typescript": "^3.2.2",
+    "ts-jest": "^24.0.0",
+    "ts-node": "^8.0.3",
+    "tslint": "^5.13.1",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.3.3333",
     "uuid": "^3.3.2"
   },
   "jest": {

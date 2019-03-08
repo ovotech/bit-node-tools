@@ -10,10 +10,10 @@ export interface ProduceArgs extends Args {
   file: string;
 }
 
-export const produce: CommandModule = {
+export const produce: CommandModule<{}, ProduceArgs> = {
   command: 'produce [file]',
   describe: 'Produce events in kafka topic from a file',
-  handler: (args: ProduceArgs) => {
+  handler: args => {
     const { kafkaClient, schemaRegistry } = loadConfig(args, ['kafkaClient', 'schemaRegistry']);
 
     const producerStream = new ProducerStream({ kafkaClient });

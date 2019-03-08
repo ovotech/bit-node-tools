@@ -10,14 +10,14 @@ export interface CreateTopicArgs extends Args {
   'replication-factor': number;
 }
 
-export const createTopic: CommandModule = {
+export const createTopic: CommandModule<{}, CreateTopicArgs> = {
   command: 'create-topic <topic>',
   describe: 'Creates a topic in the kafka server with configurable partitions count and replication factor.',
   builder: {
     partitions: { type: 'number', default: 1, description: 'Number of partitions for topic' },
     'replication-factor': { type: 'number', default: 1 },
   },
-  handler: async (args: CreateTopicArgs) => {
+  handler: async args => {
     const { kafkaClient } = loadConfig(args, ['kafkaClient']);
 
     const client = new KafkaClient(kafkaClient);

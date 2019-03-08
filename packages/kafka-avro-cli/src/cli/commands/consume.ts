@@ -20,7 +20,7 @@ export interface ConsumeArgs extends Args {
   'output-file': string;
 }
 
-export const consume: CommandModule = {
+export const consume: CommandModule<{}, ConsumeArgs> = {
   command: 'consume <topic>',
   describe: 'Consume events from kafka topic. Display them in the console or save them to a file',
   builder: {
@@ -35,7 +35,7 @@ export const consume: CommandModule = {
       description: 'Save the results into a file, that can later be used to produce those events',
     },
   },
-  handler: (args: ConsumeArgs) => {
+  handler: args => {
     const { kafkaClient, schemaRegistry } = loadConfig(args, ['kafkaClient', 'schemaRegistry']);
 
     const consumerStream = new ConsumerGroupStream(

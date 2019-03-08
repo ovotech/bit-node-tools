@@ -9,7 +9,7 @@ export interface ExecuteArgs extends Args {
   'dry-run': boolean;
 }
 
-export const executeCommand: CommandModule = {
+export const executeCommand: CommandModule<{}, ExecuteArgs> = {
   command: 'execute',
   describe: 'Execute outstanding migrations',
   builder: {
@@ -18,7 +18,7 @@ export const executeCommand: CommandModule = {
       description: 'Output results without running the migrations',
     },
   },
-  handler: async (args: ExecuteArgs) => {
+  handler: async args => {
     const { client, table, dir } = loadConfig(args.config);
 
     const pg = new Client(client);

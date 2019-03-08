@@ -41,15 +41,17 @@ describe('Cli', () => {
       'ALTER TABLE my_test ADD COLUMN additional VARCHAR',
     );
 
-    await executeCommand.handler({ config: configFile });
+    await executeCommand.handler({ _: [], $0: '', 'dry-run': false, config: configFile });
 
     await createCommand.handler({
+      _: [],
+      $0: '',
       config: configFile,
       name: 'new',
       content: 'ALTER TABLE my_test ADD COLUMN additional_2 VARCHAR;',
     });
 
-    await executeCommand.handler({ config: configFile });
+    await executeCommand.handler({ _: [], $0: '', 'dry-run': false, config: configFile });
 
     const finishedMigrations = await pg.query('SELECT id FROM testing');
     const migratedTable = await pg.query('SELECT * FROM my_test');
@@ -74,7 +76,7 @@ describe('Cli', () => {
       'CREATE TABLE my_test (id INTEGER PRIMARY KEY, name VARCHAR)',
     );
 
-    await executeCommand.handler({ config: configFile, 'dry-run': true });
+    await executeCommand.handler({ _: [], $0: '', config: configFile, 'dry-run': true });
 
     const finishedMigrations = await pg.query('SELECT id FROM testing');
 
@@ -92,7 +94,7 @@ describe('Cli', () => {
     startCapture(process.stdout, data => (stdout += data));
     startCapture(process.stderr, data => (stderr += data));
 
-    await executeCommand.handler({ config: configFile });
+    await executeCommand.handler({ _: [], $0: '', 'dry-run': false, config: configFile });
 
     stopCapture(process.stdout);
     stopCapture(process.stderr);

@@ -10,7 +10,7 @@ export interface CreateArgs extends Args {
   content: string;
 }
 
-export const createCommand: CommandModule = {
+export const createCommand: CommandModule<{}, CreateArgs> = {
   command: 'create <name> [content]',
   builder: {
     content: {
@@ -19,7 +19,7 @@ export const createCommand: CommandModule = {
     },
   },
   describe: 'Create a new migration',
-  handler: async (args: CreateArgs) => {
+  handler: async args => {
     const { dir } = loadConfig(args.config);
     const file = `${new Date().toISOString()}_${args.name}.pgsql`;
 
