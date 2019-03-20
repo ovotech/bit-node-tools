@@ -137,25 +137,18 @@ migration-completed-2
 migration-completed
 ```
 
-If only one is matched, it will display the full metadata of the partitions on that topic
+If only one is matched, it will display the partitions and offsets of a topic
 
 ```
 $ kac topic migration-completed-2
 Searching for "migration-completed-2" in localhost:29092
-Metadata for migration-completed-2
+Partitions and their offsets for migration-completed-2
 ----------------------------------------
-{ '0':
-   { topic: 'migration-completed-2',
-     partition: 0,
-     leader: 1001,
-     replicas: [ 1001 ],
-     isr: [ 1001 ] },
-  '1':
-   { topic: 'migration-completed-2',
-     partition: 1,
-     leader: 1001,
-     replicas: [ 1001 ],
-     isr: [ 1001 ] } }
+{ migration-completed-2:
+   { '0': [ 143024920 ],
+     '1': [ 142607286 ],
+     '2': [ 142860803 ],
+     '3': [ 143160301 ] } }
 ```
 
 # create-topic command
@@ -287,10 +280,6 @@ Consumed 8 messages
  - Partition 0 : 4 messages.
  - Partition 1 : 4 messages.
 ```
-
-## Gotchas
-
-Due to some setTimeout calls in the underlying kafka-node library, the consume command will almost always take at least 30 seconds. After the final message has been printed you can simply terminate the process (cntr+C) without waiting for the full timeout.
 
 ## Running the tests
 

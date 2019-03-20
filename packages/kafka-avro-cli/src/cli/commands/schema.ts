@@ -53,7 +53,7 @@ export const schema: CommandModule<{}, SchemaArgs> = {
               process.stdout.write(
                 chalk`{yellow Version} ${String(version)} {yellow ----------------------------------------}\n`,
               );
-              process.stdout.write(inspect(result, false, 7, Boolean(supportsColor.stdout)) + '\n');
+              process.stdout.write(inspect(result, false, 14, Boolean(supportsColor.stdout)) + '\n');
             }
           }
           break;
