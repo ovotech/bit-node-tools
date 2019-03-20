@@ -1,0 +1,37 @@
+{
+  "name": "@ovotech/keycloak-auth",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "source": "src/index.ts",
+  "types": "dist/index.d.ts",
+  "description": "Keycloak Auth",
+  "author": "Boost Internal Tools <boost-bit-tech@ovoenergy.com>",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/jest": "^24.0.9",
+    "@types/nock": "^9.3.1",
+    "@types/node": "^11.10.5",
+    "axios": "^0.18.0",
+    "jest": "^24.3.1",
+    "nock": "^10.0.6",
+    "prettier": "^1.16.4",
+    "ts-jest": "^24.0.0",
+    "tslint": "^5.13.1",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.3.3333"
+  },
+  "dependencies": {
+    "node-fetch": "^2.3.0"
+  },
+  "scripts": {
+    "build": "tsc --outDir dist --declaration",
+    "test": "jest test --runInBand",
+    "lint-prettier": "prettier --list-different {src,test}/**/*.ts",
+    "lint-tslint": "tslint --config tslint.json '{src,test}/**/*.ts'",
+    "lint": "yarn lint-prettier && yarn lint-tslint"
+  },
+  "jest": {
+    "preset": "../../jest-preset.json"
+  }
+}
