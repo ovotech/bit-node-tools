@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { KafkaClient } from 'kafka-node';
+import { KafkaClient, Offset } from 'kafka-node';
 import * as supportsColor from 'supports-color';
 import { inspect } from 'util';
 import { CommandModule } from 'yargs';
@@ -40,9 +40,17 @@ export const topic: CommandModule<{}, TopicArgs> = {
         break;
       case 1:
         const data = metadata[matchingTopics[0]];
-        process.stdout.write(chalk`{gray Metadata for} ${matchingTopics[0]}\n`);
+        const clientOffset = new Offset(client);
+        const offsets = await new Promise((resolve, reject) =>
+          clientOffset.fetch(
+            Object.keys(data).map(partition => ({ topic: matchingTopics[0], partition: Number(partition) })),
+            (err: any, offset: any) => (err ? reject(err) : resolve(offset)),
+          ),
+        );
+
+        process.stdout.write(chalk`{gray Partitions and their offsets for} ${matchingTopics[0]}\n`);
         process.stdout.write(chalk`{gray ----------------------------------------}\n`);
-        process.stdout.write(inspect(data, false, 7, Boolean(supportsColor.stdout)) + '\n');
+        process.stdout.write(inspect(offsets, false, 7, Boolean(supportsColor.stdout)) + '\n');
         break;
       default:
         process.stdout.write(chalk`{gray Found} ${String(matchingTopics.length)} {gray matching} ${searchText}\n`);

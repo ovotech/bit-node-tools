@@ -53,9 +53,8 @@ describe('Integration test', () => {
 
     const findTopic = String(execSync(`yarn kac --config test/config.json topic ${testTopic}`));
 
-    expect(findTopic).toContain(`Metadata for ${testTopic}`);
-    expect(findTopic).toContain('partition: 0');
-    expect(findTopic).toContain('partition: 1');
+    expect(findTopic).toContain(`Partitions and their offsets for ${testTopic}`);
+    expect(findTopic).toContain("{ '0': [ 0 ], '1': [ 0 ] } }");
 
     const produce = String(execSync(`yarn kac --config test/config.json produce ${filename}`, { timeout: 20000 }));
 
