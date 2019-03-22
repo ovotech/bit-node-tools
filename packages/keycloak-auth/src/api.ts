@@ -66,7 +66,7 @@ export const refresh = ({ serverUrl, clientId, clientSecret, refreshToken }: Ref
     }),
   });
 
-export const nowSeconds = () => new Date().getTime() / 1000;
+const nowSeconds = () => new Date().getTime() / 1000;
 
 export const toAuth = (
   { access_token, refresh_token, refresh_expires_in, expires_in }: KeycloakResponse,
