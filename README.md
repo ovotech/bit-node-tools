@@ -183,6 +183,35 @@ const myRequestProcessor = (req: Request) =>{
 More documentation inside the packages:
 [@ovotech/winston-logger](packages/winston-logger/README.md)
 
+## Keycloak Auth
+
+Retrieve access tokens for [keycloak oauth](https://www.keycloak.org/). Respect access token and refresh token expiry.
+
+```typescript
+import { authenticate } from '@ovotech/keycloak-auth';
+
+const tokens1 = await authenticate({
+  serverUrl: 'http://keycloak-server.example.com',
+  clientId: '...',
+  clientSecret: '...',
+});
+
+// { accessToken: '...', refreshToken: '...', accessTokenExpires: 1553010721, refreshTokenExpires: 1553068047 }
+console.log(tokens1);
+
+// ... some time passes
+
+const tokens2 = await authenticate({
+  serverUrl: 'http://keycloak-server.example.com',
+  clientId: '...',
+  clientSecret: '...',
+  previous: auth,
+});
+```
+
+More documentation inside the packages:
+[@ovotech/keycloak-auth](packages/keycloak-auth/README.md)
+
 ## Running the tests
 
 The tests require a running schema registry service, and we're using docker compose to start it, alongside kafka, zookeeper and postgres.
