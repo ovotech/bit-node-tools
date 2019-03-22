@@ -12,7 +12,14 @@ interface ConfigType {
 }
 
 describe('Config File', () => {
-  it.each([
+  it.each<
+    [
+      string,
+      { value1: string; value2: string },
+      { TEST_1?: string; TEST_2?: string },
+      { value1: string; value2: string }
+    ]
+  >([
     ['nothing to resolve', { value1: '123', value2: '111' }, {}, { value1: '123', value2: '111' }],
     [
       'one variable',

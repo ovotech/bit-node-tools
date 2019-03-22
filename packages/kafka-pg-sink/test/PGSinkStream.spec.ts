@@ -22,7 +22,13 @@ const sourceData: Array<Message<TValue1 | TValue2>> = [
 ];
 
 describe('Integration test', () => {
-  it.each([
+  it.each<
+    [
+      string,
+      Array<{ chunk: { topic: string; value: number }; encoding: string }>,
+      { [key: string]: Array<{ topic: string; value: number }> }
+    ]
+  >([
     ['empty', [], {}],
     [
       'single',
@@ -62,7 +68,7 @@ describe('Integration test', () => {
     expect(groupChunks(chunks)).toEqual(expected);
   });
 
-  it.each([
+  it.each<[string, Array<Array<string | number>>, [string, Array<string | number>]]>([
     ['single', [[100]], ['INSERT INTO single VALUES ($1) ON CONFLICT DO NOTHING', [100]]],
     [
       'multi_value',

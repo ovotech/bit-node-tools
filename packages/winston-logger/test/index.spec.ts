@@ -31,7 +31,7 @@ describe('Winston Logger', () => {
     });
   });
 
-  it.each([
+  it.each<[{}, {}, {}]>([
     [{ email: 'test@example.com' }, { uri: '/test' }, { uri: '/test' }],
     [{}, { error: new Error('test') }, {}],
     [
