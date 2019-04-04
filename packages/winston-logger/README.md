@@ -5,11 +5,11 @@ Wrap winston logger to hide graylog semantics and implement safe static meta con
 ### Using
 
 ```bash
-yarn add @ovotech/winston-wrapper
+yarn add @ovotech/winston-logger
 ```
 
 ```typescript
-import { Logger } from '@ovotech/winston-wrapper';
+import { Logger } from '@ovotech/winston-logger';
 import * as winston from 'winston';
 
 const winstonLogger = winston.createLogger(...);
@@ -45,7 +45,7 @@ logger.log('error', 'test-message', { other: 'stuff' });
 You can add more static meta after the class has been instantiated. This however results in a new Logger with the additional (merged) static meta, and the old object is unaffected.
 
 ```typescript
-import { Logger } from '@ovotech/winston-wrapper';
+import { Logger } from '@ovotech/winston-logger';
 import * as winston from 'winston';
 
 const winstonLogger = winston.createLogger(...);
@@ -59,7 +59,7 @@ const extendedLogger = logger.withStaticMeta({ additional: 'test' });
 You can add functions that modify the metadata just before the log is sent. This is use to redact sensitive info from the log.
 
 ```typescript
-import { Logger, LoggerSanitizer } from '@ovotech/winston-wrapper';
+import { Logger, LoggerSanitizer } from '@ovotech/winston-logger';
 import * as winston from 'winston';
 
 const winstonLogger = winston.createLogger(...);
