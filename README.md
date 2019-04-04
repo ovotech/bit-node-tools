@@ -164,11 +164,11 @@ More documentation inside the packages:
 Wrap winston logger to hide graylog semantics and implement safe static meta contexts.
 
 ```bash
-yarn add @ovotech/winston-wrapper
+yarn add @ovotech/winston-logger
 ```
 
 ```typescript
-import { Logger } from '@ovotech/winston-wrapper';
+import { Logger } from '@ovotech/winston-logger';
 import * as winston from 'winston';
 
 const winstonLogger = winston.createLogger(...);
