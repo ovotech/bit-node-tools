@@ -1,7 +1,7 @@
 {
   "name": "@ovotech/pg-sql-migrate-cli",
   "description": "run migration scripts incrementally using postgres in the cli",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",

@@ -1,7 +1,7 @@
 {
   "name": "@ovotech/kafka-pg-sink",
   "description": "Store kafka-node events into a postgres database",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "main": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
