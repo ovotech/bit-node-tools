@@ -1,9 +1,7 @@
 import { InMemoryLRUCache } from 'apollo-server-caching';
+import { ApolloError } from 'apollo-server-errors';
 import * as nock from 'nock';
 import { TestDataSource } from './TestDataSource';
-import { RequestInterceptor } from '../src/AxiosDataSource';
-import { AxiosRequestConfig } from 'axios';
-import { ApolloError } from 'apollo-server-errors';
 
 const api = nock('http://api.example.com');
 const cache = new InMemoryLRUCache();
