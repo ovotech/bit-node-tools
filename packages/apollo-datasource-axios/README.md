@@ -1,7 +1,7 @@
 # AxiosDataSource for Apollo
 
-A rest datasource that uses axios under the hood. This allows adding generic interceptors, adaptors etc.
-Integrates with cache and cache policies.
+A rest datasource that uses axios under the hood. This allows adding generic interceptors, adapters etc.
+Integrates with cache and cache policies. Supports Interceptors.
 
 ### Using
 
@@ -27,7 +27,7 @@ const dataSource = new MyDataSource({ baseURL: ..., });
 
 ### Interceptors
 
-You can pass interceptors to axios declartivly with the `request: []` or `response: []` option keys, for request or response interceptors respectively.
+You can pass interceptors to axios declaratively with the `request: []` or `response: []` option keys, for request or response interceptors respectively.
 
 ```typescript
 const logResponse = (res) => {
