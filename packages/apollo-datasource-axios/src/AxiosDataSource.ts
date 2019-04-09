@@ -12,7 +12,7 @@ export interface ResponseInterceptor<V = AxiosResponse> {
   onRejected?: (error: any) => any;
 }
 
-export abstract class AxiosDataSource<TContext = any> extends DataSource {
+export abstract class AxiosDataSource<TContext = any, AdditonalAxiosRequestConfig = any> extends DataSource {
   api: AxiosInstance;
 
   constructor(
@@ -36,7 +36,7 @@ export abstract class AxiosDataSource<TContext = any> extends DataSource {
     this.api.defaults.adapter = cacheAdapter(config.cache, this.api.defaults.adapter!);
   }
 
-  async request<T = any>(config: AxiosRequestConfig) {
+  async request<T = any>(config: AxiosRequestConfig & AdditonalAxiosRequestConfig) {
     try {
       return await this.api.request<T>(config);
     } catch (error) {
@@ -65,27 +65,29 @@ export abstract class AxiosDataSource<TContext = any> extends DataSource {
     }
   }
 
-  get<T = any>(url: string, config?: AxiosRequestConfig) {
-    return this.request<T>({ url, method: 'get', ...config });
+  get<T = any>(url: string, config?: AxiosRequestConfig & AdditonalAxiosRequestConfig) {
+    return this.request<T>({ url, method: 'get', ...config } as AxiosRequestConfig & AdditonalAxiosRequestConfig);
   }
 
-  delete(url: string, config?: AxiosRequestConfig) {
-    return this.request({ url, method: 'delete', ...config });
+  delete(url: string, config?: AxiosRequestConfig & AdditonalAxiosRequestConfig) {
+    return this.request({ url, method: 'delete', ...config } as AxiosRequestConfig & AdditonalAxiosRequestConfig);
   }
 
-  head(url: string, config?: AxiosRequestConfig) {
-    return this.request({ url, method: 'head', ...config });
+  head(url: string, config?: AxiosRequestConfig & AdditonalAxiosRequestConfig) {
+    return this.request({ url, method: 'head', ...config } as AxiosRequestConfig & AdditonalAxiosRequestConfig);
   }
 
-  post<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
-    return this.request<T>({ url, data, method: 'post', ...config });
+  post<T = any>(url: string, data?: any, config?: AxiosRequestConfig & AdditonalAxiosRequestConfig) {
+    return this.request<T>({ url, data, method: 'post', ...config } as AxiosRequestConfig &
+      AdditonalAxiosRequestConfig);
   }
 
-  put<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
-    return this.request<T>({ url, data, method: 'put', ...config });
+  put<T = any>(url: string, data?: any, config?: AxiosRequestConfig & AdditonalAxiosRequestConfig) {
+    return this.request<T>({ url, data, method: 'put', ...config } as AxiosRequestConfig & AdditonalAxiosRequestConfig);
   }
 
-  patch<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
-    return this.request<T>({ url, data, method: 'patch', ...config });
+  patch<T = any>(url: string, data?: any, config?: AxiosRequestConfig & AdditonalAxiosRequestConfig) {
+    return this.request<T>({ url, data, method: 'patch', ...config } as AxiosRequestConfig &
+      AdditonalAxiosRequestConfig);
   }
 }
