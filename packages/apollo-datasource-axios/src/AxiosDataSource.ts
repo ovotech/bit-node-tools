@@ -49,14 +49,16 @@ export abstract class AxiosDataSource<TContext = any> extends DataSource {
         } = (error as AxiosError).response!;
 
         const message = `${status}: ${statusText}`;
-        if (error.response.status === 401) {
-          throw new AuthenticationError(message);
-        }
-        if (error.response.status === 403) {
-          throw new ForbiddenError(message);
-        }
+        const apolloError =
+          status === 401
+            ? new AuthenticationError(message)
+            : status === 403
+            ? new ForbiddenError(message)
+            : new ApolloError(message, error.code);
 
-        throw new ApolloError(message, error.code, { response: { url, status, statusText, data } });
+        apolloError.extensions = { ...apolloError.extensions, response: { url, status, statusText, data } };
+
+        throw apolloError;
       } else {
         throw error;
       }
@@ -76,7 +78,7 @@ export abstract class AxiosDataSource<TContext = any> extends DataSource {
   }
 
   post<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
-    return this.request<T>({ url, data, method: 'head', ...config });
+    return this.request<T>({ url, data, method: 'post', ...config });
   }
 
   put<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
