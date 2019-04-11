@@ -1,0 +1,80 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Integration test Test Serialier 1`] = `
+Array [
+  Object {
+    "key": "key-1",
+    "partition": 0,
+    "topic": "test-topic-1",
+    "value": Object {
+      "data": Array [
+        0,
+        0,
+        0,
+        0,
+        0,
+        6,
+        49,
+        49,
+        49,
+      ],
+      "type": "Buffer",
+    },
+  },
+  Object {
+    "key": "key-1",
+    "partition": 0,
+    "topic": "test-topic-1",
+    "value": Object {
+      "data": Array [
+        0,
+        0,
+        0,
+        0,
+        0,
+        6,
+        50,
+        50,
+        50,
+      ],
+      "type": "Buffer",
+    },
+  },
+  Object {
+    "key": "key-2",
+    "partition": 1,
+    "topic": "test-topic-2",
+    "value": Object {
+      "data": Array [
+        0,
+        0,
+        0,
+        0,
+        1,
+        174,
+        148,
+        2,
+      ],
+      "type": "Buffer",
+    },
+  },
+  Object {
+    "key": "key-2",
+    "partition": 1,
+    "topic": "test-topic-2",
+    "value": Object {
+      "data": Array [
+        0,
+        0,
+        0,
+        0,
+        1,
+        190,
+        146,
+        2,
+      ],
+      "type": "Buffer",
+    },
+  },
+]
+`;

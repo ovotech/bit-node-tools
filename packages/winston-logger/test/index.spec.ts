@@ -1,4 +1,10 @@
-import { Logger, LoggerSanitizer } from '../src';
+import { Logger, LoggerMeta, LoggerSanitizer } from '../src';
+
+interface Test {
+  level: 'silly' | 'notice' | 'warn' | 'error' | 'info';
+  message: string;
+  meta: LoggerMeta;
+}
 
 describe('Winston Logger', () => {
   it.each`
@@ -8,13 +14,12 @@ describe('Winston Logger', () => {
     ${'warn'}   | ${'test-warn'}   | ${{ warn: 'test' }}
     ${'error'}  | ${'error'}       | ${{ error: new Error('err') }}
     ${'info'}   | ${'test-info'}   | ${{ info: 'test' }}
-  `('Test logger for $level', ({ level, message, meta }) => {
-    const winstonLogger: any = { log: jest.fn() };
+  `('Test logger for $level', ({ level, message, meta }: Test) => {
+    const winstonLogger = { log: jest.fn() };
 
     const logger = new Logger(winstonLogger, { test1: 'test2' });
     const logger2 = logger.withStaticMeta({ test3: 'test4' });
 
-    // @ts-ignore
     logger[level](message, meta);
     logger2.log(level, message, { test5: 'test6', ...meta });
 
@@ -40,7 +45,7 @@ describe('Winston Logger', () => {
       { test1: 'test2', uri: '/test' },
     ],
   ])('Test sanitize', (init, meta, expected) => {
-    const winstonLogger: any = { log: jest.fn() };
+    const winstonLogger = { log: jest.fn() };
     const sanitizer1: LoggerSanitizer = data => {
       const { error, ...rest } = data;
       return rest;
@@ -61,7 +66,7 @@ describe('Winston Logger', () => {
   });
 
   it('Test withSanitizers', () => {
-    const winstonLogger: any = { log: jest.fn() };
+    const winstonLogger = { log: jest.fn() };
     const sanitizer1: LoggerSanitizer = data => {
       const { error, ...rest } = data;
       return rest;
