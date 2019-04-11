@@ -1,4 +1,4 @@
-import * as winston from 'winston';
+import { Logger as WinstonLogger } from 'winston';
 
 export interface LoggerMeta {
   /**
@@ -33,7 +33,7 @@ export type LoggerSanitizer = (staticMeta: LoggerMeta) => LoggerMeta;
 
 export class Logger {
   constructor(
-    private logger: winston.Logger,
+    private logger: Pick<WinstonLogger, 'log'>,
     readonly staticMeta: LoggerMeta = {},
     readonly sanitizers: LoggerSanitizer[] = [],
   ) {}
