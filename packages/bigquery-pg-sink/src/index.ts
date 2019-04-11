@@ -1,0 +1,1 @@
+export { BigQueryPGSinkStream } from './PGSinkStream';
