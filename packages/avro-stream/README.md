@@ -129,6 +129,27 @@ serializer.on('error', (error: AvroSerializerError) => {
 })
 ```
 
+## Mocks
+
+If you are writing tests for your kafka node streams, you would want to mock a stream of serialized objects, but you have only some produce requests. That's where you can use the `MockAvroSerializer` and `MockSchemaRegistryResolver`.
+
+```typescript
+import { DateType } from '@ovotech/avro-logical-types';
+import { ReadableMock, WritableMock } from 'stream-mock';
+import { AvroProduceRequest, MockAvroSerializer, MockSchemaRegistryResolver } from '@ovotech/avro-stream';
+
+const sourceData: AvroProduceRequest[] = [];
+
+const mockSchemaResolver = new MockSchemaRegistryResolver(sourceData);
+const sourceStream = new ReadableMock(sourceData, { objectMode: true });
+const sinkStream = new WritableMock({ objectMode: true });
+const serializer = new MockAvroSerializer(mockSchemaResolver);
+
+sourceStream.pipe(serializer).pipe(sinkStream);
+```
+
+You will get a serialized stream of kafka messages as if its coming from kafka-node itself.
+
 ## Gotchas
 
 A thing to be aware of is that node streams unpipe in an event of an error, which means that you'll need to provide your own error handling and repipe the streams if you want it to be resilient to errors.
