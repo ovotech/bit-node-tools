@@ -6,3 +6,5 @@ export { AvroDeserializerError } from './AvroDeserializerError';
 export { AvroSerializerError } from './AvroSerializerError';
 export { SchemaResolver, AvroMessage, AvroProduceRequest } from './types';
 export { constructMessage, deconstructMessage } from './message';
+export { MockAvroSerializer } from './MockAvroSerializer';
+export { MockSchemaRegistryResolver } from './MockSchemaRegistryResolver';
