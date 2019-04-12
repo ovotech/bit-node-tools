@@ -1,4 +1,3 @@
-import { Logger } from '@ovotech/winston-logger';
 import { Client } from 'pg';
 import { Writable } from 'stream';
 import { PGSinkStreamOptions } from './types';
@@ -7,14 +6,12 @@ export class BigQueryPGSinkStream extends Writable {
   private pg: Client;
   private table: string;
   private insertCounter: number;
-  private logger: Logger;
   private insert: (table: string, rows: any[]) => [string, any[]];
 
-  constructor({ pg, table, logger, insert, highWaterMark = 200 }: PGSinkStreamOptions) {
+  constructor({ pg, table, insert, highWaterMark = 200 }: PGSinkStreamOptions) {
     super({ objectMode: true, highWaterMark });
     this.pg = pg;
     this.table = table;
-    this.logger = logger;
     this.insert = insert;
     this.insertCounter = 0;
   }
@@ -23,7 +20,6 @@ export class BigQueryPGSinkStream extends Writable {
     try {
       const rows = chunks.map(chunk => chunk.chunk);
       await this.pg.query(...this.insert(this.table, rows));
-      this.logger.info(`bulk inserted`, { inserted: rows.length });
       callback();
     } catch (error) {
       callback(new Error(error));
@@ -35,7 +31,6 @@ export class BigQueryPGSinkStream extends Writable {
       this.insertCounter++;
       await this.pg.query(...this.insert(this.table, [chunk]));
       if (this.insertCounter >= 10000) {
-        this.logger.info('inserted 10000 rows');
         this.insertCounter = 0;
       }
       callback();
