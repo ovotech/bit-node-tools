@@ -1,6 +1,6 @@
 # BigQuery PG Sink
 
-Stream the results of query made by [nodejs-bigquery](https://github.com/googleapis/nodejs-bigquery) into a postgres database.
+Stream the results of query made by [nodejs-bigquery](https://github.com/googleapis/nodejs-bigquery) into a [postgres database](https://www.postgresql.org/).
 
 ### Using
 
@@ -12,31 +12,34 @@ yarn add @ovotech/bigquery-pg-sink
 import { BigQueryPGSinkStream } from '@ovotech/bigquery-pg-sink';
 import { Client } from 'pg';
 
-// Example insert function
-export const insertQuery = (table: string, rows: ExportRow[]): [string, any[]] => {
-  const query = rows
+export const insertQuery = (table: string, rows: any[]): [string, any[]] => {
+  // transform each result into a flat array of values
+  // i.e. [1, 200, 2, 300]
+  const flatRows = rows.map(bigQueryResult => {
+    return [
+      bigQueryResult.id,
+      bigQueryResult.balance,
+    ]
+  }).flat();
+
+  // generate the values insert string
+  // i.e. ($1,$2,$3,.....)
+  const columns = [...Array(11)];
+  const insertValuesString = rows
     .map(
       (_, rowIndex) =>
         `(${columns
-          .map((row: ExportRow, index) => `$${index + 1 + rowIndex * 2}`)
+          .map((row: any, index) => '$' + {index + 1 + rowIndex * columns.length})
           .join(',')})`,
     )
     .join(',');
-
-
-  const flatRows = rows
-    .map(row => [
-      row.id,
-      row.record,
-    ])
-    .reduce((acc, val) => acc.concat(val), []);
-
   return [
     `INSERT INTO ${table}
       (
         id,
-        record,
-      ) VALUES ${query}`,
+        balance
+      ) VALUES ${insertValuesString}
+    `,
     flatRows,
   ];
 };
