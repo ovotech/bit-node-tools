@@ -212,6 +212,31 @@ const tokens2 = await authenticate({
 More documentation inside the packages:
 [@ovotech/keycloak-auth](packages/keycloak-auth/README.md)
 
+## AxiosDataSource for Apollo
+
+A rest datasource that uses axios under the hood. This allows adding generic interceptors, adapters etc.
+Integrates with cache and cache policies. Supports Interceptors.
+
+```bash
+yarn add @ovotech/apollo-datasource-axios
+```
+
+```typescript
+import { AxiosDataSource } from '@ovotech/apollo-datasource-axios';
+
+interface User {
+  name: string;
+}
+
+export class MyDataSource extends AxiosDataSource {
+  users(id: string) {
+    return this.get<User>(`/users/${id}`);
+  }
+}
+
+const dataSource = new MyDataSource({ baseURL: ..., });
+```
+
 ## Running the tests
 
 The tests require a running schema registry service, and we're using docker compose to start it, alongside kafka, zookeeper and postgres.
