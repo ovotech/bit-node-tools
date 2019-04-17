@@ -18,14 +18,14 @@
     "build": "tsc --outDir dist --declaration"
   },
   "devDependencies": {
-    "axios": "^0.18.0",
     "@types/jest": "^24.0.11",
     "@types/node": "^11.11.4",
+    "axios": "^0.18.0",
     "jest": "^24.5.0",
     "prettier": "^1.16.4",
     "tslint": "^5.14.0",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.3.4000"
+    "typescript": "^3.4.3"
   },
   "jest": {
     "preset": "../../jest-preset.json"
