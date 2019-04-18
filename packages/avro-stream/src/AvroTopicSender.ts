@@ -1,9 +1,13 @@
-import { Readable } from 'stream';
+import { Readable, ReadableOptions } from 'stream';
 import { AvroProduceRequest, AvroTopicSenderOptions } from './types';
 
 export class AvroTopicSender<TMessage = any> extends Readable {
-  constructor(readonly options: AvroTopicSenderOptions) {
-    super({ objectMode: true });
+  readonly options: AvroTopicSenderOptions;
+
+  constructor(options: AvroTopicSenderOptions & ReadableOptions) {
+    const { schema, topic, partition, key, ...readableOptions } = options;
+    super({ ...readableOptions, objectMode: true });
+    this.options = { schema, topic, partition, key };
   }
 
   send(...messages: TMessage[]) {
