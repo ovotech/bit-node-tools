@@ -237,6 +237,39 @@ export class MyDataSource extends AxiosDataSource {
 const dataSource = new MyDataSource({ baseURL: ..., });
 ```
 
+More documentation inside the packages:
+[@ovotech/apollo-datasource-axios](packages/apollo-datasource-axios/README.md)
+
+## Re Pipeline
+
+A node streams pipeline implementation, that reconnects the pipes on error, once the error has been handled.
+
+### Using
+
+```bash
+yarn add @ovotech/re-pipeline
+```
+
+Whenever an error is encountered by any of the streams, it would call the error handler and then reconnect the pipes again.
+
+```typescript
+import { rePipeline } from '@ovotech/re-pipeline';
+import { Transform, Readable, Writable } from 'stream';
+
+const start = new Readable({ objectMode: true });
+const end = new Writable({ objectMode: true });
+const transform = new Transform({ objectMode: true });
+
+const errorHandler = error => console.log(error);
+
+const pipeline = rePipeline(errorHandler, start, upperCase, end);
+
+pipeline.on('finish', () => console.log(end.data));
+```
+
+More documentation inside the packages:
+[@ovotech/re-pipeline](packages/re-pipeline/README.md)
+
 ## Running the tests
 
 The tests require a running schema registry service, and we're using docker compose to start it, alongside kafka, zookeeper and postgres.
