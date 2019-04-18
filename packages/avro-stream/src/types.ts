@@ -6,6 +6,13 @@ export interface SchemaResolver {
   fromId(id: number): Promise<Schema>;
 }
 
+export interface AvroTopicSenderOptions {
+  schema: Schema;
+  topic: string;
+  partition?: number;
+  key?: string | Buffer;
+}
+
 export interface AvroProduceRequest<TValue = any> extends ProduceRequest {
   schema: Schema;
   messages: TValue[];

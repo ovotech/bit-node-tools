@@ -129,6 +129,38 @@ serializer.on('error', (error: AvroSerializerError) => {
 })
 ```
 
+### AvroTopicSender
+
+You can use an `AvroTopicSender` to produce ad-hock kafka messages.
+
+```typescript
+import { AvroSerializer, AvroTopicSender } from '@ovotech/avro-stream';
+import { ProducerStream } from 'kafka-node';
+
+interface Message {
+  accountId: string;
+}
+
+const sender = new AvroTopicSender<Message>({
+  topic: 'test-topic-1',
+  partition: 0,
+  key: 'key-1',
+  schema: {
+    type: 'record',
+    name: 'TestSchema1',
+    fields: [{ name: 'accountId', type: 'string' }],
+  },
+});
+
+const producerStream = new ProducerStream({ kafkaClient: { kafkaHost: 'localhost:29092' } });
+const serializer = new AvroSerializer('http://localhost:8081');
+
+sender.pipe(serializer).pipe(producerStream);
+
+sender.send({ accountId: '222' }, { accountId: '111' });
+sender.close();
+```
+
 ## Mocks
 
 If you are writing tests for your kafka node streams, you would want to mock a stream of serialized objects, but you have only some produce requests. That's where you can use the `MockAvroSerializer` and `MockSchemaRegistryResolver`.
