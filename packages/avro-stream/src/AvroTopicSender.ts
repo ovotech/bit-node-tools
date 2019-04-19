@@ -20,4 +20,7 @@ export class AvroTopicSender<TMessage = any> extends Readable {
     this.push(null);
     return this;
   }
+
+  // tslint:disable-next-line:no-empty
+  _read() {}
 }

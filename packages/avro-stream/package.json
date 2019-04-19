@@ -1,7 +1,7 @@
 {
   "name": "@ovotech/avro-stream",
   "description": "Serialize/deserialize kafka-node streams with avro data, using confluent schema-registry to hold the schemas",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "main": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",

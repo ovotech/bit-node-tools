@@ -7,7 +7,7 @@ import { join } from 'path';
 import { Readable } from 'stream';
 import { ReadableMock, WritableMock } from 'stream-mock';
 import * as uuid from 'uuid';
-import { AvroDeserializer, deconstructMessage } from '../src';
+import { AvroDeserializer, AvroTopicSender, deconstructMessage } from '../src';
 import { AvroSerializer } from '../src';
 
 const createTopics = async (topics: string[]) => {
@@ -41,14 +41,14 @@ const files = readdirSync(join(__dirname, './assets'));
 const sourceData = files.map(file => JSON.parse(String(readFileSync(join(__dirname, './assets', file)))));
 const unqiueSourceData = sourceData.map(item => ({ ...item, topic: uuid.v4() }));
 const messagesCount = sourceData.reduce((sum, item) => sum + item.messages.length, 0);
+const logicalTypes = { date: DateType, 'timestamp-millis': TimestampType };
 
 describe('Integration test', () => {
   it('Test Serialier', async () => {
     const sourceStream = new ReadableMock(sourceData, { objectMode: true });
     const sinkStream = new WritableMock({ objectMode: true });
-    const serializer = new AvroSerializer('http://localhost:8081', {
-      logicalTypes: { date: DateType, 'timestamp-millis': TimestampType },
-    });
+
+    const serializer = new AvroSerializer('http://localhost:8081', { logicalTypes });
 
     sourceStream.pipe(serializer).pipe(sinkStream);
 
@@ -75,13 +75,8 @@ describe('Integration test', () => {
     const sourceStream = new ReadableMock(unqiueSourceData, { objectMode: true });
     const sinkStream = new WritableMock({ objectMode: true });
     const topics = unqiueSourceData.map(item => item.topic);
-
-    const deserializer = new AvroDeserializer('http://localhost:8081', {
-      logicalTypes: { date: DateType, 'timestamp-millis': TimestampType },
-    });
-    const serializer = new AvroSerializer('http://localhost:8081', {
-      logicalTypes: { date: DateType, 'timestamp-millis': TimestampType },
-    });
+    const deserializer = new AvroDeserializer('http://localhost:8081', { logicalTypes });
+    const serializer = new AvroSerializer('http://localhost:8081', { logicalTypes });
 
     await createTopics(topics);
 
@@ -109,6 +104,55 @@ describe('Integration test', () => {
             timestamp: expect.any(Date),
           });
         }
+
+        producerStream.close();
+        consumerStream.close(resolve);
+      });
+    });
+  }, 15000);
+
+  it('Test AvroTopicSender with kafka', async () => {
+    const topic = uuid.v4();
+    const sender = new AvroTopicSender<{ accountId: string }>({
+      topic,
+      partition: 0,
+      schema: {
+        type: 'record',
+        name: 'TestSchema1',
+        fields: [{ name: 'accountId', type: 'string' }],
+      },
+    });
+    const deserializer = new AvroDeserializer('http://localhost:8081', { logicalTypes });
+    const serializer = new AvroSerializer('http://localhost:8081', { logicalTypes });
+
+    const sinkStream = new WritableMock({ objectMode: true });
+    await createTopics([topic]);
+
+    const consumerStream = new ConsumerGroupStream(
+      {
+        kafkaHost: 'localhost:29092',
+        groupId: `integration`,
+        encoding: 'buffer',
+        fromOffset: 'earliest',
+      },
+      topic,
+    );
+    const producerStream = new ProducerStream({ kafkaClient: { kafkaHost: 'localhost:29092' } });
+
+    consumerStream.pipe(deserializer).pipe(sinkStream);
+    sender.pipe(serializer).pipe(producerStream);
+
+    stopStreamOnCount(1, consumerStream);
+    sender.send({ accountId: '234' });
+
+    await new Promise(resolve => {
+      sinkStream.on('finish', () => {
+        expect(sinkStream.data).toEqual([
+          expect.objectContaining({
+            topic,
+            value: { accountId: '234' },
+          }),
+        ]);
 
         producerStream.close();
         consumerStream.close(resolve);

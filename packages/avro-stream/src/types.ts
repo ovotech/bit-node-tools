@@ -9,7 +9,7 @@ export interface SchemaResolver {
 export interface AvroTopicSenderOptions {
   schema: Schema;
   topic: string;
-  partition?: number;
+  partition: number;
   key?: string | Buffer;
 }
 
