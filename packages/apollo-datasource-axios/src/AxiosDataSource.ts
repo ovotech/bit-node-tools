@@ -42,7 +42,7 @@ export interface ResponseInterceptor<T = ApolloDataSourceConfig, TT = ApolloAxio
   onRejected?: (error: any) => any;
 }
 
-export abstract class AxiosDataSource<TConfig extends ApolloDataSourceConfig> extends DataSource {
+export abstract class AxiosDataSource<TConfig extends ApolloDataSourceConfig = AxiosRequestConfig> extends DataSource {
   api: ApolloAxiosInstance<TConfig>;
 
   constructor(
