@@ -2,12 +2,19 @@ import axios from 'axios';
 import * as nock from 'nock';
 import { axiosLogger, WithLogger } from '../src';
 
+interface ConfigWithLogger extends WithLogger {
+  test?: string;
+}
+
 const log = jest.fn();
 const instance = axios.create({ baseURL: 'http://api.example.com' });
-const logger = axiosLogger(log);
+const logger = axiosLogger<ConfigWithLogger>((level, meta, cfg) => {
+  log(level, meta);
+  cfg.test = '123';
+});
 
-instance.interceptors.request.use(logger.request.onFullfilled);
-instance.interceptors.response.use(logger.response.onFullfilled, logger.response.onRejected);
+instance.interceptors.request.use(logger.request.onFulfilled);
+instance.interceptors.response.use(logger.response.onFulfilled, logger.response.onRejected);
 
 describe('Integration test', () => {
   beforeEach(() => {

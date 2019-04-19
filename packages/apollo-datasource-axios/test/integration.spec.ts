@@ -1,7 +1,7 @@
 import { InMemoryLRUCache } from 'apollo-server-caching';
 import { ApolloError, AuthenticationError, ForbiddenError } from 'apollo-server-errors';
 import * as nock from 'nock';
-import { RequestInterceptor, ResponseInterceptor } from '../src';
+import { Interceptor } from '../src';
 import { AdditionalConfig, TestDataSource } from './TestDataSource';
 
 const cache = new InMemoryLRUCache();
@@ -63,33 +63,34 @@ describe('Integration test', () => {
     const reqErrorCall = jest.fn();
     const resErrorCall = jest.fn();
 
-    const req: RequestInterceptor<AdditionalConfig> = {
-      onFulfilled: cfg => {
-        expect(cfg.dataSourceVersion).toEqual('test2');
-        reqCall();
-        return cfg;
+    const interceptor: Interceptor<AdditionalConfig> = {
+      request: {
+        onFulfilled: cfg => {
+          expect(cfg.dataSourceVersion).toEqual('test2');
+          reqCall();
+          return cfg;
+        },
+        onRejected: err => {
+          expect(err.config).toEqual('test2');
+          reqErrorCall();
+          return err;
+        },
       },
-      onRejected: err => {
-        expect(err.config).toEqual('test2');
-        reqErrorCall();
-        return err;
+      response: {
+        onFulfilled: response => {
+          expect(response.config.dataSourceVersion).toEqual('test2');
+          resCall();
+          return response;
+        },
+        onRejected: err => {
+          expect(err.config.dataSourceVersion).toEqual('test2');
+          resErrorCall();
+          return err;
+        },
       },
     };
 
-    const res: ResponseInterceptor<AdditionalConfig> = {
-      onFulfilled: response => {
-        expect(response.config.dataSourceVersion).toEqual('test2');
-        resCall();
-        return response;
-      },
-      onRejected: err => {
-        expect(err.config.dataSourceVersion).toEqual('test2');
-        resErrorCall();
-        return err;
-      },
-    };
-
-    const intercepted = new TestDataSource(undefined, { request: [req], response: [res] });
+    const intercepted = new TestDataSource({ interceptors: [interceptor] });
     intercepted.initialize(config);
 
     await expect(

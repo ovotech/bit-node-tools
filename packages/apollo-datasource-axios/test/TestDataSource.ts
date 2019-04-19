@@ -1,6 +1,6 @@
-import { ApolloDataSourceConfig, AxiosDataSource } from '../src';
+import { AxiosDataSource, AxiosDataSourceConfig } from '../src';
 
-export interface AdditionalConfig extends ApolloDataSourceConfig {
+export interface AdditionalConfig extends AxiosDataSourceConfig {
   dataSourceVersion: string;
 }
 

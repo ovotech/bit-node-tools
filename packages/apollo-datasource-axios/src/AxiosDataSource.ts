@@ -28,40 +28,39 @@ export interface ApolloAxiosResponse<T = any, TConfig extends AxiosRequestConfig
 export interface ApolloAxiosPromise<T = any, TConfig extends AxiosRequestConfig = AxiosRequestConfig>
   extends Promise<ApolloAxiosResponse<T, TConfig>> {}
 
-export interface ApolloDataSourceConfig extends AxiosRequestConfig {
+export interface AxiosDataSourceConfig extends AxiosRequestConfig {
   context?: any;
 }
 
-export interface RequestInterceptor<T = ApolloDataSourceConfig> {
-  onFulfilled?: (config: T) => T | Promise<T>;
-  onRejected?: (error: any) => any;
+export interface Interceptor<T = AxiosDataSourceConfig, TT = ApolloAxiosResponse<any, T>> {
+  request?: {
+    onFulfilled?: (config: T) => T | Promise<T>;
+    onRejected?: (error: any) => any;
+  };
+  response?: {
+    onFulfilled?: (response: TT) => TT | Promise<TT>;
+    onRejected?: (error: any) => any;
+  };
 }
 
-export interface ResponseInterceptor<T = ApolloDataSourceConfig, TT = ApolloAxiosResponse<any, T>> {
-  onFulfilled?: (response: TT) => TT | Promise<TT>;
-  onRejected?: (error: any) => any;
-}
-
-export abstract class AxiosDataSource<TConfig extends ApolloDataSourceConfig = AxiosRequestConfig> extends DataSource {
+export abstract class AxiosDataSource<TConfig extends AxiosDataSourceConfig = AxiosRequestConfig> extends DataSource {
   api: ApolloAxiosInstance<TConfig>;
 
-  constructor(
-    protected config: ApolloDataSourceConfig = {},
-    options?: {
-      request?: Array<RequestInterceptor<TConfig>>;
-      response?: Array<ResponseInterceptor<TConfig>>;
-    },
-  ) {
+  constructor(protected config: AxiosDataSourceConfig & { interceptors?: Array<Interceptor<TConfig>> } = {}) {
     super();
-    this.api = axios.create(config) as ApolloAxiosInstance<TConfig>;
-    if (options) {
-      const { request, response } = options;
-      if (request) {
-        request.forEach(({ onFulfilled, onRejected }) => this.api.interceptors.request.use(onFulfilled, onRejected));
-      }
-      if (response) {
-        response.forEach(({ onFulfilled, onRejected }) => this.api.interceptors.response.use(onFulfilled, onRejected));
-      }
+    const { interceptors, ...axiosConfig } = config;
+
+    this.api = axios.create(axiosConfig) as ApolloAxiosInstance<TConfig>;
+
+    if (interceptors) {
+      interceptors.forEach(({ request, response }) => {
+        if (request) {
+          this.api.interceptors.request.use(request.onFulfilled, request.onRejected);
+        }
+        if (response) {
+          this.api.interceptors.response.use(response.onFulfilled, response.onRejected);
+        }
+      });
     }
   }
 

@@ -12,7 +12,7 @@ yarn add @ovotech/axios-logger
 import { axiosLogger } from '@ovotech/axios-logger';
 import axios from 'axios';
 
-const logger = axiosLogger(console.log);
+const logger = axiosLogger((level, meta, config) => console.log(level, meta, config.url));
 
 const api = axios.create();
 api.interceptors.request.use(logger.request.onFullfilled);
@@ -34,7 +34,7 @@ You have 3 interceptors. `logger.request.onFullfilled`, `logger.response.onFullf
 
 Each one can be omitted if you don't want or need that feature.
 
-The log function will receive 2 arguments - level and meta. The first one indicates what type of log level to use - "info" for success and "error" for error. The second contains an object of data to log.
+The log function will receive 3 arguments - level, meta and axios request config. The first one indicates what type of log level to use - "info" for success and "error" for error. The second contains an object of data to log.
 
 ```js
 {
