@@ -4,7 +4,7 @@ import * as nock from 'nock';
 import { TestDataSource } from './TestDataSource';
 
 const cache = new InMemoryLRUCache();
-const config = { context: {}, cache: cache as any };
+const config = { context: { test: '123' }, cache };
 const dataSource = new TestDataSource({ baseURL: 'http://api.example.com' });
 dataSource.initialize(config);
 
@@ -19,6 +19,8 @@ describe('Integration test', () => {
 
     expect(user.status).toEqual(200);
     expect(user.data).toEqual({ id: 12, name: 'John' });
+    expect(user.config.dataSourceVersion).toEqual('test');
+    expect(user.config.context).toEqual({ test: '123' });
     expect(cache.getTotalSize()).resolves.toBeGreaterThan(0);
   });
 

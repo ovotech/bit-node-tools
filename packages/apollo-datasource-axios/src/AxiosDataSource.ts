@@ -1,6 +1,13 @@
 import { DataSource, DataSourceConfig } from 'apollo-datasource';
 import { ApolloError, AuthenticationError, ForbiddenError } from 'apollo-server-errors';
-import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, {
+  AxiosError,
+  AxiosInstance,
+  AxiosInterceptorManager,
+  AxiosPromise,
+  AxiosRequestConfig,
+  AxiosResponse,
+} from 'axios';
 import { cacheAdapter } from './cacheAdapter';
 
 export interface RequestInterceptor<V = AxiosRequestConfig> {
@@ -12,15 +19,49 @@ export interface ResponseInterceptor<V = AxiosResponse> {
   onRejected?: (error: any) => any;
 }
 
-export abstract class AxiosDataSource<TContext = any, AdditonalAxiosRequestConfig = any> extends DataSource {
-  api: AxiosInstance;
+export interface ApolloAxiosInstance<TConfig extends AxiosRequestConfig = AxiosRequestConfig> extends AxiosInstance {
+  (config: TConfig): ApolloAxiosResponse<any, TConfig>;
+  (url: string, config?: TConfig): ApolloAxiosResponse<any, TConfig>;
+  defaults: TConfig;
+  interceptors: {
+    request: AxiosInterceptorManager<TConfig>;
+    response: AxiosInterceptorManager<ApolloAxiosResponse<any, TConfig>>;
+  };
+  request<T = any>(config: TConfig): ApolloAxiosPromise<T, TConfig>;
+  get<T = any>(url: string, config?: TConfig): ApolloAxiosPromise<T, TConfig>;
+  delete(url: string, config?: TConfig): ApolloAxiosPromise<any, TConfig>;
+  head(url: string, config?: TConfig): ApolloAxiosPromise<any, TConfig>;
+  post<T = any>(url: string, data?: any, config?: TConfig): ApolloAxiosPromise<T, TConfig>;
+  put<T = any>(url: string, data?: any, config?: TConfig): ApolloAxiosPromise<T, TConfig>;
+  patch<T = any>(url: string, data?: any, config?: TConfig): ApolloAxiosPromise<T, TConfig>;
+}
+
+export interface ApolloAxiosResponse<T = any, TConfig extends AxiosRequestConfig = AxiosRequestConfig>
+  extends AxiosResponse<T> {
+  config: TConfig;
+}
+
+export interface ApolloAxiosPromise<T = any, TConfig extends AxiosRequestConfig = AxiosRequestConfig>
+  extends Promise<ApolloAxiosResponse<T, TConfig>> {}
+
+export interface ApolloDataSourceConfig extends AxiosRequestConfig {
+  context?: any;
+}
+
+export abstract class AxiosDataSource<
+  TConfig extends ApolloDataSourceConfig = ApolloDataSourceConfig
+> extends DataSource {
+  api: ApolloAxiosInstance<TConfig>;
 
   constructor(
-    protected config: AxiosRequestConfig = {},
-    options?: { request?: RequestInterceptor[]; response?: ResponseInterceptor[] },
+    protected config: ApolloDataSourceConfig = {},
+    options?: {
+      request?: Array<RequestInterceptor<TConfig>>;
+      response?: Array<ResponseInterceptor<ApolloAxiosResponse<any, TConfig>>>;
+    },
   ) {
     super();
-    this.api = axios.create(config);
+    this.api = axios.create(config) as ApolloAxiosInstance<TConfig>;
     if (options) {
       const { request, response } = options;
       if (request) {
@@ -32,11 +73,12 @@ export abstract class AxiosDataSource<TContext = any, AdditonalAxiosRequestConfi
     }
   }
 
-  initialize(config: DataSourceConfig<TContext>): void {
+  initialize(config: DataSourceConfig<any>): void {
     this.api.defaults.adapter = cacheAdapter(config.cache, this.api.defaults.adapter!);
+    this.api.defaults.context = config.context;
   }
 
-  async request<T = any>(config: AxiosRequestConfig & AdditonalAxiosRequestConfig) {
+  async request<T = any>(config: TConfig) {
     try {
       return await this.api.request<T>(config);
     } catch (error) {
@@ -65,29 +107,27 @@ export abstract class AxiosDataSource<TContext = any, AdditonalAxiosRequestConfi
     }
   }
 
-  get<T = any>(url: string, config?: AxiosRequestConfig & AdditonalAxiosRequestConfig) {
-    return this.request<T>({ url, method: 'get', ...config } as AxiosRequestConfig & AdditonalAxiosRequestConfig);
+  get<T = any>(url: string, config?: TConfig) {
+    return this.request<T>({ url, method: 'get', ...config } as TConfig);
   }
 
-  delete(url: string, config?: AxiosRequestConfig & AdditonalAxiosRequestConfig) {
-    return this.request({ url, method: 'delete', ...config } as AxiosRequestConfig & AdditonalAxiosRequestConfig);
+  delete(url: string, config?: TConfig) {
+    return this.request({ url, method: 'delete', ...config } as TConfig);
   }
 
-  head(url: string, config?: AxiosRequestConfig & AdditonalAxiosRequestConfig) {
-    return this.request({ url, method: 'head', ...config } as AxiosRequestConfig & AdditonalAxiosRequestConfig);
+  head(url: string, config?: TConfig) {
+    return this.request({ url, method: 'head', ...config } as TConfig);
   }
 
-  post<T = any>(url: string, data?: any, config?: AxiosRequestConfig & AdditonalAxiosRequestConfig) {
-    return this.request<T>({ url, data, method: 'post', ...config } as AxiosRequestConfig &
-      AdditonalAxiosRequestConfig);
+  post<T = any>(url: string, data?: any, config?: TConfig) {
+    return this.request<T>({ url, data, method: 'post', ...config } as TConfig);
   }
 
-  put<T = any>(url: string, data?: any, config?: AxiosRequestConfig & AdditonalAxiosRequestConfig) {
-    return this.request<T>({ url, data, method: 'put', ...config } as AxiosRequestConfig & AdditonalAxiosRequestConfig);
+  put<T = any>(url: string, data?: any, config?: TConfig) {
+    return this.request<T>({ url, data, method: 'put', ...config } as TConfig);
   }
 
-  patch<T = any>(url: string, data?: any, config?: AxiosRequestConfig & AdditonalAxiosRequestConfig) {
-    return this.request<T>({ url, data, method: 'patch', ...config } as AxiosRequestConfig &
-      AdditonalAxiosRequestConfig);
+  patch<T = any>(url: string, data?: any, config?: TConfig) {
+    return this.request<T>({ url, data, method: 'patch', ...config } as TConfig);
   }
 }
