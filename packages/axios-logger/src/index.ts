@@ -17,6 +17,15 @@ export interface LogMeta {
 
 export interface WithLogger extends AxiosRequestConfig, AxiosLogger {}
 
+export interface WithLoggerAxiosResponse<T = any, TConfig extends WithLogger = WithLogger> extends AxiosResponse<T> {
+  config: TConfig;
+}
+
+export interface WithLoggerAxiosError<TConfig extends WithLogger = WithLogger> extends AxiosError {
+  config: TConfig;
+  response?: WithLoggerAxiosResponse<any, TConfig>;
+}
+
 const redactPath = (path: string[], obj: any): any => {
   const [current, ...rest] = path;
 
@@ -42,19 +51,24 @@ export const getMeta = (response: AxiosResponse): LogMeta => {
   return redactPaths(redact || defaultRedact, meta);
 };
 
-export const axiosLogger = (log: (level: 'info' | 'error', meta: LogMeta) => void) => ({
+export const axiosLogger = <TConfig extends WithLogger = WithLogger>(
+  log: (level: 'info' | 'error', meta: LogMeta, config: TConfig) => void,
+) => ({
   request: {
-    onFullfilled: (config: WithLogger) => ({ ...config, requestStartedAt: config.requestStartedAt || new Date() }),
+    onFulfilled: (config: TConfig): TConfig => ({
+      ...config,
+      requestStartedAt: config.requestStartedAt || new Date(),
+    }),
   },
   response: {
-    onFullfilled: (response: AxiosResponse) => {
-      log('info', getMeta(response));
+    onFulfilled: (response: WithLoggerAxiosResponse<any, TConfig>) => {
+      log('info', getMeta(response), response.config);
       return response;
     },
-    onRejected: (error: AxiosError) => {
+    onRejected: (error: WithLoggerAxiosError<TConfig>) => {
       if (error.response) {
         const { responseBody, ...meta } = getMeta(error.response);
-        log('error', meta);
+        log('error', meta, error.config);
       }
       return Promise.reject(error);
     },

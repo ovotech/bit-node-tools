@@ -1,10 +1,9 @@
 export {
-  ApolloDataSourceConfig,
+  AxiosDataSourceConfig,
   ApolloAxiosInstance,
   ApolloAxiosPromise,
   ApolloAxiosResponse,
   AxiosDataSource,
-  RequestInterceptor,
-  ResponseInterceptor,
+  Interceptor,
 } from './AxiosDataSource';
 export { cacheAdapter } from './cacheAdapter';

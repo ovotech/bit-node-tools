@@ -22,28 +22,47 @@ export class MyDataSource extends AxiosDataSource {
   }
 }
 
-const dataSource = new MyDataSource({ baseURL: ..., });
+const dataSource = new MyDataSource({ baseURL: '...' });
 ```
 
 ### Interceptors
 
-You can pass interceptors to axios declaratively with the `request: []` or `response: []` option keys, for request or response interceptors respectively.
+You can pass interceptors to axios declaratively with the `interceptros` property.
 
 ```typescript
-const logResponse = (res) => {
-  console.log(res);
-  return res;
+import { Interceptor } from '@ovotech/apollo-datasource-axios';
+const logger: Interceptor = {
+  response: {
+    onFulfilled: res => {
+      console.log(res);
+      return res;
+    },
+    onRejected: err => {
+      console.log(err);
+      return err;
+    },
+  },
+};
+
+const dataSource = new MyDataSource({ baseURL: '...', interceptors: [logger] });
+```
+
+### Advanced types
+
+If you want to be more exact on the types passed to and from axios, you can fill in the optional types. This is useful if some of your interceptors are adding properties to the config.
+
+```typescript
+import { AxiosDataSource, AxiosDataSourceConfig } from '@ovotech/apollo-datasource-axios';
+
+interface Context extends AxiosDataSourceConfig {
+  version: string;
 }
 
-const logErr = (err) => {
-  console.log(err);
-  return err;
+export class MyDataSource extends AxiosDataSource<Context> {
+  users(id: string) {
+    return this.get(`/users/${id}`, { version: '123' });
+  }
 }
-
-const dataSource = new MyDataSource(
-  { baseURL: ..., },
-  { response: [{ onFulfilled: logResponse, onRejected: logErr }]}
-);
 ```
 
 ## Running the tests
