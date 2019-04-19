@@ -1,23 +1,7 @@
 import { DataSource, DataSourceConfig } from 'apollo-datasource';
 import { ApolloError, AuthenticationError, ForbiddenError } from 'apollo-server-errors';
-import axios, {
-  AxiosError,
-  AxiosInstance,
-  AxiosInterceptorManager,
-  AxiosPromise,
-  AxiosRequestConfig,
-  AxiosResponse,
-} from 'axios';
+import axios, { AxiosError, AxiosInstance, AxiosInterceptorManager, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { cacheAdapter } from './cacheAdapter';
-
-export interface RequestInterceptor<V = AxiosRequestConfig> {
-  onFulfilled?: (value: V) => V | Promise<V>;
-  onRejected?: (error: any) => any;
-}
-export interface ResponseInterceptor<V = AxiosResponse> {
-  onFulfilled?: (value: V) => V | Promise<V>;
-  onRejected?: (error: any) => any;
-}
 
 export interface ApolloAxiosInstance<TConfig extends AxiosRequestConfig = AxiosRequestConfig> extends AxiosInstance {
   (config: TConfig): ApolloAxiosResponse<any, TConfig>;
@@ -48,16 +32,24 @@ export interface ApolloDataSourceConfig extends AxiosRequestConfig {
   context?: any;
 }
 
-export abstract class AxiosDataSource<
-  TConfig extends ApolloDataSourceConfig = ApolloDataSourceConfig
-> extends DataSource {
+export interface RequestInterceptor<T = ApolloDataSourceConfig> {
+  onFulfilled?: (config: T) => T | Promise<T>;
+  onRejected?: (error: any) => any;
+}
+
+export interface ResponseInterceptor<T = ApolloDataSourceConfig, TT = ApolloAxiosResponse<any, T>> {
+  onFulfilled?: (response: TT) => TT | Promise<TT>;
+  onRejected?: (error: any) => any;
+}
+
+export abstract class AxiosDataSource<TConfig extends ApolloDataSourceConfig> extends DataSource {
   api: ApolloAxiosInstance<TConfig>;
 
   constructor(
     protected config: ApolloDataSourceConfig = {},
     options?: {
       request?: Array<RequestInterceptor<TConfig>>;
-      response?: Array<ResponseInterceptor<ApolloAxiosResponse<any, TConfig>>>;
+      response?: Array<ResponseInterceptor<TConfig>>;
     },
   ) {
     super();

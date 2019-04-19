@@ -4,5 +4,7 @@ export {
   ApolloAxiosPromise,
   ApolloAxiosResponse,
   AxiosDataSource,
+  RequestInterceptor,
+  ResponseInterceptor,
 } from './AxiosDataSource';
 export { cacheAdapter } from './cacheAdapter';
