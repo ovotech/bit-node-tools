@@ -28,11 +28,7 @@ export interface ApolloAxiosResponse<T = any, TConfig extends AxiosRequestConfig
 export interface ApolloAxiosPromise<T = any, TConfig extends AxiosRequestConfig = AxiosRequestConfig>
   extends Promise<ApolloAxiosResponse<T, TConfig>> {}
 
-export interface AxiosDataSourceConfig extends AxiosRequestConfig {
-  context?: any;
-}
-
-export interface Interceptor<T = AxiosDataSourceConfig, TT = ApolloAxiosResponse<any, T>> {
+export interface Interceptor<T = AxiosRequestConfig, TT = ApolloAxiosResponse<any, T>> {
   request?: {
     onFulfilled?: (config: T) => T | Promise<T>;
     onRejected?: (error: any) => any;
@@ -43,10 +39,10 @@ export interface Interceptor<T = AxiosDataSourceConfig, TT = ApolloAxiosResponse
   };
 }
 
-export abstract class AxiosDataSource<TConfig extends AxiosDataSourceConfig = AxiosRequestConfig> extends DataSource {
+export abstract class AxiosDataSource<TConfig extends AxiosRequestConfig = AxiosRequestConfig> extends DataSource {
   api: ApolloAxiosInstance<TConfig>;
 
-  constructor(protected config: AxiosDataSourceConfig & { interceptors?: Array<Interceptor<TConfig>> } = {}) {
+  constructor(protected config: AxiosRequestConfig & { interceptors?: Array<Interceptor<TConfig>> } = {}) {
     super();
     const { interceptors, ...axiosConfig } = config;
 
@@ -66,7 +62,6 @@ export abstract class AxiosDataSource<TConfig extends AxiosDataSourceConfig = Ax
 
   initialize(config: DataSourceConfig<any>): void {
     this.api.defaults.adapter = cacheAdapter(config.cache, this.api.defaults.adapter!);
-    this.api.defaults.context = config.context;
   }
 
   async request<T = any>(config: TConfig) {
@@ -77,7 +72,7 @@ export abstract class AxiosDataSource<TConfig extends AxiosDataSourceConfig = Ax
         const {
           status,
           statusText,
-          config: { url },
+          config: { url, params, method },
           data,
         } = (error as AxiosError).response!;
 
@@ -89,7 +84,16 @@ export abstract class AxiosDataSource<TConfig extends AxiosDataSourceConfig = Ax
             ? new ForbiddenError(message)
             : new ApolloError(message, error.code);
 
-        apolloError.extensions = { ...apolloError.extensions, response: { url, status, statusText, data } };
+        apolloError.extensions = {
+          ...apolloError.extensions,
+          response: { url, params, method, status, statusText, data },
+        };
+
+        throw apolloError;
+      } else if (error.config) {
+        const { url, method, params, data } = error.config;
+        const apolloError = new ApolloError(error.message, error.code);
+        apolloError.extensions = { ...apolloError.extensions, request: { url, params, method, data } };
 
         throw apolloError;
       } else {

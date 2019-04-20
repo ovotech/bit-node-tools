@@ -1,6 +1,7 @@
-import { AxiosDataSource, AxiosDataSourceConfig } from '../src';
+import { AxiosRequestConfig } from 'axios';
+import { AxiosDataSource } from '../src';
 
-export interface AdditionalConfig extends AxiosDataSourceConfig {
+export interface AdditionalConfig extends AxiosRequestConfig {
   dataSourceVersion: string;
 }
 
