@@ -48,8 +48,8 @@ export class Logger {
 
   log(level: string, message: string, meta?: LoggerMeta) {
     const metadata = {
-      ...meta,
       ...this.staticMeta,
+      ...meta,
     };
 
     const sanitizedMetadata = this.sanitizers.reduce<LoggerMeta>(

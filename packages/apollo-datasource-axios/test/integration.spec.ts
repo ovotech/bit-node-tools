@@ -5,7 +5,7 @@ import { Interceptor } from '../src';
 import { AdditionalConfig, TestDataSource } from './TestDataSource';
 
 const cache = new InMemoryLRUCache();
-const config = { context: { test: '123' }, cache };
+const config = { context: {}, cache };
 const dataSource = new TestDataSource({ baseURL: 'http://api.example.com' });
 dataSource.initialize(config);
 
@@ -21,7 +21,6 @@ describe('Integration test', () => {
     expect(user.status).toEqual(200);
     expect(user.data).toEqual({ id: 12, name: 'John' });
     expect(user.config.dataSourceVersion).toEqual('test');
-    expect(user.config.context).toEqual({ test: '123' });
     expect(cache.getTotalSize()).resolves.toBeGreaterThan(0);
   });
 
@@ -135,6 +134,7 @@ describe('Integration test', () => {
       'extensions',
       expect.objectContaining({
         response: {
+          method: 'get',
           url: 'http://api.example.com/users/18',
           status: 500,
           statusText: null,

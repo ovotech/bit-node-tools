@@ -1,5 +1,4 @@
 export {
-  AxiosDataSourceConfig,
   ApolloAxiosInstance,
   ApolloAxiosPromise,
   ApolloAxiosResponse,
