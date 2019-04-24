@@ -13,7 +13,7 @@ const response = {
 };
 
 describe('Integration test', () => {
-  it('Should ', async () => {
+  it('Should perform authentication', async () => {
     nock('http://auth')
       .post(
         '/auth/realms/ovo-energy/protocol/openid-connect/token',
