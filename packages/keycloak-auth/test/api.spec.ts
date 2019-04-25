@@ -80,4 +80,30 @@ describe('Api test', () => {
     expect(response5).toEqual(expect.objectContaining({ accessToken: 'access-3', refreshToken: 'refresh-3' }));
     expect(response6).toEqual(expect.objectContaining({ accessToken: 'access-3', refreshToken: 'refresh-3' }));
   });
+
+  it('Should handle token errors', async () => {
+    nock('http://auth')
+      .post(
+        '/auth/realms/ovo-energy/protocol/openid-connect/token',
+        'grant_type=client_credentials&client_id=test-portal&client_secret=11-22-33',
+      )
+      .times(2)
+      .reply(200, response);
+
+    nock('http://auth')
+      .post(
+        '/auth/realms/ovo-energy/protocol/openid-connect/token',
+        'grant_type=refresh_token&client_id=test-portal&client_secret=11-22-33&refresh_token=refresh-1',
+      )
+
+      .reply(400, { message: 'Wrong token' });
+
+    const params = { serverUrl: 'http://auth', clientId: 'test-portal', clientSecret: '11-22-33', margin: 0 };
+
+    const response1 = await authenticate(params);
+    const response2 = await authenticate({ ...params, previous: response1 });
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    const response3 = await authenticate({ ...params, previous: response2 });
+    await authenticate({ ...params, previous: response3 });
+  });
 });

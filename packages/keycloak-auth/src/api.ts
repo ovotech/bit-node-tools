@@ -95,8 +95,16 @@ export const authenticate = async ({
     if (!isExpired(accessTokenExpires, timestamp, margin)) {
       return previous;
     } else if (!isExpired(refreshTokenExpires, timestamp, margin)) {
-      const refreshResponse = await refresh({ serverUrl, clientId, clientSecret, refreshToken });
-      return toAuth(refreshResponse, timestamp);
+      try {
+        const refreshResponse = await refresh({ serverUrl, clientId, clientSecret, refreshToken });
+        return toAuth(refreshResponse, timestamp);
+      } catch (error) {
+        if (error instanceof KeycloakAuthError) {
+          return toAuth(await login({ serverUrl, clientId, clientSecret }), timestamp);
+        } else {
+          throw error;
+        }
+      }
     }
   }
   const loginResponse = await login({ serverUrl, clientId, clientSecret });
