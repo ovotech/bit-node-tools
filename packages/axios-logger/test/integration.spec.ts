@@ -1,25 +1,16 @@
 import axios from 'axios';
 import * as nock from 'nock';
-import { axiosLogger, WithLogger } from '../src';
-
-interface ConfigWithLogger extends WithLogger {
-  test?: string;
-}
+import { axiosLogger, redactHeader } from '../src';
 
 const log = jest.fn();
 const instance = axios.create({ baseURL: 'http://api.example.com' });
-const logger = axiosLogger<ConfigWithLogger>((level, meta, cfg) => {
-  log(level, meta);
-  cfg.test = '123';
-});
+const logger = axiosLogger((level, meta) => log(level, meta));
 
 instance.interceptors.request.use(logger.request.onFulfilled);
 instance.interceptors.response.use(logger.response.onFulfilled, logger.response.onRejected);
 
 describe('Integration test', () => {
-  beforeEach(() => {
-    log.mockClear();
-  });
+  beforeEach(() => log.mockClear());
 
   it('Test logger response', async () => {
     nock('http://api.example.com')
@@ -63,8 +54,8 @@ describe('Integration test', () => {
     const body = { name: 'John', cards: [{ id: '111', name: 'Me' }, { id: '222', name: 'Me' }] };
 
     await instance.post('/users/13', body, {
-      redact: ['requestBody.cards.*.id', 'responseBody.cards.*.name'],
-    } as WithLogger);
+      headers: { [redactHeader]: 'requestBody.cards.*.id,responseBody.cards.*.name' },
+    });
 
     expect(log).toHaveBeenCalledWith('info', {
       uri: 'http://api.example.com/users/13',
@@ -91,8 +82,8 @@ describe('Integration test', () => {
 
     await expect(
       instance.patch('/users/13', body, {
-        redact: ['requestBody.cards.*.id', 'responseBody.cards.*.name'],
-      } as WithLogger),
+        headers: { [redactHeader]: 'requestBody.cards.*.id, responseBody.cards.*.name' },
+      }),
     ).rejects.toHaveProperty('response', expect.objectContaining({ status: 404 }));
 
     expect(log).toHaveBeenCalledWith('error', {
