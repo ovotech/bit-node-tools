@@ -15,16 +15,8 @@ export interface LogMeta {
   responseTime: number;
 }
 
-export interface WithLogger extends AxiosRequestConfig, AxiosLogger {}
-
-export interface WithLoggerAxiosResponse<T = any, TConfig extends WithLogger = WithLogger> extends AxiosResponse<T> {
-  config: TConfig;
-}
-
-export interface WithLoggerAxiosError<TConfig extends WithLogger = WithLogger> extends AxiosError {
-  config: TConfig;
-  response?: WithLoggerAxiosResponse<any, TConfig>;
-}
+export const startHeader = 'X-Request-Started';
+export const redactHeader = 'X-Redact-Log';
 
 const redactPath = (path: string[], obj: any): any => {
   const [current, ...rest] = path;
@@ -42,30 +34,34 @@ export const redactPaths = (paths: string[], object: any) =>
   paths.reduce((current, path) => redactPath(path.split('.'), current), object);
 
 export const getMeta = (response: AxiosResponse): LogMeta => {
-  const { redact, url: uri, data, params, method, requestStartedAt }: WithLogger = response.config;
+  const { url: uri, data, params, method, headers } = response.config;
   const { data: responseBody, status } = response;
   const requestBody = data === undefined ? undefined : JSON.parse(data);
-  const responseTime = requestStartedAt ? new Date().getTime() - requestStartedAt.getTime() : undefined;
+  const responseTime = headers[startHeader] ? new Date().getTime() - headers[startHeader].getTime() : undefined;
   const meta = { uri, method, requestBody, responseBody, params, status, responseTime };
 
-  return redactPaths(redact || defaultRedact, meta);
+  return redactPaths(
+    headers[redactHeader] ? headers[redactHeader].split(',').map((path: string) => path.trim()) : defaultRedact,
+    meta,
+  );
 };
 
-export const axiosLogger = <TConfig extends WithLogger = WithLogger>(
-  log: (level: 'info' | 'error', meta: LogMeta, config: TConfig) => void,
-) => ({
+export const axiosLogger = (log: (level: 'info' | 'error', meta: LogMeta, config: AxiosRequestConfig) => void) => ({
   request: {
-    onFulfilled: (config: TConfig): TConfig => ({
+    onFulfilled: (config: AxiosRequestConfig): AxiosRequestConfig => ({
       ...config,
-      requestStartedAt: config.requestStartedAt || new Date(),
+      headers: {
+        ...config.headers,
+        [startHeader]: config.headers[startHeader] || new Date(),
+      },
     }),
   },
   response: {
-    onFulfilled: (response: WithLoggerAxiosResponse<any, TConfig>) => {
+    onFulfilled: (response: AxiosResponse) => {
       log('info', getMeta(response), response.config);
       return response;
     },
-    onRejected: (error: WithLoggerAxiosError<TConfig>) => {
+    onRejected: (error: AxiosError) => {
       if (error.response) {
         const { responseBody, ...meta } = getMeta(error.response);
         log('error', meta, error.config);

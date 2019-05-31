@@ -1,12 +1,7 @@
-import { AxiosRequestConfig } from 'axios';
 import { AxiosDataSource } from '../src';
 
-export interface AdditionalConfig extends AxiosRequestConfig {
-  dataSourceVersion: string;
-}
-
-export class TestDataSource extends AxiosDataSource<AdditionalConfig> {
+export class TestDataSource extends AxiosDataSource {
   users(id: string) {
-    return this.get(`/users/${id}`, { dataSourceVersion: 'test' });
+    return this.get(`/users/${id}`);
   }
 }

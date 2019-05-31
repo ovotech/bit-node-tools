@@ -9,7 +9,7 @@ yarn add @ovotech/axios-logger
 ```
 
 ```typescript
-import { axiosLogger } from '@ovotech/axios-logger';
+import { axiosLogger, redactHeader } from '@ovotech/axios-logger';
 import axios from 'axios';
 
 const logger = axiosLogger((level, meta, config) => console.log(level, meta, config.url));
@@ -23,7 +23,7 @@ api.interceptors.response.use(logger.response.onFullfilled, logger.response.onRe
 api.get('/my/path');
 
 const body = { user: { cards: [{ id: '111' }, { id: '222' }] } };
-api.post('/update/path', body, { redact: ['requestBody.user.cards.*.id'] });
+api.post('/update/path', body, { headers: { [redactHeader]: 'requestBody.user.cards.*.id' } });
 ```
 
 You have 3 interceptors. `logger.request.onFullfilled`, `logger.response.onFullfilled` and `logger.response.onRejected`.
@@ -48,12 +48,12 @@ The log function will receive 3 arguments - level, meta and axios request config
 }
 ```
 
-By default `uri`, `params`, `requestBody` and `responseBody` will be "redacted", since they can contain personally identifiable information. You can control that with the `redact` property. Its a list of dot delimited field paths to be redacted. Can contain wildcard `*` path to target all array items.
+By default `uri`, `params`, `requestBody` and `responseBody` will be "redacted", since they can contain personally identifiable information. You can control that with the `redactHeader`. Its a comma separated list of dot delimited field paths to be redacted. Can contain wildcard `*` path to target all array items.
 
 For example to redact some fields.
 
 ```typescript
-api.post('/update/path', body, { redact: ['requestBody.id', 'responseBody.user'] });
+api.post('/update/path', body, { headers: { [redactHeader]: 'requestBody.id, responseBody.user' });
 ```
 
 You can also set redact at the axios instance level for global redaction rules:
@@ -62,20 +62,12 @@ You can also set redact at the axios instance level for global redaction rules:
 const api = axios.create({ redact: ['requestBody'] });
 ```
 
-### TypeScript
-
-Since axios types strictly define available properties for axios configs, if you want to use `redact` you'll need to take advantage of the `WithLogger` type:
-
-```typescript
-const api = axios.create({ redact: ['requestBody'] } as WithLogger);
-```
-
 ### Granular logging
 
 You can perform different things on error / success by inspecting the "level" argument, passed to the log function.
 
 ```typescript
-import { axiosLogger, WithLogger } from '@ovotech/axios-logger';
+import { axiosLogger } from '@ovotech/axios-logger';
 import axios from 'axios';
 
 const logger = axiosLogger((level, meta) => {

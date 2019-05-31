@@ -1,7 +1,7 @@
 {
   "name": "@ovotech/apollo-datasource-axios",
   "description": "Datasource using axios",
-  "version": "1.2.1",
+  "version": "2.0.0",
   "main": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
@@ -38,7 +38,7 @@
     "apollo-datasource": "^0.3.1",
     "apollo-server-caching": "^0.3.1",
     "apollo-server-errors": "^2.2.1",
-    "axios": "^0.18.0",
+    "axios": "^0.19.0",
     "http-cache-semantics": "^4.0.3"
   }
 }

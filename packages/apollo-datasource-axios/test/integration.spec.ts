@@ -2,7 +2,7 @@ import { InMemoryLRUCache } from 'apollo-server-caching';
 import { ApolloError, AuthenticationError, ForbiddenError } from 'apollo-server-errors';
 import * as nock from 'nock';
 import { Interceptor } from '../src';
-import { AdditionalConfig, TestDataSource } from './TestDataSource';
+import { TestDataSource } from './TestDataSource';
 
 const cache = new InMemoryLRUCache();
 const config = { context: {}, cache };
@@ -20,7 +20,6 @@ describe('Integration test', () => {
 
     expect(user.status).toEqual(200);
     expect(user.data).toEqual({ id: 12, name: 'John' });
-    expect(user.config.dataSourceVersion).toEqual('test');
     expect(cache.getTotalSize()).resolves.toBeGreaterThan(0);
   });
 
@@ -62,10 +61,9 @@ describe('Integration test', () => {
     const reqErrorCall = jest.fn();
     const resErrorCall = jest.fn();
 
-    const interceptor: Interceptor<AdditionalConfig> = {
+    const interceptor: Interceptor = {
       request: {
         onFulfilled: cfg => {
-          expect(cfg.dataSourceVersion).toEqual('test2');
           reqCall();
           return cfg;
         },
@@ -77,12 +75,10 @@ describe('Integration test', () => {
       },
       response: {
         onFulfilled: response => {
-          expect(response.config.dataSourceVersion).toEqual('test2');
           resCall();
           return response;
         },
         onRejected: err => {
-          expect(err.config.dataSourceVersion).toEqual('test2');
           resErrorCall();
           return err;
         },
@@ -92,11 +88,9 @@ describe('Integration test', () => {
     const intercepted = new TestDataSource({ interceptors: [interceptor] });
     intercepted.initialize(config);
 
-    await expect(
-      intercepted.get('http://api.example.com/users/14', { dataSourceVersion: 'test2' }),
-    ).resolves.toHaveProperty('status', 200);
+    await expect(intercepted.get('http://api.example.com/users/14')).resolves.toHaveProperty('status', 200);
 
-    await expect(intercepted.get('http://api.example.com/users/15', { dataSourceVersion: 'test2' })).resolves.toEqual(
+    await expect(intercepted.get('http://api.example.com/users/15')).resolves.toEqual(
       new ApolloError('Request failed with status code 404'),
     );
 
