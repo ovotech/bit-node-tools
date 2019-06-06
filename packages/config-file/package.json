@@ -1,7 +1,7 @@
 {
   "name": "@ovotech/config-file",
   "description": "load a config file and resolve environment variables",
-  "version": "1.1.0",
+  "version": "1.0.2",
   "main": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",

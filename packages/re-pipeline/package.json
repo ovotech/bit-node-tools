@@ -1,7 +1,7 @@
 {
   "name": "@ovotech/re-pipeline",
   "description": "A node pipeline implementation with resume on error",
-  "version": "1.1.0",
+  "version": "1.0.1",
   "main": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
