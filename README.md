@@ -30,6 +30,7 @@ BIT Team tools for working with Kafka, Avro and other misc stuff. They are split
 | [@ovotech/winston-logger](packages/winston-logger/README.md)                   | Used in prod | Wrap winston logger to hide graylog semantics and implement safe static meta contexts with PII sanitisers                                                                 |
 | [@ovotech/apollo-datasource-axios](packages/apollo-datasource-axios/README.md) | Used in prod | A rest datasource that uses axios under the hood. This allows adding generic interceptors, adapters etc. Integrates with cache and cache policies. Supports Interceptors. |
 | [@ovotech/bigquery-pg-sink](packages/bigquery-pg-sink/README.md)               | Used in prod | Stream the results of query made by [nodejs-bigquery](https://github.com/googleapis/nodejs-bigquery) into a [postgres database](https://www.postgresql.org/).             |
+| [@ovotech/influx-metrics-tracker](packages/influx-metrics-tracker/README.md)   | Used in prod | Track metrics and store them in an Influx database, with secondary [logging](packages/winston-logger/README.md) if Influx is unavailable.                                 |
 
 ## Running the tests
 
