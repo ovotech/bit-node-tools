@@ -20,6 +20,8 @@
   },
   "devDependencies": {
     "@types/jest": "^24.0.13",
+    "@ovotech/winston-logger": "^1.2.5",
+    "influx": "^5.1.0",
     "jest": "^24.8.0",
     "prettier": "^1.17.1",
     "ts-jest": "^24.0.2",
