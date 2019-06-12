@@ -12,7 +12,7 @@ export class TestTracker extends MetricsTracker {
 
 describe('Base metrics class', () => {
   const metricsMeta = {
-    workspace: 'test-test',
+    extraTagName: 'some-value',
   };
   let mockInflux: any;
   let mockLogger: any;
