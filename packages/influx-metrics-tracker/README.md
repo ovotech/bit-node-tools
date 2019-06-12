@@ -37,7 +37,7 @@ const influx = new InfluxDB(influxConfig);
 
 // Create the tracker
 const metricsMeta = {
-  env: process.env.NODE_ENV,
+  extraTagName: 'some-value',
 };
 const tracker = new PerformanceMetricsTracker(influx, logger, metricsMeta);
 
