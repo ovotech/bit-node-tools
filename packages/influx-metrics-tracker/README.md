@@ -30,7 +30,7 @@ class PerformanceMetricsTracker extends MetricsTracker {
 // Create Logger and Influx instances
 const winstonLogger = winston.createLogger(...);
 const logger = new Logger(winstonLogger, { traceToken: req.headers['X-Trace-Token'] });
-const config: ISingleHostConfig = {
+const influxConfig: ISingleHostConfig = {
   host: 'my-influx-host',
 };
 const influx = new InfluxDB(influxConfig);

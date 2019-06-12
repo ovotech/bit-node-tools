@@ -1,7 +1,9 @@
 import { Logger } from '@ovotech/winston-logger';
 import { InfluxDB } from 'influx';
 
-interface MetricsMeta {}
+interface MetricsMeta {
+  [key: string]: any;
+}
 
 export abstract class MetricsTracker {
   constructor(protected influx: InfluxDB, protected logger: Logger, protected staticMeta?: MetricsMeta) {}
