@@ -42,6 +42,12 @@ const tracker = new PerformanceMetricsTracker(influx, logger, metricsMeta);
 await tracker.trackQueryTime(12.34, 'myFirstQuery')
 ```
 
+As well as a base class that allows you to define custom trackers, there are pre-defined trackers for common operations.
+These allow services to use a common interface and not re-implement the same functionality.
+
+- `KafkaMetricsTracker` - track actions around the lifecycle of Kafka events
+- `ResponseMetricsTracker` - track information about responses from an API
+
 ## Running the tests
 
 Then you can run the tests with:
