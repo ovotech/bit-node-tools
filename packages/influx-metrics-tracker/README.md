@@ -45,6 +45,7 @@ await tracker.trackQueryTime(12.34, 'myFirstQuery')
 As well as a base class that allows you to define custom trackers, there are pre-defined trackers for common operations.
 These allow services to use a common interface and not re-implement the same functionality.
 
+- `ExternalRequestMetricsTracker` - track information about calling other services
 - `KafkaMetricsTracker` - track actions around the lifecycle of Kafka events
 - `ResponseMetricsTracker` - track information about responses from an API
 
