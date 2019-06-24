@@ -1,4 +1,4 @@
-import { MetricsTracker } from '@ovotech/influx-metrics-tracker';
+import { MetricsTracker } from './base';
 
 export class ExternalRequestMetricsTracker extends MetricsTracker {
   private static externalRequestTimeMeasurementName = 'external-request-time';
