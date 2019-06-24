@@ -9,7 +9,7 @@ yarn add @ovotech/influx-metrics-tracker
 ```
 
 ```typescript
-import { MetricsTracker } from '@ovotech/influx-metrics-tracker';
+import { createInfluxConnection, MetricsTracker } from '@ovotech/influx-metrics-tracker';
 import { Logger } from '@ovotech/winston-logger';
 import { InfluxDB, ISingleHostConfig } from 'influx';
 import * as winston from 'winston';
@@ -30,10 +30,7 @@ class PerformanceMetricsTracker extends MetricsTracker {
 // Create Logger and Influx instances
 const winstonLogger = winston.createLogger(...);
 const logger = new Logger(winstonLogger, { traceToken: req.headers['X-Trace-Token'] });
-const influxConfig: ISingleHostConfig = {
-  host: 'my-influx-host',
-};
-const influx = new InfluxDB(influxConfig);
+const influx = createInfluxConnection(process.env);
 
 // Create the tracker
 const metricsMeta = {
