@@ -5,7 +5,11 @@ export class KafkaMetricsTracker extends MetricsTracker {
   private static eventReceivedMeasurementName = 'kafka-event-received';
 
   async trackEventReceived(eventName: string, ageMs: number) {
-    await this.trackPoint(KafkaMetricsTracker.eventReceivedMeasurementName, { eventName }, { count: 1, ageMs });
+    await this.trackPoint(
+      KafkaMetricsTracker.eventReceivedMeasurementName,
+      { eventName },
+      { count: 1, ageMs: Math.round(ageMs) },
+    );
   }
 
   async trackEventProcessed(eventName: string, processingState: ProcessingState) {

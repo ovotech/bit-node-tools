@@ -51,4 +51,26 @@ describe('Track actions relating to responding to an API request', () => {
       },
     ]);
   });
+
+  it.each([[1234.5, 1235], [123.4, 123], [10, 10]])(
+    'Should round response times to the nearest millisecond: %d',
+    async (exactTime, expectedTrackedTime) => {
+      const requestName = 'test-request';
+
+      await tracker.trackOwnResponseTime(requestName, exactTime);
+
+      expect(mockInflux.writePoints).toHaveBeenLastCalledWith([
+        {
+          measurement: 'own-response-time',
+          tags: {
+            requestName,
+          },
+          fields: {
+            count: 1,
+            timeMs: expectedTrackedTime,
+          },
+        },
+      ]);
+    },
+  );
 });

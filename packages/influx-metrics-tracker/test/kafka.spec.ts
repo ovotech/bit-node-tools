@@ -31,6 +31,28 @@ describe('Track actions relating to consuming an event from Kafka', () => {
     ]);
   });
 
+  it.each([[1234.5, 1235], [123.4, 123], [10, 10]])(
+    'Should round event ages to the nearest millisecond: %d',
+    async (exactAge, expectedTrackedAge) => {
+      const eventName = 'test-event';
+
+      await tracker.trackEventReceived(eventName, exactAge);
+
+      expect(mockInflux.writePoints).toHaveBeenLastCalledWith([
+        {
+          measurement: 'kafka-event-received',
+          tags: {
+            eventName,
+          },
+          fields: {
+            count: 1,
+            ageMs: expectedTrackedAge,
+          },
+        },
+      ]);
+    },
+  );
+
   it.each([ProcessingState.Error, ProcessingState.Success])(
     'Should track the state of a processed event: %s',
     async processingState => {
