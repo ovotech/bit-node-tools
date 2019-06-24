@@ -1,6 +1,7 @@
 import { InfluxDB, ISingleHostConfig } from 'influx';
 
 export { MetricsTracker } from './base';
+export { ExternalRequestMetricsTracker } from './external-request';
 export { KafkaMetricsTracker } from './kafka';
 export { ResponseMetricsTracker } from './response';
 
