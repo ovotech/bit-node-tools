@@ -1,4 +1,4 @@
-import { KafkaMetricsTracker } from '../src/kafka';
+import { KafkaMetricsTracker, ProcessingState } from '../src/kafka';
 
 describe('Track actions relating to consuming an event from Kafka', () => {
   let mockInflux: any;
@@ -31,7 +31,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
     ]);
   });
 
-  it.each([KafkaMetricsTracker.ProcessingState.Error, KafkaMetricsTracker.ProcessingState.Success])(
+  it.each([ProcessingState.Error, ProcessingState.Success])(
     'Should track the state of a processed event: %s',
     async processingState => {
       const eventName = 'test-event';

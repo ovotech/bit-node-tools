@@ -8,7 +8,7 @@ export class KafkaMetricsTracker extends MetricsTracker {
     await this.trackPoint(KafkaMetricsTracker.eventReceivedMeasurementName, { eventName }, { count: 1, ageMs });
   }
 
-  async trackEventProcessed(eventName: string, processingState: KafkaMetricsTracker.ProcessingState) {
+  async trackEventProcessed(eventName: string, processingState: ProcessingState) {
     await this.trackPoint(
       KafkaMetricsTracker.eventProcessedMeasurementName,
       { eventName, processingState },
@@ -17,10 +17,7 @@ export class KafkaMetricsTracker extends MetricsTracker {
   }
 }
 
-// tslint:disable-next-line:no-namespace
-export namespace KafkaMetricsTracker {
-  export enum ProcessingState {
-    Error = 'error',
-    Success = 'success',
-  }
+export enum ProcessingState {
+  Error = 'error',
+  Success = 'success',
 }
