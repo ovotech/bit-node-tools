@@ -9,7 +9,7 @@ yarn add @ovotech/influx-metrics-tracker
 ```
 
 ```typescript
-import { MetricsTracker } from '@ovotech/influx-metrics-tracker';
+import { createInfluxConnection, MetricsTracker } from '@ovotech/influx-metrics-tracker';
 import { Logger } from '@ovotech/winston-logger';
 import { InfluxDB, ISingleHostConfig } from 'influx';
 import * as winston from 'winston';
@@ -30,10 +30,7 @@ class PerformanceMetricsTracker extends MetricsTracker {
 // Create Logger and Influx instances
 const winstonLogger = winston.createLogger(...);
 const logger = new Logger(winstonLogger, { traceToken: req.headers['X-Trace-Token'] });
-const influxConfig: ISingleHostConfig = {
-  host: 'my-influx-host',
-};
-const influx = new InfluxDB(influxConfig);
+const influx = createInfluxConnection(process.env);
 
 // Create the tracker
 const metricsMeta = {
@@ -44,6 +41,13 @@ const tracker = new PerformanceMetricsTracker(influx, logger, metricsMeta);
 // Track a point
 await tracker.trackQueryTime(12.34, 'myFirstQuery')
 ```
+
+As well as a base class that allows you to define custom trackers, there are pre-defined trackers for common operations.
+These allow services to use a common interface and not re-implement the same functionality.
+
+- `ExternalRequestMetricsTracker` - track information about calling other services
+- `KafkaMetricsTracker` - track actions around the lifecycle of Kafka events
+- `ResponseMetricsTracker` - track information about responses from an API
 
 ## Running the tests
 

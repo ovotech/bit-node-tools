@@ -1,63 +1,32 @@
-import { Logger } from '@ovotech/winston-logger';
-import { InfluxDB } from 'influx';
+import { InfluxDB, ISingleHostConfig } from 'influx';
 
-export abstract class MetricsTracker {
-  constructor(
-    protected influx: InfluxDB,
-    protected logger: Logger,
-    protected staticMeta?: {
-      [key: string]: any;
-    },
-  ) {}
+export { MetricsTracker } from './base';
+export { ExternalRequestMetricsTracker } from './external-request';
+export { KafkaMetricsTracker } from './kafka';
+export { ResponseMetricsTracker } from './response';
 
-  protected async trackPoint(
-    measurementName: string,
-    tags: { [name: string]: string },
-    fields: { [name: string]: any },
-  ) {
-    const validTags = this.getValidTags(tags);
-    this.logInvalidTags(measurementName, tags);
-
-    try {
-      await this.influx.writePoints([
-        {
-          measurement: measurementName,
-          tags: {
-            ...this.staticMeta,
-            ...validTags,
-          },
-          fields,
-        },
-      ]);
-    } catch (err) {
-      this.logger.error('Error tracking Influx metric', {
-        metric: measurementName,
-        tags: JSON.stringify(validTags),
-        fields: JSON.stringify(fields),
-      });
-    }
-  }
-
-  private getInvalidTagNames(tags: { [name: string]: string }) {
-    return Object.entries(tags)
-      .filter(([_, value]) => value.length === 0)
-      .reduce((names: string[], [key, _]) => names.concat([key]), []);
-  }
-
-  private getValidTags(tags: { [name: string]: string }) {
-    return Object.entries(tags)
-      .filter(([_, value]) => value.length > 0)
-      .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
-  }
-
-  private logInvalidTags(measurementName: string, tags: { [name: string]: string }) {
-    const invalidTagNames = this.getInvalidTagNames(tags);
-
-    if (invalidTagNames.length) {
-      this.logger.warn('Attempted to track tags with no value', {
-        metric: measurementName,
-        tagNames: invalidTagNames.sort().join(', '),
-      });
-    }
-  }
+export interface InfluxConfig extends NodeJS.ProcessEnv {
+  INFLUXDB_HOST?: string;
+  INFLUXDB_DATABASE?: string;
+  INFLUXDB_PORT?: string;
+  INFLUXDB_USER?: string;
+  INFLUXDB_PASSWORD?: string;
 }
+
+export const createInfluxConnection = ({
+  INFLUXDB_HOST = '',
+  INFLUXDB_DATABASE = 'default-db',
+  INFLUXDB_PORT = '15661',
+  INFLUXDB_USER = '',
+  INFLUXDB_PASSWORD = '',
+}: InfluxConfig): InfluxDB => {
+  const config: ISingleHostConfig = {
+    host: INFLUXDB_HOST,
+    database: INFLUXDB_DATABASE,
+    port: parseInt(INFLUXDB_PORT, 10),
+    username: INFLUXDB_USER,
+    password: INFLUXDB_PASSWORD,
+    protocol: 'https',
+  };
+  return new InfluxDB(config);
+};
