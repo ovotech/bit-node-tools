@@ -1,7 +1,7 @@
 {
   "name": "@ovotech/influx-metrics-tracker",
   "description": "Track metrics and store them in an Influx database, with secondary logging if Influx is unavailable",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "main": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
@@ -14,14 +14,15 @@
     "lint": "yarn lint-prettier && yarn lint-tslint",
     "build": "tsc --outDir dist --declaration"
   },
+  "dependencies": {
+    "influx": "^5.2.0"
+  },
   "peerDependencies": {
-    "@ovotech/winston-logger": "^1.2.5",
-    "influx": "^5.1.0"
+    "@ovotech/winston-logger": "^1.2.5"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.13",
     "@ovotech/winston-logger": "^1.2.5",
-    "influx": "^5.1.0",
+    "@types/jest": "^24.0.13",
     "jest": "^24.8.0",
     "prettier": "^1.17.1",
     "ts-jest": "^24.0.2",
