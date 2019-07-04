@@ -1,6 +1,6 @@
 {
   "name": "@ovotech/keycloak-auth",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
@@ -10,6 +10,7 @@
   "devDependencies": {
     "@types/axios": "^0.14.0",
     "@types/jest": "^24.0.13",
+    "@types/jsonwebtoken": "^8.3.2",
     "@types/nock": "^10.0.3",
     "@types/node": "^11.10.5",
     "axios": "^0.19.0",
@@ -22,6 +23,9 @@
     "typescript": "^3.5.1"
   },
   "dependencies": {
+    "@types/express-jwt": "^0.0.42",
+    "jsonwebtoken": "^8.5.1",
+    "jwks-rsa": "^1.5.1",
     "node-fetch": "^2.6.0"
   },
   "scripts": {
