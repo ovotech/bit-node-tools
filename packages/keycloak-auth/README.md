@@ -122,6 +122,25 @@ const tokens2 = await refresh({
 });
 ```
 
+## Decoding a request
+You can also call the `bounce` function to decode a given access token, this can be used to protect a server
+
+```typescript
+const token = await authenticate({
+  serverUrl: 'http://keycloak-server.example.com',
+  clientId: '...',
+  clientSecret: '...',
+});
+
+const res = await bounce(
+  token.accessToken,
+  {
+    issuer: '...',
+    jwksUri: '...',
+  },
+);
+```
+
 ## Running the tests
 
 Then you can run the tests with:
