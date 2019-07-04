@@ -6,7 +6,7 @@ export interface BouncerConfig {
   jwksUri: string;
 }
 
-export const bounce = (accessToken: string, config: BouncerConfig) => {
+export const decodeAccessToken = (accessToken: string, config: BouncerConfig) => {
   const client = jwksClient({
     cache: true,
     rateLimit: true,

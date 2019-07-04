@@ -123,7 +123,7 @@ const tokens2 = await refresh({
 ```
 
 ## Decoding a request
-You can also call the `bounce` function to decode a given access token, this can be used to protect a server
+You can also call the `decodeAccessToken` function to decode a given access token, this can be used to protect a server
 
 ```typescript
 const token = await authenticate({
@@ -132,7 +132,7 @@ const token = await authenticate({
   clientSecret: '...',
 });
 
-const res = await bounce(
+const res = await decodeAccessToken(
   token.accessToken,
   {
     issuer: '...',
