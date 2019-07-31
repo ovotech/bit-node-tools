@@ -402,6 +402,19 @@ exports[`Avro ts test Should convert RecordWithLogicalTypes.avsc successfully 1`
 }"
 `;
 
+exports[`Avro ts test Should convert RecordWithLogicalTypesImport.avsc successfully 1`] = `
+"export interface Event {
+    /**
+     * System-assigned numeric user ID. Cannot be changed by the user.
+     */
+    id: number;
+    /**
+     * A timestamp for when the event was created (in epoch millis)
+     */
+    createdAt: number;
+}"
+`;
+
 exports[`Avro ts test Should convert RecordWithMap.avsc successfully 1`] = `
 "export interface User {
     /**
