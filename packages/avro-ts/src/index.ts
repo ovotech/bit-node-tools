@@ -255,11 +255,21 @@ const fullyQualifiedName = (context: Context, type: schema.RecordType) => {
   return currentNamespace ? `${currentNamespace}.${type.name}` : type.name;
 };
 
-export const printAstNode = (importLines: Array<string>, node: Result): string => {
+export const printAstNode = (node: Result): string => {
+  console.error(
+    'DEPRECATED',
+    'printAstNode() will soon not be exported anymore. See the official Typescript documentation for steps to write your own. https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API#creating-and-printing-a-typescript-ast',
+  );
+  return printAstNodeFullyFeatured(node);
+};
+
+const printAstNodeFullyFeatured = (node: Result, extras: { importLines?: Array<string> } = {}): string => {
   const resultFile = ts.createSourceFile('someFileName.ts', '', ts.ScriptTarget.Latest);
   const printer = ts.createPrinter({ newLine: ts.NewLineKind.LineFeed });
   const entries = Object.values(node.context.registry);
   const fullSourceFile = ts.updateSourceFileNode(resultFile, entries);
+
+  const importLines = extras.importLines || [];
 
   return importLines
     .concat(
@@ -295,5 +305,5 @@ export function avroTs(
     .map(visitedType => (logicalTypes[visitedType] as LogicalTypeWithImport).import)
     .filter(Boolean);
 
-  return printAstNode(importLines, node);
+  return printAstNodeFullyFeatured(node, { importLines });
 }
