@@ -16,13 +16,6 @@ BIT Team tools for working with Kafka, Avro and other misc stuff. They are split
 | [@ovotech/avro-ts-cli](packages/avro-ts-cli/README.md)                 | Used in prod | A cli interface for `@ovotech/avro-ts`                                                                                                                                                                                                                               |
 | [@ovotech/re-pipeline](packages/re-pipeline/README.md)                 | Used in prod | A node streams pipeline implementation, that reconnects the pipes on error, once the error has been handled.                                                                                                                                                         |
 
-## Working with postgres
-
-| Package                                                              | Status   | Description                                                                                                                                                            |
-| -------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [@ovotech/pg-sql-migrate](packages/pg-sql-migrate/README.md)         | Not used | A very small library for running sql migrations with postgres. It differs from the numerous other libs in this domain by being very minimal. Without cli dependencies. |
-| [@ovotech/pg-sql-migrate-cli](packages/pg-sql-migrate-cli/README.md) | Not used | A cli interface for `@ovotech/pg-sql-migrate`                                                                                                                          |
-
 ## Misc repos
 
 | Package                                                                        | Status       | Description                                                                                                                                                               |
