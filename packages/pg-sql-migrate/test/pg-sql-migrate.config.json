@@ -1,5 +1,0 @@
-{
-  "client": "postgresql://postgres:dev-pass@0.0.0.0:5432/postgres",
-  "dir": "test/migrations",
-  "table": "testing"
-}
