@@ -15,6 +15,7 @@ BIT Team tools for working with Kafka, Avro and other misc stuff. They are split
 | [@ovotech/avro-ts](packages/avro-ts/README.md)                         | Used in prod | Generate typescript from avro schemas. Without cli dependencies.                                                                                                                                                                                                     |
 | [@ovotech/avro-ts-cli](packages/avro-ts-cli/README.md)                 | Used in prod | A cli interface for `@ovotech/avro-ts`                                                                                                                                                                                                                               |
 | [@ovotech/re-pipeline](packages/re-pipeline/README.md)                 | Used in prod | A node streams pipeline implementation, that reconnects the pipes on error, once the error has been handled.                                                                                                                                                         |
+| [@ovotech/kafka-consumer](packages/kafka-consumer/README.md)           | Used in prod | A generic kafka consumer                                                                                                                                                                                                                                             |
 
 ## Misc repos
 
