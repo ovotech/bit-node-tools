@@ -1,5 +1,5 @@
 export { KeycloakAuthError } from './KeycloakAuthError';
-export { login, refresh, authenticate, AuthResponse, isExpired } from './api';
-export { KeycloakAuth } from './KeycloakAuth';
-export { keycloakAxios } from './keycloakAxios';
+export { login, refresh, authenticate, AuthResponse, isExpired, KeycloakResponse } from './api';
+export { KeycloakAuth, KeycloakAuthOptions } from './KeycloakAuth';
+export { keycloakAxios, KeycloakAxiosOptions } from './keycloakAxios';
 export { decodeAccessToken, BouncerConfig } from './KeycloakBouncer';
