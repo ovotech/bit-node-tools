@@ -1,10 +1,15 @@
 import axios from 'axios';
 import * as nock from 'nock';
-import { keycloakAxios } from '../src';
+import { KeycloakAuth, keycloakAxios } from '../src';
+
+const clientId = 'client-id';
+const clientSecret = 'client-secret';
+const authBaseURL = 'http://auth.test';
+const serviceBaseURL = 'http://service.test';
 
 describe('Integration test', () => {
-  it('Should ', async () => {
-    nock('http://service')
+  beforeEach(() => {
+    nock(serviceBaseURL)
       .options('/test')
       .times(2)
       .reply(
@@ -17,16 +22,16 @@ describe('Integration test', () => {
         },
       );
 
-    nock('http://service')
+    nock(serviceBaseURL)
       .matchHeader('Authorization', 'Bearer access-1')
       .get('/test')
       .times(2)
       .reply(200, { ok: true });
 
-    nock('http://auth')
+    nock(authBaseURL)
       .post(
         '/auth/realms/ovo-energy/protocol/openid-connect/token',
-        'grant_type=client_credentials&client_id=test-portal&client_secret=11-22-33',
+        `grant_type=client_credentials&client_id=${clientId}&client_secret=${clientSecret}`,
       )
       .reply(200, {
         access_token: 'access-1',
@@ -38,16 +43,34 @@ describe('Integration test', () => {
         session_state: '72ea6748-9ffa-4a2d-8431-71b0c563aeae',
         scope: 'email profile',
       });
+  });
 
-    const api = axios.create({ baseURL: 'http://service' });
-    const auth = keycloakAxios({
-      serverUrl: 'http://auth',
-      clientId: 'test-portal',
-      clientSecret: '11-22-33',
+  it('Should take a config object turn it into a usable axios interceptor', async () => {
+    const api = axios.create({ baseURL: serviceBaseURL });
+    const authInterceptor = keycloakAxios({
+      serverUrl: authBaseURL,
+      clientId,
+      clientSecret,
       margin: 12,
     });
 
-    api.interceptors.request.use(auth);
+    api.interceptors.request.use(authInterceptor);
+
+    await api.get('/test');
+    await api.get('/test');
+  });
+
+  it('Should take a keycloak object turn it into a usable axios interceptor', async () => {
+    const authObject = new KeycloakAuth({
+      serverUrl: authBaseURL,
+      clientId,
+      clientSecret,
+      margin: 12,
+    });
+    const api = axios.create({ baseURL: serviceBaseURL });
+    const authInterceptor = keycloakAxios(authObject);
+
+    api.interceptors.request.use(authInterceptor);
 
     await api.get('/test');
     await api.get('/test');
