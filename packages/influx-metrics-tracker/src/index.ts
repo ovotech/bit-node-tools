@@ -2,7 +2,7 @@ import { InfluxDB, ISingleHostConfig } from 'influx';
 
 export { MetricsTracker } from './base';
 export { ExternalRequestMetricsTracker } from './external-request';
-export { KafkaMetricsTracker } from './kafka';
+export { KafkaMetricsTracker, ProcessingState } from './kafka';
 export { ResponseMetricsTracker } from './response';
 
 export interface InfluxConfig extends NodeJS.ProcessEnv {
