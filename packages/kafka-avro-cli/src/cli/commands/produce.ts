@@ -22,7 +22,7 @@ export const produce: CommandModule<{}, ProduceArgs> = {
     const logProducer = new LogProducerTransform();
 
     const errorHandler = (title: string) => (error: Error) => {
-      process.stderr.write(chalk`{red Error in ${title} error.message}`);
+      process.stderr.write(chalk`{red Error in ${title} ${error.message}}\n`);
       producerStream.close();
     };
 
