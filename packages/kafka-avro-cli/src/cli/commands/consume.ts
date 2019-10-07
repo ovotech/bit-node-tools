@@ -54,7 +54,7 @@ export const consume: CommandModule<{}, ConsumeArgs> = {
     const logConsumerProgress = new LogConsumerProgressTransform(!args['output-file']);
 
     const errorHandler = (title: string) => (error: Error) => {
-      process.stderr.write(chalk(`{red Error in ${title} ${error.message}}\n`));
+      process.stderr.write(chalk(`{red Error in ${title}} ${error.message}\n`));
       consumerStream.close(() => {
         process.stderr.write('Consumer closed\n');
       });
