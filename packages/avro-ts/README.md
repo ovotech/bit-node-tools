@@ -27,6 +27,7 @@ const ts = avroTs(avro, {
     },
   },
   recordAlias: 'Record',
+  namesAlias: 'Names',
   namespacedPrefix: 'Namespaced',
 });
 

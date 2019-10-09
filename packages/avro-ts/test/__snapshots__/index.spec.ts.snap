@@ -1,7 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Avro ts test Should convert BalanceAdjustment.avsc successfully 1`] = `
-"export type Record = BalanceAdjustment;
+"export namespace Names {
+    export const BalanceAdjustment = \\"uk.co.boostpower.support.kafka.messages.BalanceAdjustment\\";
+    export const EventMetadata = \\"com.ovoenergy.kafka.common.event.EventMetadata\\";
+}
+
+export type Record = BalanceAdjustment;
 
 export interface BalanceAdjustment {
     metadata: EventMetadata;
@@ -93,7 +98,11 @@ export interface NamespacedBalanceAdjustmentResponse {
 `;
 
 exports[`Avro ts test Should convert ComplexRecord.avsc successfully 1`] = `
-"export type Record = User;
+"export namespace Names {
+    export const User = \\"com.example.avro.User\\";
+}
+
+export type Record = User;
 
 export interface User {
     /**
@@ -146,7 +155,12 @@ export interface EmailAddress {
 `;
 
 exports[`Avro ts test Should convert ComplexUnionLogicalTypes.avsc successfully 1`] = `
-"export type Record = AccountMigrationEvent;
+"export namespace Names {
+    export const AccountMigrationEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationEvent\\";
+    export const EventMetadata = \\"com.ovoenergy.kafka.common.event.EventMetadata\\";
+}
+
+export type Record = AccountMigrationEvent;
 
 export interface AccountMigrationEvent {
     event: NamespacedAccountMigrationCancelledEvent | NamespacedAccountMigrationCompletedEvent | NamespacedAccountMigrationRollBackInitiatedEvent | NamespacedAccountMigrationRolledBackEvent | NamespacedAccountMigrationScheduledEvent | NamespacedAccountMigrationValidatedEvent | NamespacedBalanceRetrievedMigrationEvent;
@@ -353,7 +367,11 @@ export interface NamespacedBalanceRetrievedMigrationEvent {
 `;
 
 exports[`Avro ts test Should convert RecordWithEnum.avsc successfully 1`] = `
-"export type Record = User;
+"export namespace Names {
+    export const User = \\"com.example.avro.User\\";
+}
+
+export type Record = User;
 
 export interface User {
     /**
@@ -380,7 +398,11 @@ export interface User {
 `;
 
 exports[`Avro ts test Should convert RecordWithInterface.avsc successfully 1`] = `
-"export type Record = User;
+"export namespace Names {
+    export const User = \\"com.example.avro.User\\";
+}
+
+export type Record = User;
 
 export interface User {
     /**
@@ -422,7 +444,11 @@ export interface EmailAddress {
 `;
 
 exports[`Avro ts test Should convert RecordWithLogicalTypes.avsc successfully 1`] = `
-"export type Record = Event;
+"export namespace Names {
+    export const Event = \\"com.example.avro.Event\\";
+}
+
+export type Record = Event;
 
 export interface Event {
     /**
@@ -438,6 +464,10 @@ export interface Event {
 
 exports[`Avro ts test Should convert RecordWithLogicalTypesImport.avsc successfully 1`] = `
 "import { Decimal } from 'my-library'
+
+export namespace Names {
+    export const Event = \\"com.example.avro.Event\\";
+}
 
 export type Record = Event;
 
@@ -458,7 +488,11 @@ export interface Event {
 `;
 
 exports[`Avro ts test Should convert RecordWithMap.avsc successfully 1`] = `
-"export type Record = User;
+"export namespace Names {
+    export const User = \\"com.example.avro.User\\";
+}
+
+export type Record = User;
 
 export interface User {
     /**
@@ -488,7 +522,11 @@ export interface Foo {
 `;
 
 exports[`Avro ts test Should convert RecordWithUnion.avsc successfully 1`] = `
-"export type Record = User;
+"export namespace Names {
+    export const User = \\"com.example.avro.User\\";
+}
+
+export type Record = User;
 
 export interface User {
     /**
@@ -512,7 +550,11 @@ export interface User {
 `;
 
 exports[`Avro ts test Should convert SimpleRecord.avsc successfully 1`] = `
-"export type Record = User;
+"export namespace Names {
+    export const User = \\"com.example.avro.User\\";
+}
+
+export type Record = User;
 
 export interface User {
     /**
@@ -535,7 +577,13 @@ export interface User {
 `;
 
 exports[`Avro ts test Should convert TopLevelUnion.avsc successfully 1`] = `
-"export type Record = NamespacedCancelled | NamespacedCreation;
+"export namespace Names {
+    export const Cancelled = \\"com.example.avro.Cancelled\\";
+    export const Creation = \\"com.example.avro.Creation\\";
+    export const EventMetadata = \\"com.example.avro.event.EventMetadata\\";
+}
+
+export type Record = NamespacedCancelled | NamespacedCreation;
 
 export interface Cancelled {
     metadata: EventMetadata;
@@ -561,7 +609,11 @@ export interface NamespacedCreation {
 `;
 
 exports[`Avro ts test Should convert TradeCollection.avsc successfully 1`] = `
-"export type Record = TradeCollection;
+"export namespace Names {
+    export const TradeCollection = \\"com.example.avro.TradeCollection\\";
+}
+
+export type Record = TradeCollection;
 
 export interface TradeCollection {
     producerId: string;
@@ -582,7 +634,11 @@ export interface Trade {
 `;
 
 exports[`Avro ts test Should convert User.avsc successfully 1`] = `
-"export type Record = User;
+"export namespace Names {
+    export const User = \\"com.example.avro.User\\";
+}
+
+export type Record = User;
 
 export interface User {
     /**
@@ -686,7 +742,13 @@ export interface ToDoItem {
 `;
 
 exports[`Avro ts test supports providing different names for record and namespaced type 1`] = `
-"export type Event = NSCancelled | NSCreation;
+"export namespace Names {
+    export const Cancelled = \\"com.example.avro.Cancelled\\";
+    export const Creation = \\"com.example.avro.Creation\\";
+    export const EventMetadata = \\"com.example.avro.event.EventMetadata\\";
+}
+
+export type Event = NSCancelled | NSCreation;
 
 export interface Cancelled {
     metadata: EventMetadata;

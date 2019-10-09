@@ -5,10 +5,16 @@ export interface Registry {
   [key: string]: ts.InterfaceDeclaration;
 }
 
+type UnionRegistry = {
+  [key: string]: string[];
+};
+
 export interface Context {
   recordAlias: string;
+  namesAlias: string;
   namespacedPrefix: string;
   registry: Registry;
+  unionRegistry: UnionRegistry;
   unionMember: boolean;
   namespace?: string;
   namespaces: { [key: string]: ts.TypeReferenceNode };
@@ -20,6 +26,8 @@ export interface Result<TsType = ts.TypeNode> {
   type: TsType;
   context: Context;
 }
+
+type TypeRecordType = { type: schema.RecordType };
 
 export type Convert<TType = Schema> = (context: Context, type: TType) => Result<any>;
 
@@ -128,6 +136,7 @@ const convertRecord: Convert<schema.RecordType> = (context, type) => {
       undefined,
       [prop],
     );
+
     return result(
       withEntry(recordContext, namespacedInterfaceType),
       ts.createTypeReferenceNode(namespacedInterfaceType.name.text, undefined),
@@ -247,6 +256,10 @@ const isLogicalType = (type: Schema): type is schema.LogicalType => typeof type 
 
 const isUnion = (type: Schema): type is schema.NamedType[] => typeof type === 'object' && Array.isArray(type);
 
+const isRecordParent = (type: any): type is TypeRecordType => typeof type === 'object' && typeof type.type === 'object';
+
+const isNamespaced = (type: any): type is { namespace: string; name: string } => !!type.namespace;
+
 const isOptional = (type: Schema): boolean => {
   if (isUnion(type)) {
     const t1 = type[0];
@@ -262,20 +275,11 @@ const fullyQualifiedName = (context: Context, type: schema.RecordType) => {
   return currentNamespace ? `${currentNamespace}.${type.name}` : type.name;
 };
 
-const printAstNode = (node: Result<ts.Node>, extras: { importLines?: Array<string> } = {}): string => {
+const printAstNode = (nodes: Array<ts.Node>, { importLines }: { importLines: Array<string> }): string => {
   const resultFile = ts.createSourceFile('someFileName.ts', '', ts.ScriptTarget.Latest);
   const printer = ts.createPrinter({ newLine: ts.NewLineKind.LineFeed });
-  const entries = Object.values(node.context.registry);
-  const fullSourceFile = ts.updateSourceFileNode(resultFile, entries);
 
-  const importLines = extras.importLines || [];
-
-  return importLines
-    .concat(
-      printer.printNode(ts.EmitHint.Unspecified, node.type, fullSourceFile),
-      entries.map(entry => printer.printNode(ts.EmitHint.Unspecified, entry, fullSourceFile)),
-    )
-    .join('\n\n');
+  return importLines.concat(nodes.map(n => printer.printNode(ts.EmitHint.Unspecified, n, resultFile))).join('\n\n');
 };
 
 type LogicalTypeWithImport = { import: string; type: string };
@@ -285,19 +289,24 @@ type AvroTsOptions = {
   logicalTypes?: { [key: string]: LogicalTypeDefinition };
   recordAlias?: string;
   namespacedPrefix?: string;
+  namesAlias?: string;
 };
 const defaultOptions = {
   recordAlias: 'Record',
   namespacedPrefix: 'Namespaced',
+  namesAlias: 'Names',
 };
 
 export function avroTs(recordType: schema.RecordType, options: AvroTsOptions = {}): string {
   const logicalTypes = options.logicalTypes || {};
   const context: Context = {
-    ...defaultOptions,
     ...options,
+    recordAlias: options.recordAlias || defaultOptions.recordAlias,
+    namesAlias: options.namesAlias || defaultOptions.namesAlias,
+    namespacedPrefix: options.namespacedPrefix || defaultOptions.namespacedPrefix,
     unionMember: Array.isArray(recordType),
     registry: {},
+    unionRegistry: buildUnionRegistry({}, recordType),
     namespaces: {},
     visitedLogicalTypes: [],
     logicalTypes: Object.entries(logicalTypes).reduce((all, [name, type]) => {
@@ -316,17 +325,67 @@ export function avroTs(recordType: schema.RecordType, options: AvroTsOptions = {
     .filter(Boolean);
 
   return printAstNode(
-    {
-      context: nodes.context,
-
-      type: ts.createTypeAliasDeclaration(
+    [
+      unionRegisryToNamespace(context.unionRegistry, context.namesAlias),
+      ts.createTypeAliasDeclaration(
         undefined,
         [ts.createToken(ts.SyntaxKind.ExportKeyword)],
         context.recordAlias,
         undefined,
         nodes.type,
       ),
-    },
+    ].concat(Object.values(nodes.context.registry)),
     { importLines },
   );
+}
+
+function unionRegisryToNamespace(registry: UnionRegistry, namespaceName: string): ts.Node {
+  const nsNode = ts.createModuleDeclaration(
+    [],
+    [ts.createToken(ts.SyntaxKind.ExportKeyword)],
+    ts.createIdentifier(namespaceName),
+    ts.createModuleBlock(
+      Object.keys(registry).reduce<Array<ts.Statement>>(
+        (nodes, namespace) =>
+          nodes.concat(
+            registry[namespace].map(name =>
+              ts.createVariableStatement(
+                [ts.createToken(ts.SyntaxKind.ExportKeyword)],
+                ts.createVariableDeclarationList(
+                  [ts.createVariableDeclaration(name, undefined, ts.createLiteral(`${namespace}.${name}`))],
+                  ts.NodeFlags.Const,
+                ),
+              ),
+            ),
+          ),
+        [],
+      ),
+    ),
+    ts.NodeFlags.Namespace,
+  );
+  // TODO use references to this in the namespaced types?
+  return nsNode;
+}
+
+function buildUnionRegistry(registry: UnionRegistry, schema: schema.AvroSchema): UnionRegistry {
+  if (Array.isArray(schema)) {
+    return schema.reduce(buildUnionRegistry, registry);
+  }
+
+  if (isRecordParent(schema)) {
+    return buildUnionRegistry(registry, schema.type);
+  }
+
+  if (isNamespaced(schema)) {
+    const { name, namespace } = schema;
+    (registry[namespace] = registry[namespace] || []).push(name);
+  }
+
+  if (isRecordType(schema)) {
+    const { fields } = schema;
+    // @ts-ignore I know this works, but I think it's too dynamic for TS liking
+    fields.reduce(buildUnionRegistry, registry);
+  }
+
+  return registry;
 }
