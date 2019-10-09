@@ -2,8 +2,10 @@
 
 exports[`Avro ts test Should convert BalanceAdjustment.avsc successfully 1`] = `
 "export namespace Names {
-    export const BalanceAdjustment = \\"uk.co.boostpower.support.kafka.messages.BalanceAdjustment\\";
-    export const EventMetadata = \\"com.ovoenergy.kafka.common.event.EventMetadata\\";
+    export const Config = \\"com.ovoenergy.kafka.common.event.Config\\";
+    export const ConfigExtended = \\"com.ovoenergy.kafka.common.event.ConfigExtended\\";
+    export const BalanceAdjustmentRequest = \\"uk.co.boostpower.support.kafka.messages.BalanceAdjustmentRequest\\";
+    export const BalanceAdjustmentResponse = \\"uk.co.boostpower.support.kafka.messages.BalanceAdjustmentResponse\\";
 }
 
 export type Record = BalanceAdjustment;
@@ -35,7 +37,7 @@ export interface Config {
 
 export interface NamespacedConfig {
     \\"com.ovoenergy.kafka.common.event.Config\\": Config;
-    \\"com.ovoenergy.kafka.common.event.EventMetadata\\": never;
+    \\"com.ovoenergy.kafka.common.event.ConfigExtended\\": never;
 }
 
 export interface ConfigExtended {
@@ -45,7 +47,7 @@ export interface ConfigExtended {
 
 export interface NamespacedConfigExtended {
     \\"com.ovoenergy.kafka.common.event.ConfigExtended\\": ConfigExtended;
-    \\"com.ovoenergy.kafka.common.event.EventMetadata\\": never;
+    \\"com.ovoenergy.kafka.common.event.Config\\": never;
 }
 
 export interface BalanceAdjustmentRequest {
@@ -77,7 +79,7 @@ export interface BalanceAdjustmentRequest {
 
 export interface NamespacedBalanceAdjustmentRequest {
     \\"uk.co.boostpower.support.kafka.messages.BalanceAdjustmentRequest\\": BalanceAdjustmentRequest;
-    \\"uk.co.boostpower.support.kafka.messages.BalanceAdjustment\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceAdjustmentResponse\\": never;
 }
 
 export interface BalanceAdjustmentResponse {
@@ -97,16 +99,12 @@ export interface BalanceAdjustmentResponse {
 
 export interface NamespacedBalanceAdjustmentResponse {
     \\"uk.co.boostpower.support.kafka.messages.BalanceAdjustmentResponse\\": BalanceAdjustmentResponse;
-    \\"uk.co.boostpower.support.kafka.messages.BalanceAdjustment\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceAdjustmentRequest\\": never;
 }"
 `;
 
 exports[`Avro ts test Should convert ComplexRecord.avsc successfully 1`] = `
-"export namespace Names {
-    export const User = \\"com.example.avro.User\\";
-}
-
-export type Record = User;
+"export type Record = User;
 
 export interface User {
     /**
@@ -160,8 +158,13 @@ export interface EmailAddress {
 
 exports[`Avro ts test Should convert ComplexUnionLogicalTypes.avsc successfully 1`] = `
 "export namespace Names {
-    export const AccountMigrationEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationEvent\\";
-    export const EventMetadata = \\"com.ovoenergy.kafka.common.event.EventMetadata\\";
+    export const AccountMigrationCancelledEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\";
+    export const AccountMigrationCompletedEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\";
+    export const AccountMigrationRollBackInitiatedEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\";
+    export const AccountMigrationRolledBackEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\";
+    export const AccountMigrationScheduledEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\";
+    export const AccountMigrationValidatedEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\";
+    export const BalanceRetrievedMigrationEvent = \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\";
 }
 
 export type Record = AccountMigrationEvent;
@@ -211,7 +214,12 @@ export interface EventMetadata {
 
 export interface NamespacedAccountMigrationCancelledEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\": AccountMigrationCancelledEvent;
-    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\": never;
 }
 
 export interface AccountMigrationCompletedEvent {
@@ -236,7 +244,12 @@ export interface AccountMigrationCompletedEvent {
 
 export interface NamespacedAccountMigrationCompletedEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\": AccountMigrationCompletedEvent;
-    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\": never;
 }
 
 export interface AccountMigrationRollBackInitiatedEvent {
@@ -261,7 +274,12 @@ export interface AccountMigrationRollBackInitiatedEvent {
 
 export interface NamespacedAccountMigrationRollBackInitiatedEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\": AccountMigrationRollBackInitiatedEvent;
-    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\": never;
 }
 
 export interface AccountMigrationRolledBackEvent {
@@ -286,7 +304,12 @@ export interface AccountMigrationRolledBackEvent {
 
 export interface NamespacedAccountMigrationRolledBackEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\": AccountMigrationRolledBackEvent;
-    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\": never;
 }
 
 export interface AccountMigrationScheduledEvent {
@@ -319,7 +342,12 @@ export interface AccountMigrationScheduledEvent {
 
 export interface NamespacedAccountMigrationScheduledEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\": AccountMigrationScheduledEvent;
-    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\": never;
 }
 
 export interface AccountMigrationValidatedEvent {
@@ -344,7 +372,12 @@ export interface AccountMigrationValidatedEvent {
 
 export interface NamespacedAccountMigrationValidatedEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\": AccountMigrationValidatedEvent;
-    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\": never;
 }
 
 export interface BalanceRetrievedMigrationEvent {
@@ -373,16 +406,17 @@ export interface BalanceRetrievedMigrationEvent {
 
 export interface NamespacedBalanceRetrievedMigrationEvent {
     \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\": BalanceRetrievedMigrationEvent;
-    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\": never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\": never;
 }"
 `;
 
 exports[`Avro ts test Should convert RecordWithEnum.avsc successfully 1`] = `
-"export namespace Names {
-    export const User = \\"com.example.avro.User\\";
-}
-
-export type Record = User;
+"export type Record = User;
 
 export interface User {
     /**
@@ -409,11 +443,7 @@ export interface User {
 `;
 
 exports[`Avro ts test Should convert RecordWithInterface.avsc successfully 1`] = `
-"export namespace Names {
-    export const User = \\"com.example.avro.User\\";
-}
-
-export type Record = User;
+"export type Record = User;
 
 export interface User {
     /**
@@ -455,11 +485,7 @@ export interface EmailAddress {
 `;
 
 exports[`Avro ts test Should convert RecordWithLogicalTypes.avsc successfully 1`] = `
-"export namespace Names {
-    export const Event = \\"com.example.avro.Event\\";
-}
-
-export type Record = Event;
+"export type Record = Event;
 
 export interface Event {
     /**
@@ -475,10 +501,6 @@ export interface Event {
 
 exports[`Avro ts test Should convert RecordWithLogicalTypesImport.avsc successfully 1`] = `
 "import { Decimal } from 'my-library'
-
-export namespace Names {
-    export const Event = \\"com.example.avro.Event\\";
-}
 
 export type Record = Event;
 
@@ -499,11 +521,7 @@ export interface Event {
 `;
 
 exports[`Avro ts test Should convert RecordWithMap.avsc successfully 1`] = `
-"export namespace Names {
-    export const User = \\"com.example.avro.User\\";
-}
-
-export type Record = User;
+"export type Record = User;
 
 export interface User {
     /**
@@ -533,11 +551,7 @@ export interface Foo {
 `;
 
 exports[`Avro ts test Should convert RecordWithUnion.avsc successfully 1`] = `
-"export namespace Names {
-    export const User = \\"com.example.avro.User\\";
-}
-
-export type Record = User;
+"export type Record = User;
 
 export interface User {
     /**
@@ -561,11 +575,7 @@ export interface User {
 `;
 
 exports[`Avro ts test Should convert SimpleRecord.avsc successfully 1`] = `
-"export namespace Names {
-    export const User = \\"com.example.avro.User\\";
-}
-
-export type Record = User;
+"export type Record = User;
 
 export interface User {
     /**
@@ -591,7 +601,6 @@ exports[`Avro ts test Should convert TopLevelUnion.avsc successfully 1`] = `
 "export namespace Names {
     export const Cancelled = \\"com.example.avro.Cancelled\\";
     export const Creation = \\"com.example.avro.Creation\\";
-    export const EventMetadata = \\"com.example.avro.event.EventMetadata\\";
 }
 
 export type Record = NamespacedCancelled | NamespacedCreation;
@@ -622,11 +631,7 @@ export interface NamespacedCreation {
 `;
 
 exports[`Avro ts test Should convert TradeCollection.avsc successfully 1`] = `
-"export namespace Names {
-    export const TradeCollection = \\"com.example.avro.TradeCollection\\";
-}
-
-export type Record = TradeCollection;
+"export type Record = TradeCollection;
 
 export interface TradeCollection {
     producerId: string;
@@ -647,11 +652,7 @@ export interface Trade {
 `;
 
 exports[`Avro ts test Should convert User.avsc successfully 1`] = `
-"export namespace Names {
-    export const User = \\"com.example.avro.User\\";
-}
-
-export type Record = User;
+"export type Record = User;
 
 export interface User {
     /**
@@ -758,7 +759,6 @@ exports[`Avro ts test supports providing different names for record and namespac
 "export namespace Names {
     export const Cancelled = \\"com.example.avro.Cancelled\\";
     export const Creation = \\"com.example.avro.Creation\\";
-    export const EventMetadata = \\"com.example.avro.event.EventMetadata\\";
 }
 
 export type Event = NSCancelled | NSCreation;

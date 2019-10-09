@@ -278,7 +278,7 @@ const isUnion = (type: Schema): type is schema.NamedType[] => typeof type === 'o
 
 const isRecordParent = (type: any): type is TypeRecordType => typeof type === 'object' && typeof type.type === 'object';
 
-const isNamespaced = (type: any): type is { namespace: string; name: string } => !!type.namespace;
+const isUnionParent = (type: any): type is { type: Array<schema.AvroSchema> } => Array.isArray(type.type);
 
 const isOptional = (type: Schema): boolean => {
   if (isUnion(type)) {
@@ -319,14 +319,16 @@ const defaultOptions = {
 
 export function avroTs(recordType: schema.RecordType, options: AvroTsOptions = {}): string {
   const logicalTypes = options.logicalTypes || {};
+  const isRootUnion = Array.isArray(recordType);
+
   const context: Context = {
     ...options,
     recordAlias: options.recordAlias || defaultOptions.recordAlias,
     namesAlias: options.namesAlias || defaultOptions.namesAlias,
     namespacedPrefix: options.namespacedPrefix || defaultOptions.namespacedPrefix,
-    unionMember: Array.isArray(recordType),
+    unionMember: isRootUnion,
     registry: {},
-    unionRegistry: buildUnionRegistry({}, recordType),
+    unionRegistry: buildUnionRegistry({}, recordType, { namespace: recordType.namespace, unionMember: isRootUnion }),
     namespaces: {},
     visitedLogicalTypes: [],
     logicalTypes: Object.entries(logicalTypes).reduce((all, [name, type]) => {
@@ -338,73 +340,92 @@ export function avroTs(recordType: schema.RecordType, options: AvroTsOptions = {
     }, {}),
   };
 
-  const nodes = convertType(context, recordType);
+  const mainNode = convertType(context, recordType);
 
   const importLines = context.visitedLogicalTypes
     .map(visitedType => (logicalTypes[visitedType] as LogicalTypeWithImport).import)
     .filter(Boolean);
 
-  return printAstNode(
-    [
-      unionRegisryToNamespace(context.unionRegistry, context.namesAlias),
-      ts.createTypeAliasDeclaration(
-        undefined,
-        [ts.createToken(ts.SyntaxKind.ExportKeyword)],
-        context.recordAlias,
-        undefined,
-        nodes.type,
-      ),
-    ].concat(Object.values(nodes.context.registry)),
-    { importLines },
-  );
+  const nodes: Array<ts.Node> = [
+    ts.createTypeAliasDeclaration(
+      undefined,
+      [ts.createToken(ts.SyntaxKind.ExportKeyword)],
+      context.recordAlias,
+      undefined,
+      mainNode.type,
+    ) as ts.Node,
+  ].concat(Object.values(mainNode.context.registry));
+
+  const namesNamespace = unionRegisryToNamespace(context.unionRegistry, context.namesAlias);
+
+  if (namesNamespace) {
+    nodes.unshift(namesNamespace);
+  }
+
+  return printAstNode(nodes, { importLines });
 }
 
-function unionRegisryToNamespace(registry: UnionRegistry, namespaceName: string): ts.Node {
+function unionRegisryToNamespace(registry: UnionRegistry, namespaceName: string): ts.Node | undefined {
+  const names = Object.keys(registry).reduce<Array<ts.Statement>>(
+    (nodes, namespace) =>
+      nodes.concat(
+        registry[namespace].map(name =>
+          ts.createVariableStatement(
+            [ts.createToken(ts.SyntaxKind.ExportKeyword)],
+            ts.createVariableDeclarationList(
+              [ts.createVariableDeclaration(name, undefined, ts.createLiteral(`${namespace}.${name}`))],
+              ts.NodeFlags.Const,
+            ),
+          ),
+        ),
+      ),
+    [],
+  );
+
+  if (!names.length) {
+    return;
+  }
+
   const nsNode = ts.createModuleDeclaration(
     [],
     [ts.createToken(ts.SyntaxKind.ExportKeyword)],
     ts.createIdentifier(namespaceName),
-    ts.createModuleBlock(
-      Object.keys(registry).reduce<Array<ts.Statement>>(
-        (nodes, namespace) =>
-          nodes.concat(
-            registry[namespace].map(name =>
-              ts.createVariableStatement(
-                [ts.createToken(ts.SyntaxKind.ExportKeyword)],
-                ts.createVariableDeclarationList(
-                  [ts.createVariableDeclaration(name, undefined, ts.createLiteral(`${namespace}.${name}`))],
-                  ts.NodeFlags.Const,
-                ),
-              ),
-            ),
-          ),
-        [],
-      ),
-    ),
+    ts.createModuleBlock(names),
     ts.NodeFlags.Namespace,
   );
-  // TODO use references to this in the namespaced types?
   return nsNode;
 }
 
-function buildUnionRegistry(registry: UnionRegistry, schema: schema.AvroSchema): UnionRegistry {
+function buildUnionRegistry(
+  registry: UnionRegistry,
+  schema: schema.AvroSchema,
+  context: { namespace?: string; unionMember: boolean },
+): UnionRegistry {
   if (Array.isArray(schema)) {
-    return schema.reduce(buildUnionRegistry, registry);
+    return schema.reduce((acc, schema) => buildUnionRegistry(acc, schema, context), registry);
   }
 
   if (isRecordParent(schema)) {
-    return buildUnionRegistry(registry, schema.type);
-  }
-
-  if (isNamespaced(schema)) {
-    const { name, namespace } = schema;
-    (registry[namespace] = registry[namespace] || []).push(name);
+    return buildUnionRegistry(registry, schema.type, { ...context, unionMember: isUnionParent(schema) });
   }
 
   if (isRecordType(schema)) {
-    const { fields } = schema;
-    // @ts-ignore I know this works, but I think it's too dynamic for TS liking
-    fields.reduce(buildUnionRegistry, registry);
+    const { name, fields } = schema;
+    const currentNamespace = schema.namespace || context.namespace;
+    if (currentNamespace && context.unionMember) {
+      (registry[currentNamespace] = registry[currentNamespace] || []).push(name);
+    }
+
+    fields.reduce(
+      (acc, field) =>
+        // @ts-ignore This works, but a bit too dynamic for TS
+        buildUnionRegistry(acc, field, {
+          ...context,
+          unionMember: false,
+          namespace: schema.namespace || context.namespace,
+        }),
+      registry,
+    );
   }
 
   return registry;
