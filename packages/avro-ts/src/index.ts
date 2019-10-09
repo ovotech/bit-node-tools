@@ -121,20 +121,40 @@ const convertRecord: Convert<schema.RecordType> = (context, type) => {
 
   if (context.unionMember) {
     const namespaced = fullyQualifiedName(context, type);
-    const prop = ts.createPropertySignature(
-      undefined,
-      ts.createStringLiteral(namespaced),
-      undefined,
-      ts.createTypeReferenceNode(type.name, undefined),
-      undefined,
-    );
+    const currentNamespace = type.namespace || context.namespace;
+    const props = [
+      ts.createPropertySignature(
+        undefined,
+        ts.createStringLiteral(namespaced),
+        undefined,
+        ts.createTypeReferenceNode(type.name, undefined),
+        undefined,
+      ),
+    ];
+
+    if (currentNamespace) {
+      props.push(
+        ...(context.unionRegistry[currentNamespace] || [])
+          .filter((name: string) => name !== type.name)
+          .map(name =>
+            ts.createPropertySignature(
+              undefined,
+              ts.createStringLiteral(`${currentNamespace}.${name}`),
+              undefined,
+              ts.createKeywordTypeNode(ts.SyntaxKind.NeverKeyword),
+              undefined,
+            ),
+          ),
+      );
+    }
+
     const namespacedInterfaceType = ts.createInterfaceDeclaration(
       undefined,
       [ts.createToken(ts.SyntaxKind.ExportKeyword)],
       `${context.namespacedPrefix}${type.name}`,
       undefined,
       undefined,
-      [prop],
+      props,
     );
 
     return result(
