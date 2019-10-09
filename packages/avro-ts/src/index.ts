@@ -140,7 +140,7 @@ const convertRecord: Convert<schema.RecordType> = (context, type) => {
             ts.createPropertySignature(
               undefined,
               ts.createStringLiteral(`${currentNamespace}.${name}`),
-              undefined,
+              ts.createToken(ts.SyntaxKind.QuestionToken),
               ts.createKeywordTypeNode(ts.SyntaxKind.NeverKeyword),
               undefined,
             ),
