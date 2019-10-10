@@ -49,9 +49,9 @@ This converter currently supports
 
 ## Union types helpers.
 
-When complex union types are defined, the output will include a namespace named `Names` by default, containing the namespaced address of properties.
+When complex union types are defined, the output will include a namespace (named `Names` by default), containing the namespaced address of properties.
 
-This allows using as such:
+This allows usecases as such:
 
 ```typescript
 import { Names, WeatherEvent } from './my-type';
