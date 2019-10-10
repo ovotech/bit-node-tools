@@ -47,6 +47,20 @@ This converter currently supports
 - Array
 - Root-level union types
 
+## Union types helpers.
+
+When complex union types are defined, the output will include a namespace named `Names` by default, containing the namespaced address of properties.
+
+This allows using as such:
+
+```typescript
+import { Names, WeatherEvent } from './my-type';
+const event: WeatherEvent = {};
+event[Names.RainEvent];
+```
+
+The union members uses [`never`](https://www.typescriptlang.org/docs/handbook/basic-types.html#never) to prevent erroneously creating/accessing a union member with mutiple keys.
+
 ## Running the tests
 
 Then you can run the tests with:
