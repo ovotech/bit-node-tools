@@ -9,7 +9,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "test-js": "jest --runInBand",
-    "test-ts": "tsc test/integration.ts --strict --noEmit",
+    "test-ts": "tsc test/integration.ts --strict --noEmit && ! tsc test/integration-should-fail.ts --strict --noEmit",
     "test": "yarn test-js && yarn test-ts",
     "lint-prettier": "prettier --list-different {src,test}/**/*.ts",
     "lint-tslint": "tslint --config tslint.json '{src,test}/**/*.ts'",
