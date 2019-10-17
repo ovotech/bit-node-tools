@@ -232,6 +232,8 @@ Options:
   --config, -c       Path to the configuration file [default: "kac.config.json"]
   --help             Show help                                         [boolean]
   --group            Consumer Group Id         [default: a prefixed random name]
+  --latest           Start listening from the latest offsets
+                                                      [boolean] [default: false]
   --tail             Keep listening after all messages consumed
                                                       [boolean] [default: false]
   --output-file, -o  Save the results into a file, that can later be used to
