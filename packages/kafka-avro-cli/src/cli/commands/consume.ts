@@ -17,6 +17,7 @@ export interface ConsumeArgs extends Args {
   group: string;
   topic: string;
   tail: boolean;
+  latest: boolean;
   'output-file': string;
 }
 
@@ -29,6 +30,7 @@ export const consume: CommandModule<{}, ConsumeArgs> = {
       description: 'Consumer Group Id',
       defaultDescription: 'a prefixed random name',
     },
+    latest: { type: 'boolean', default: false, description: 'Start listening from the latest offsets' },
     tail: { type: 'boolean', default: false, description: 'Keep listening after all messages consumed' },
     'output-file': {
       alias: 'o',
@@ -43,7 +45,7 @@ export const consume: CommandModule<{}, ConsumeArgs> = {
         ...kafkaClient,
         groupId: args.group,
         encoding: 'buffer',
-        fromOffset: 'earliest',
+        fromOffset: args.latest ? 'latest' : 'earliest',
       },
       [args.topic],
     );
