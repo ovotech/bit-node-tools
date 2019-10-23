@@ -15,7 +15,7 @@ export interface Context {
   namespacedPrefix: string;
   registry: Registry;
   unionRegistry: UnionRegistry;
-  unionMember: boolean;
+  recordNeedsNS: boolean;
   namespace?: string;
   namespaces: { [key: string]: ts.TypeReferenceNode };
   logicalTypes: { [key: string]: ts.TypeReferenceNode };
@@ -90,7 +90,7 @@ const docToJSDoc = (doc: string) =>
 
 const convertRecord: Convert<schema.RecordType> = (context, type) => {
   const namespaceContext = type.namespace ? withNamespace(context, type) : context;
-  const fieldContext = { ...namespaceContext, unionMember: false };
+  const fieldContext = { ...namespaceContext, recordNeedsNS: false };
 
   const fields = type.fields.map(fieldType => {
     const field = convertType(fieldContext, fieldType.type);
@@ -119,7 +119,7 @@ const convertRecord: Convert<schema.RecordType> = (context, type) => {
   );
   const recordContext = withContexts(withEntry(fieldContext, interfaceType), fields.map(item => item.context));
 
-  if (context.unionMember) {
+  if (context.recordNeedsNS) {
     const namespaced = fullyQualifiedName(context, type);
     const currentNamespace = type.namespace || context.namespace;
     const props = [
@@ -223,10 +223,14 @@ const convertLogicalType: Convert<schema.LogicalType> = (context, type) => {
 const convertPredefinedType: Convert<string> = (context, type) =>
   context.namespaces[type] ? result(context, context.namespaces[type]) : convertPrimitive(context, type);
 
+const recordNeedsNS = (items: any[]): boolean => {
+  return items.filter(item => typeof item === 'object' && !Array.isArray(item) && isRecordType(item)).length > 1;
+};
+
 const convertArrayType: Convert<any[]> = (context, type) => {
   const map = mapContext(context, type, (itemContext, item) => {
     if (typeof item === 'object' && !Array.isArray(item) && isRecordType(item)) {
-      return convertType({ ...itemContext, unionMember: true }, item);
+      return convertType({ ...itemContext, recordNeedsNS: recordNeedsNS(type) }, item);
     } else {
       return convertType(itemContext, item);
     }
@@ -319,16 +323,16 @@ const defaultOptions = {
 
 export function avroTs(recordType: schema.RecordType, options: AvroTsOptions = {}): string {
   const logicalTypes = options.logicalTypes || {};
-  const isRootUnion = Array.isArray(recordType);
+  const isRootUnion = Array.isArray(recordType) && recordNeedsNS(recordType);
 
   const context: Context = {
     ...options,
     recordAlias: options.recordAlias || defaultOptions.recordAlias,
     namesAlias: options.namesAlias || defaultOptions.namesAlias,
     namespacedPrefix: options.namespacedPrefix || defaultOptions.namespacedPrefix,
-    unionMember: isRootUnion,
+    recordNeedsNS: isRootUnion,
     registry: {},
-    unionRegistry: buildUnionRegistry({}, recordType, { namespace: recordType.namespace, unionMember: isRootUnion }),
+    unionRegistry: buildUnionRegistry({}, recordType, { namespace: recordType.namespace, recordNeedsNS: isRootUnion }),
     namespaces: {},
     visitedLogicalTypes: [],
     logicalTypes: Object.entries(logicalTypes).reduce((all, [name, type]) => {
@@ -399,20 +403,23 @@ function unionRegisryToNamespace(registry: UnionRegistry, namespaceName: string)
 function buildUnionRegistry(
   registry: UnionRegistry,
   schema: schema.AvroSchema,
-  context: { namespace?: string; unionMember: boolean },
+  context: { namespace?: string; recordNeedsNS: boolean },
 ): UnionRegistry {
   if (Array.isArray(schema)) {
     return schema.reduce((acc, schema) => buildUnionRegistry(acc, schema, context), registry);
   }
 
   if (isRecordParent(schema)) {
-    return buildUnionRegistry(registry, schema.type, { ...context, unionMember: isUnionParent(schema) });
+    return buildUnionRegistry(registry, schema.type, {
+      ...context,
+      recordNeedsNS: isUnionParent(schema) && recordNeedsNS(schema.type),
+    });
   }
 
   if (isRecordType(schema)) {
     const { name, fields } = schema;
     const currentNamespace = schema.namespace || context.namespace;
-    if (currentNamespace && context.unionMember) {
+    if (currentNamespace && context.recordNeedsNS) {
       (registry[currentNamespace] = registry[currentNamespace] || []).push(name);
     }
 

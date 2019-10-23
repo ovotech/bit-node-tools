@@ -415,6 +415,21 @@ export interface NamespacedBalanceRetrievedMigrationEvent {
 }"
 `;
 
+exports[`Avro ts test Should convert RecordWithDefault.avsc successfully 1`] = `
+"export type Record = RecordWithDefault;
+
+export interface RecordWithDefault {
+    pleaseNoNamespace?: null | NoNeedForNamespace;
+}
+
+export interface NoNeedForNamespace {
+    /**
+     * A fictitious id
+     */
+    id: string;
+}"
+`;
+
 exports[`Avro ts test Should convert RecordWithEnum.avsc successfully 1`] = `
 "export type Record = User;
 
