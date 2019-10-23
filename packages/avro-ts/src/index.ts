@@ -6,7 +6,10 @@ export interface Registry {
 }
 
 type UnionRegistry = {
-  [key: string]: string[];
+  [key: string]: {
+    members: string[];
+    namespace: string;
+  };
 };
 
 export interface Context {
@@ -16,6 +19,7 @@ export interface Context {
   registry: Registry;
   unionRegistry: UnionRegistry;
   recordNeedsNS: boolean;
+  parentName?: string;
   namespace?: string;
   namespaces: { [key: string]: ts.TypeReferenceNode };
   logicalTypes: { [key: string]: ts.TypeReferenceNode };
@@ -27,7 +31,7 @@ export interface Result<TsType = ts.TypeNode> {
   context: Context;
 }
 
-type TypeRecordType = { type: schema.RecordType };
+type TypeRecordType = { type: schema.RecordType; name: string };
 
 export type Convert<TType = Schema> = (context: Context, type: TType) => Result<any>;
 
@@ -93,7 +97,7 @@ const convertRecord: Convert<schema.RecordType> = (context, type) => {
   const fieldContext = { ...namespaceContext, recordNeedsNS: false };
 
   const fields = type.fields.map(fieldType => {
-    const field = convertType(fieldContext, fieldType.type);
+    const field = convertType({ ...fieldContext, parentName: type.name }, fieldType.type);
     const prop = ts.createPropertySignature(
       undefined,
       fieldType.name,
@@ -121,7 +125,6 @@ const convertRecord: Convert<schema.RecordType> = (context, type) => {
 
   if (context.recordNeedsNS) {
     const namespaced = fullyQualifiedName(context, type);
-    const currentNamespace = type.namespace || context.namespace;
     const props = [
       ts.createPropertySignature(
         undefined,
@@ -132,14 +135,16 @@ const convertRecord: Convert<schema.RecordType> = (context, type) => {
       ),
     ];
 
-    if (currentNamespace) {
+    const registryKey = getUnionRegistryKey(type, context);
+    if (registryKey) {
+      const registryEntry = context.unionRegistry[registryKey] || {};
       props.push(
-        ...(context.unionRegistry[currentNamespace] || [])
+        ...(registryEntry.members || [])
           .filter((name: string) => name !== type.name)
           .map(name =>
             ts.createPropertySignature(
               undefined,
-              ts.createStringLiteral(`${currentNamespace}.${name}`),
+              ts.createStringLiteral(`${registryEntry.namespace}.${name}`),
               ts.createToken(ts.SyntaxKind.QuestionToken),
               ts.createKeywordTypeNode(ts.SyntaxKind.NeverKeyword),
               undefined,
@@ -370,21 +375,20 @@ export function avroTs(recordType: schema.RecordType, options: AvroTsOptions = {
 }
 
 function unionRegisryToNamespace(registry: UnionRegistry, namespaceName: string): ts.Node | undefined {
-  const names = Object.keys(registry).reduce<Array<ts.Statement>>(
-    (nodes, namespace) =>
-      nodes.concat(
-        registry[namespace].map(name =>
-          ts.createVariableStatement(
-            [ts.createToken(ts.SyntaxKind.ExportKeyword)],
-            ts.createVariableDeclarationList(
-              [ts.createVariableDeclaration(name, undefined, ts.createLiteral(`${namespace}.${name}`))],
-              ts.NodeFlags.Const,
-            ),
+  const names = Object.keys(registry).reduce<Array<ts.Statement>>((nodes, key) => {
+    const { namespace, members } = registry[key];
+    return nodes.concat(
+      members.map(name =>
+        ts.createVariableStatement(
+          [ts.createToken(ts.SyntaxKind.ExportKeyword)],
+          ts.createVariableDeclarationList(
+            [ts.createVariableDeclaration(name, undefined, ts.createLiteral(`${namespace}.${name}`))],
+            ts.NodeFlags.Const,
           ),
         ),
       ),
-    [],
-  );
+    );
+  }, []);
 
   if (!names.length) {
     return;
@@ -400,10 +404,21 @@ function unionRegisryToNamespace(registry: UnionRegistry, namespaceName: string)
   return nsNode;
 }
 
+const getUnionRegistryKey = (
+  type: schema.RecordType,
+  { parentName, namespace }: { parentName?: string; namespace?: string },
+): string | undefined => {
+  const currentNamespace = type.namespace || namespace;
+
+  if (currentNamespace) {
+    return parentName ? `${currentNamespace}.${parentName}` : currentNamespace;
+  }
+};
+
 function buildUnionRegistry(
   registry: UnionRegistry,
   schema: schema.AvroSchema,
-  context: { namespace?: string; recordNeedsNS: boolean },
+  context: { parentName?: string; namespace?: string; recordNeedsNS: boolean },
 ): UnionRegistry {
   if (Array.isArray(schema)) {
     return schema.reduce((acc, schema) => buildUnionRegistry(acc, schema, context), registry);
@@ -418,9 +433,13 @@ function buildUnionRegistry(
 
   if (isRecordType(schema)) {
     const { name, fields } = schema;
-    const currentNamespace = schema.namespace || context.namespace;
-    if (currentNamespace && context.recordNeedsNS) {
-      (registry[currentNamespace] = registry[currentNamespace] || []).push(name);
+    const namespace = schema.namespace || context.namespace;
+    const registryKey = getUnionRegistryKey(schema, context);
+    if (registryKey && context.recordNeedsNS) {
+      if (!registry[registryKey]) {
+        registry[registryKey] = { namespace: namespace!, members: [] };
+      }
+      registry[registryKey].members.push(name);
     }
 
     fields.reduce(
@@ -429,6 +448,7 @@ function buildUnionRegistry(
         buildUnionRegistry(acc, field, {
           ...context,
           unionMember: false,
+          parentName: schema.name,
           namespace: schema.namespace || context.namespace,
         }),
       registry,

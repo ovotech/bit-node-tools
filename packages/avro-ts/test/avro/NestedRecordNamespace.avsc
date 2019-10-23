@@ -1,0 +1,59 @@
+{
+  "type": "record",
+  "name": "NestRecordEvent",
+  "namespace": "com.avro.example",
+  "fields": [
+    {
+      "name": "event",
+      "type": [
+        {
+          "type": "record",
+          "name": "Level1Record",
+          "fields": [
+            {
+              "name": "id",
+              "type": "string"
+            },
+            {
+              "name": "child",
+              "type": [
+                {
+                  "type": "record",
+                  "name": "Level2Record",
+                  "fields": [
+                    {
+                      "name": "id",
+                      "type": "string"
+                    }
+                  ]
+                },
+                {
+                  "type": "record",
+                  "name": "Level2Sibling",
+                  "fields": [
+                    {
+                      "name": "id",
+                      "type": "string"
+                    }
+                  ]
+                }
+              ],
+              "doc": "The data backing this personal projection."
+            }
+          ]
+        },
+        {
+          "type": "record",
+          "name": "Level1Sibling",
+          "fields": [
+            {
+              "name": "id",
+              "type": "string"
+            }
+          ]
+        }
+      ],
+      "doc": "A personal projection in kWh."
+    }
+  ]
+}
