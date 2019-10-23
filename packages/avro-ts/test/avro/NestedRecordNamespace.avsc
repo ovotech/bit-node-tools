@@ -37,8 +37,7 @@
                     }
                   ]
                 }
-              ],
-              "doc": "The data backing this personal projection."
+              ]
             }
           ]
         },
@@ -52,8 +51,7 @@
             }
           ]
         }
-      ],
-      "doc": "A personal projection in kWh."
+      ]
     }
   ]
 }
