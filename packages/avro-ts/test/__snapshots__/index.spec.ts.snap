@@ -426,17 +426,11 @@ exports[`Avro ts test Should convert NestedRecordNamespace.avsc successfully 1`]
 export type Record = NestRecordEvent;
 
 export interface NestRecordEvent {
-    /**
-     * A personal projection in kWh.
-     */
     event: NamespacedLevel1Record | NamespacedLevel1Sibling;
 }
 
 export interface Level1Record {
     id: string;
-    /**
-     * The data backing this personal projection.
-     */
     child: NamespacedLevel2Record | NamespacedLevel2Sibling;
 }
 
