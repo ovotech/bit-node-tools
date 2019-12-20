@@ -1,16 +1,15 @@
 import { Type, types } from 'avsc';
-
-const millisecondsInADay = 8.64e7;
+import { toDate, fromDate } from './helpers/epoch-days';
 
 /**
  * Custom logical type used to encode native Date objects as int.
  */
 export class DateType extends types.LogicalType {
   _fromValue(val: number) {
-    return new Date(val * millisecondsInADay).toISOString();
+    return toDate(val).toISOString();
   }
   _toValue(date: any) {
-    return date instanceof Date ? Math.floor(date.getTime() / millisecondsInADay) : date;
+    return fromDate(date);
   }
   _resolve(type: any) {
     if (Type.isType(type, 'int', 'logical:date')) {
