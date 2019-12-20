@@ -1,7 +1,7 @@
 {
   "name": "@ovotech/avro-logical-types",
   "description": "Some logical types for avsc",
-  "version": "1.0.2",
+  "version": "1.1.2",
   "main": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
