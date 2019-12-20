@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Unit test DateAsDateType 1`] = `
+Array [
+  Object {
+    "data": Array [
+      174,
+      148,
+      2,
+    ],
+    "type": "Buffer",
+  },
+  Object {
+    "data": Array [
+      174,
+      148,
+      2,
+    ],
+    "type": "Buffer",
+  },
+]
+`;

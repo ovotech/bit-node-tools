@@ -1,18 +1,21 @@
 import { Schema, Type } from 'avsc';
-import { TimestampAsDateType } from '../src';
+import { DateAsDateType } from '../src';
 
 describe('Unit test', () => {
-  it('TimestampType convertion', async () => {
+  it('DateAsDateType', async () => {
     const type = Type.forSchema(
       {
         type: 'record',
-        fields: [{ name: 'startedAt', type: { type: 'long', logicalType: 'timestamp-millies' } }],
+        fields: [{ name: 'startedAt', type: { type: 'int', logicalType: 'date' } }],
       } as Schema,
-      { logicalTypes: { 'timestamp-millies': TimestampAsDateType } },
+      { logicalTypes: { date: DateAsDateType } },
     );
 
-    const values = [{ startedAt: new Date('2019-01-14T14:06:53Z') }, { startedAt: 1547474813000 }];
-    const expected = [{ startedAt: new Date(1547474813000) }, { startedAt: new Date(1547474813000) }];
+    const values = [{ startedAt: new Date('2018-06-05') }, { startedAt: 17687 }];
+    const expected = [
+      { startedAt: new Date('2018-06-05T00:00:00.000Z') },
+      { startedAt: new Date('2018-06-05T00:00:00.000Z') },
+    ];
 
     const buffers = values.map(value => type.toBuffer(value));
     const converted = buffers.map(buffer => type.fromBuffer(buffer));
@@ -22,22 +25,22 @@ describe('Unit test', () => {
     expect(buffers).toMatchSnapshot();
   });
 
-  it('Test resolve from long', () => {
+  it('Test resolve from int', () => {
     const type = Type.forSchema(
       {
         type: 'record',
-        fields: [{ name: 'startedAt', type: { type: 'long', logicalType: 'timestamp-millies' } }],
+        fields: [{ name: 'startedAt', type: { type: 'int', logicalType: 'date' } }],
       } as Schema,
-      { logicalTypes: { 'timestamp-millies': TimestampAsDateType } },
+      { logicalTypes: { date: DateAsDateType } },
     );
 
     const longType = Type.forSchema({
       type: 'record',
-      fields: [{ name: 'startedAt', type: 'long' }, { name: 'name', type: 'string' }],
+      fields: [{ name: 'startedAt', type: 'int' }, { name: 'name', type: 'string' }],
     } as Schema);
 
-    const expected = { startedAt: new Date(1547474813000) };
-    const longBuffer = longType.toBuffer({ startedAt: 1547474813000, name: 'test' });
+    const expected = { startedAt: new Date('2018-06-05T00:00:00.000Z') };
+    const longBuffer = longType.toBuffer({ startedAt: 17687, name: 'test' });
     const resolver = type.createResolver(longType);
     const value = type.fromBuffer(longBuffer, resolver);
 
@@ -48,9 +51,9 @@ describe('Unit test', () => {
     const type = Type.forSchema(
       {
         type: 'record',
-        fields: [{ name: 'startedAt', type: { type: 'long', logicalType: 'timestamp-millies' } }],
+        fields: [{ name: 'startedAt', type: { type: 'int', logicalType: 'date' } }],
       } as Schema,
-      { logicalTypes: { 'timestamp-millies': TimestampAsDateType } },
+      { logicalTypes: { date: DateAsDateType } },
     );
 
     const longType = Type.forSchema({

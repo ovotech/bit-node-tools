@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Unit test TimestampType convertion 1`] = `
+Array [
+  Object {
+    "data": Array [
+      144,
+      129,
+      254,
+      202,
+      137,
+      90,
+    ],
+    "type": "Buffer",
+  },
+  Object {
+    "data": Array [
+      144,
+      129,
+      254,
+      202,
+      137,
+      90,
+    ],
+    "type": "Buffer",
+  },
+]
+`;

@@ -1,7 +1,7 @@
 {
   "name": "@ovotech/avro-logical-types",
   "description": "Some logical types for avsc",
-  "version": "1.0.2",
+  "version": "1.1.2",
   "main": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
@@ -32,5 +32,9 @@
   },
   "jest": {
     "preset": "../../jest-preset.json"
+  },
+  "dependencies": {
+    "decimal.js": "^10.2.0",
+    "int64-buffer": "^0.99.1007"
   }
 }

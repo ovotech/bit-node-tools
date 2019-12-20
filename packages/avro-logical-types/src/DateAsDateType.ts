@@ -4,9 +4,9 @@ import { toDate, fromDate } from './helpers/epoch-days';
 /**
  * Custom logical type used to encode native Date objects as int.
  */
-export class DateType extends types.LogicalType {
+export class DateAsDateType extends types.LogicalType {
   _fromValue(val: number) {
-    return toDate(val).toISOString();
+    return toDate(val);
   }
   _toValue(date: any) {
     return fromDate(date);
