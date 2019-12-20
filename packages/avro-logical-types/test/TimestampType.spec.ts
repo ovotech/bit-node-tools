@@ -1,5 +1,5 @@
 import { Schema, Type } from 'avsc';
-import { TimestampType } from '../src';
+import { TimestampAsDateType } from '../src';
 
 describe('Unit test', () => {
   it('TimestampType convertion', async () => {
@@ -8,11 +8,11 @@ describe('Unit test', () => {
         type: 'record',
         fields: [{ name: 'startedAt', type: { type: 'long', logicalType: 'timestamp-millies' } }],
       } as Schema,
-      { logicalTypes: { 'timestamp-millies': TimestampType } },
+      { logicalTypes: { 'timestamp-millies': TimestampAsDateType } },
     );
 
     const values = [{ startedAt: new Date('2019-01-14T14:06:53Z') }, { startedAt: 1547474813000 }];
-    const expected = [{ startedAt: '2019-01-14T14:06:53.000Z' }, { startedAt: '2019-01-14T14:06:53.000Z' }];
+    const expected = [{ startedAt: new Date(1547474813000) }, { startedAt: new Date(1547474813000) }];
 
     const buffers = values.map(value => type.toBuffer(value));
     const converted = buffers.map(buffer => type.fromBuffer(buffer));
@@ -28,7 +28,7 @@ describe('Unit test', () => {
         type: 'record',
         fields: [{ name: 'startedAt', type: { type: 'long', logicalType: 'timestamp-millies' } }],
       } as Schema,
-      { logicalTypes: { 'timestamp-millies': TimestampType } },
+      { logicalTypes: { 'timestamp-millies': TimestampAsDateType } },
     );
 
     const longType = Type.forSchema({
@@ -36,7 +36,7 @@ describe('Unit test', () => {
       fields: [{ name: 'startedAt', type: 'long' }, { name: 'name', type: 'string' }],
     } as Schema);
 
-    const expected = { startedAt: '2019-01-14T14:06:53.000Z' };
+    const expected = { startedAt: new Date(1547474813000) };
     const longBuffer = longType.toBuffer({ startedAt: 1547474813000, name: 'test' });
     const resolver = type.createResolver(longType);
     const value = type.fromBuffer(longBuffer, resolver);
@@ -50,7 +50,7 @@ describe('Unit test', () => {
         type: 'record',
         fields: [{ name: 'startedAt', type: { type: 'long', logicalType: 'timestamp-millies' } }],
       } as Schema,
-      { logicalTypes: { 'timestamp-millies': TimestampType } },
+      { logicalTypes: { 'timestamp-millies': TimestampAsDateType } },
     );
 
     const longType = Type.forSchema({

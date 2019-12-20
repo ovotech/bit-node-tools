@@ -32,6 +32,18 @@ const deserializer = new AvroDeserializer('http://localhost:8081', {
 });
 ```
 
+### Available Types
+
+**DateType**: Dates serialised as epoch days (number of days since epoch), deserialised as ISO String
+
+**DateAsDateType**: Dates serialised as epoch days (number of days since epoch), deserialised as an instance of `Date`
+
+**TimestampType**: Dates serialised as timestamp, deserialised as ISO String
+
+**TimestampAsDateType**: Dates serialised as timestamp, deserialised as an instance of `Date`
+
+**DecimalType**: Decimal, up to 64bit (or 63 bit signed), serialised as bytes, deserialised as an instance of [decimal.js](https://npmjs.com/decimal.js)
+
 ## Running the tests
 
 You can run the tests with:
