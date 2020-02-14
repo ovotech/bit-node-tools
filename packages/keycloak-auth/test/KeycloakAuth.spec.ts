@@ -16,7 +16,7 @@ describe('Integration test', () => {
   it('Should perform authentication', async () => {
     nock('http://auth')
       .post(
-        '/auth/realms/ovo-energy/protocol/openid-connect/token',
+        '/auth/realms/my-realm/protocol/openid-connect/token',
         'grant_type=client_credentials&client_id=test-portal&client_secret=11-22-33',
       )
       .times(2)
@@ -24,14 +24,14 @@ describe('Integration test', () => {
 
     nock('http://auth')
       .post(
-        '/auth/realms/ovo-energy/protocol/openid-connect/token',
+        '/auth/realms/my-realm/protocol/openid-connect/token',
         'grant_type=refresh_token&client_id=test-portal&client_secret=11-22-33&refresh_token=refresh-1',
       )
 
       .reply(200, response);
 
     const auth = new KeycloakAuth({
-      serverUrl: 'http://auth',
+      serverUrl: 'http://auth/auth/realms/my-realm/protocol/openid-connect/token',
       clientId: 'test-portal',
       clientSecret: '11-22-33',
       margin: 0,

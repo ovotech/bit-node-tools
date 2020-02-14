@@ -8,7 +8,7 @@ Retrieve access tokens for [keycloak oauth](https://www.keycloak.org/). Respect 
 import { authenticate } from '@ovotech/keycloak-auth';
 
 const tokens1 = await authenticate({
-  serverUrl: 'http://keycloak-server.example.com',
+  serverUrl: 'http://keycloak-server.example.com/auth/realms/<my-realm>/protocol/openid-connect/token',
   clientId: '...',
   clientSecret: '...',
 });
@@ -19,7 +19,7 @@ console.log(tokens1);
 // ... some time passes
 
 const tokens2 = await authenticate({
-  serverUrl: 'http://keycloak-server.example.com',
+  serverUrl: 'http://keycloak-server.example.com/auth/realms/<my-realm>/protocol/openid-connect/token',
   clientId: '...',
   clientSecret: '...',
   previous: auth,
@@ -28,11 +28,11 @@ const tokens2 = await authenticate({
 
 After the initial call, doing another `authenticate` with a `previous` argument would either - return the same response, if the authToken is still valid, use the refreshToken to generate a new authToken, if it has expired, or if refreshToken has expired as well, generate a new auth + refresh token.
 
-By default it would give you a leeway of 10 seconds for the expiry checks, so auth and referesh tokens are expired 10 seconds earlier. You can configure this with the `margin` argument
+By default it would give you a leeway of 10 seconds for the expiry checks, so auth and refresh tokens are expired 10 seconds earlier. You can configure this with the `margin` argument
 
 ```typescript
 const auth1 = await authenticate({
-  serverUrl: 'http://keycloak-server.example.com',
+  serverUrl: 'http://keycloak-server.example.com/auth/realms/<my-realm>/protocol/openid-connect/token',
   clientId: '...',
   clientSecret: '...',
   // consider tokens expired 15 seconds earlier
@@ -48,7 +48,7 @@ If you want to encapsulate the state of the tokens inside of a class, you can us
 import { KeycloakAuth } from '@ovotech/keycloak-auth';
 
 const auth = new KeycloakAuth({
-  serverUrl: 'http://keycloak-server.example.com',
+  serverUrl: 'http://keycloak-server.example.com/auth/realms/<my-realm>/protocol/openid-connect/token',
   clientId: '...',
   clientSecret: '...',
 });
@@ -70,7 +70,7 @@ import { keycloakAxios } from '@ovotech/keycloak-auth';
 
 const api = axios.create({ baseURL: 'http://service.example.com' });
 const auth = keycloakAxios({
-  serverUrl: 'http://keycloak-server.example.com',
+  serverUrl: 'http://keycloak-server.example.com/auth/realms/<my-realm>/protocol/openid-connect/token',
   clientId: '...',
   clientSecret: '...',
 });
@@ -90,7 +90,7 @@ import { authenticate, KeycloackAuthError } from '@ovotech/keycloak-auth';
 
 try {
   const tokens1 = await authenticate({
-    serverUrl: 'http://keycloak-server.example.com',
+    serverUrl: 'http://keycloak-server.example.com/auth/realms/<my-realm>/protocol/openid-connect/token',
     clientId: '...',
     clientSecret: '...',
   });
@@ -109,13 +109,13 @@ You can also call the `login` and `refresh` functions directly, to get the raw s
 import { login, refresh } from '@ovotech/keycloak-auth';
 
 const tokens1 = await login({
-  serverUrl: 'http://keycloak-server.example.com',
+  serverUrl:  'http://keycloak-server.example.com/auth/realms/<my-realm>/protocol/openid-connect/token',
   clientId: '...',
   clientSecret: '...',
 });
 
 const tokens2 = await refresh({
-  serverUrl: 'http://keycloak-server.example.com',
+  serverUrl:  'http://keycloak-server.example.com/auth/realms/<my-realm>/protocol/openid-connect/token',
   clientId: '...',
   clientSecret: '...',
   refreshToken: tokens1.refresh_token,
@@ -127,7 +127,7 @@ You can also call the `decodeAccessToken` function to decode a given access toke
 
 ```typescript
 const token = await authenticate({
-  serverUrl: 'http://keycloak-server.example.com',
+  serverUrl: 'http://keycloak-server.example.com/auth/realms/<my-realm>/protocol/openid-connect/token',
   clientId: '...',
   clientSecret: '...',
 });

@@ -46,7 +46,7 @@ interface AuthRequest extends KeycloakRequest {
 }
 
 export const login = ({ serverUrl, clientId, clientSecret }: KeycloakRequest) =>
-  jsonFetch<KeycloakResponse>(`${serverUrl}/auth/realms/ovo-energy/protocol/openid-connect/token`, {
+  jsonFetch<KeycloakResponse>(serverUrl, {
     method: 'POST',
     body: new URLSearchParams({
       grant_type: 'client_credentials',
@@ -56,7 +56,7 @@ export const login = ({ serverUrl, clientId, clientSecret }: KeycloakRequest) =>
   });
 
 export const refresh = ({ serverUrl, clientId, clientSecret, refreshToken }: RefreshTokenKeycloakRequest) =>
-  jsonFetch<KeycloakResponse>(`${serverUrl}/auth/realms/ovo-energy/protocol/openid-connect/token`, {
+  jsonFetch<KeycloakResponse>(serverUrl, {
     method: 'POST',
     body: new URLSearchParams({
       grant_type: 'refresh_token',
