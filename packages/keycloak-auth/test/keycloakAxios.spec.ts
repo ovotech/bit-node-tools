@@ -4,7 +4,7 @@ import { KeycloakAuth, keycloakAxios } from '../src';
 
 const clientId = 'client-id';
 const clientSecret = 'client-secret';
-const authBaseURL = 'http://auth.test';
+const authBaseURL = 'http://auth.test/auth/realms/my-realm/protocol/openid-connect/token';
 const serviceBaseURL = 'http://service.test';
 
 describe('Integration test', () => {
@@ -29,10 +29,7 @@ describe('Integration test', () => {
       .reply(200, { ok: true });
 
     nock(authBaseURL)
-      .post(
-        '/auth/realms/ovo-energy/protocol/openid-connect/token',
-        `grant_type=client_credentials&client_id=${clientId}&client_secret=${clientSecret}`,
-      )
+      .post('', `grant_type=client_credentials&client_id=${clientId}&client_secret=${clientSecret}`)
       .reply(200, {
         access_token: 'access-1',
         expires_in: 60,

@@ -30,12 +30,16 @@ describe('Api test', () => {
   it('should process error from jsonFetch', async () => {
     nock('http://auth')
       .post(
-        '/auth/realms/ovo-energy/protocol/openid-connect/token',
+        '/auth/realms/my-realm/protocol/openid-connect/token',
         'grant_type=client_credentials&client_id=test-portal&client_secret=11-22-33',
       )
       .reply(400, { error: 'unauthenticated_client', error_description: 'We have a problem' });
 
-    const loginResponse = login({ serverUrl: 'http://auth', clientId: 'test-portal', clientSecret: '11-22-33' });
+    const loginResponse = login({
+      serverUrl: 'http://auth/auth/realms/my-realm/protocol/openid-connect/token',
+      clientId: 'test-portal',
+      clientSecret: '11-22-33',
+    });
 
     await expect(loginResponse).rejects.toEqual(new KeycloakAuthError('We have a problem', 'unauthenticated_client'));
   });
@@ -43,26 +47,31 @@ describe('Api test', () => {
   it('Should call appropriate endpoints', async () => {
     nock('http://auth')
       .post(
-        '/auth/realms/ovo-energy/protocol/openid-connect/token',
+        '/auth/realms/my-realm/protocol/openid-connect/token',
         'grant_type=client_credentials&client_id=test-portal&client_secret=11-22-33',
       )
       .reply(200, response);
 
     nock('http://auth')
       .post(
-        '/auth/realms/ovo-energy/protocol/openid-connect/token',
+        '/auth/realms/my-realm/protocol/openid-connect/token',
         'grant_type=refresh_token&client_id=test-portal&client_secret=11-22-33&refresh_token=refresh-1',
       )
       .reply(200, { ...response, refresh_token: 'refresh-2', access_token: 'access-2' });
 
     nock('http://auth')
       .post(
-        '/auth/realms/ovo-energy/protocol/openid-connect/token',
+        '/auth/realms/my-realm/protocol/openid-connect/token',
         'grant_type=client_credentials&client_id=test-portal&client_secret=11-22-33',
       )
       .reply(200, { ...response, refresh_token: 'refresh-3', access_token: 'access-3', session_state: 'test-2' });
 
-    const params = { serverUrl: 'http://auth', clientId: 'test-portal', clientSecret: '11-22-33', margin: 0 };
+    const params = {
+      serverUrl: 'http://auth/auth/realms/my-realm/protocol/openid-connect/token',
+      clientId: 'test-portal',
+      clientSecret: '11-22-33',
+      margin: 0,
+    };
 
     const response1 = await authenticate(params);
     const response2 = await authenticate({ ...params, previous: response1 });
@@ -84,7 +93,7 @@ describe('Api test', () => {
   it('Should handle token errors', async () => {
     nock('http://auth')
       .post(
-        '/auth/realms/ovo-energy/protocol/openid-connect/token',
+        '/auth/realms/my-realm/protocol/openid-connect/token',
         'grant_type=client_credentials&client_id=test-portal&client_secret=11-22-33',
       )
       .times(2)
@@ -92,13 +101,18 @@ describe('Api test', () => {
 
     nock('http://auth')
       .post(
-        '/auth/realms/ovo-energy/protocol/openid-connect/token',
+        '/auth/realms/my-realm/protocol/openid-connect/token',
         'grant_type=refresh_token&client_id=test-portal&client_secret=11-22-33&refresh_token=refresh-1',
       )
 
       .reply(400, { message: 'Wrong token' });
 
-    const params = { serverUrl: 'http://auth', clientId: 'test-portal', clientSecret: '11-22-33', margin: 0 };
+    const params = {
+      serverUrl: 'http://auth/auth/realms/my-realm/protocol/openid-connect/token',
+      clientId: 'test-portal',
+      clientSecret: '11-22-33',
+      margin: 0,
+    };
 
     const response1 = await authenticate(params);
     const response2 = await authenticate({ ...params, previous: response1 });
