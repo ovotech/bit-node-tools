@@ -1,10 +1,10 @@
-import { WritableMock } from 'stream-mock';
+import { ObjectWritableMock } from 'stream-mock';
 import { createLogger, transports } from 'winston';
 import { Logger } from '../src';
 
 describe('Integration test', () => {
   it('Test with real stream', async () => {
-    const stream = new WritableMock({ objectMode: true });
+    const stream = new ObjectWritableMock();
     const transport = new transports.Stream({ stream });
     const winstonLogger = createLogger({ exitOnError: false, transports: [transport] });
 

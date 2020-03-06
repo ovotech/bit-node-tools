@@ -77,6 +77,10 @@ export class Logger {
     return this.log('info', message, meta);
   }
 
+  debug(message: string, meta?: LoggerMeta) {
+    return this.log('debug', message, meta);
+  }
+
   silly(message: string, meta?: LoggerMeta) {
     return this.log('silly', message, meta);
   }

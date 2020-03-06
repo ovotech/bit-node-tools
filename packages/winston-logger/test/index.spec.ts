@@ -14,6 +14,7 @@ describe('Winston Logger', () => {
     ${'warn'}   | ${'test-warn'}   | ${{ warn: 'test' }}
     ${'error'}  | ${'error'}       | ${{ error: new Error('err') }}
     ${'info'}   | ${'test-info'}   | ${{ info: 'test' }}
+    ${'debug'}  | ${'test-debug'}  | ${{ debug: 'test' }}
   `('Test logger for $level', ({ level, message, meta }: Test) => {
     const winstonLogger = { log: jest.fn() };
 
