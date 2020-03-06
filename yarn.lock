@@ -1007,6 +1007,32 @@
     universal-user-agent "^2.0.0"
     url-template "^2.0.8"
 
+"@ovotech/avro-ts-cli@^1.0.4":
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@ovotech/avro-ts-cli/-/avro-ts-cli-1.3.1.tgz#f6776a295148a0f997ea1ad0f36b049d74308d57"
+  integrity sha512-qDNTS6bJlHlympcBXq1UTXQ00yMXSeGsMk87CaPF3r3Dt9Al5cnKcEl5LzOruTUtaIvAOqfydyBlwjvjbn1v6Q==
+  dependencies:
+    "@ovotech/avro-ts" "^3.1.0"
+    chalk "^2.4.2"
+    yargs "^13.2.4"
+
+"@ovotech/avro-ts@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@ovotech/avro-ts/-/avro-ts-3.1.0.tgz#65164cc6fa345ef1d6d1aa40145415bc87d695d4"
+  integrity sha512-iynCTMOE3zeSpaGSErZ1M3lLn2WbxSlN0p6YQjmlNWnBV6FeaAqNv57ss7BnaeWQuSDbNd4ZcAPsWTl+1vreYw==
+  dependencies:
+    typescript "^3.5.1"
+
+"@ovotech/keycloak-auth@^1.0.4":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@ovotech/keycloak-auth/-/keycloak-auth-1.1.0.tgz#473c99f82067f21206cc364bbe4fa4ee21f24417"
+  integrity sha512-qRQuE5KmuzT8TdP9F/G7skJHYnrgzEuJouOBZ0ruvb3OYmg6qqlFPplksSTeCFxyc5wWbkyXiw5kURBeG5ZP7g==
+  dependencies:
+    "@types/express-jwt" "^0.0.42"
+    jsonwebtoken "^8.5.1"
+    jwks-rsa "^1.5.1"
+    node-fetch "^2.6.0"
+
 "@types/axios@^0.14.0":
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/@types/axios/-/axios-0.14.0.tgz#ec2300fbe7d7dddd7eb9d3abf87999964cafce46"
@@ -1053,13 +1079,6 @@
   integrity sha512-a2+YeUjPkztKJu5aIF2yArYFQQp8d51wZ7DavSHjFuY1mqVgidGyzEQ41JIVNy82fXj8yPgy2vJmfIywgESW6w==
   dependencies:
     "@types/connect" "*"
-    "@types/node" "*"
-
-"@types/capture-console@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@types/capture-console/-/capture-console-1.0.0.tgz#8730d90248d862c4ccdaf5a623bfee0272d9a934"
-  integrity sha512-v6XDGk++qgUNmL5oqjmrK/tYIRmekq9FO8vgVv4xAx9frJYTwWUI+iOa+2z48zw+ZHfVVTNxL1qT9wuZZUrDVg==
-  dependencies:
     "@types/node" "*"
 
 "@types/connect@*":
@@ -1411,14 +1430,6 @@ arg@^4.1.0:
   resolved "https://registry.yarnpkg.com/arg/-/arg-4.1.0.tgz#583c518199419e0037abb74062c37f8519e575f0"
   integrity sha512-ZWc51jO3qegGkVh8Hwpv636EkbesNV5ZNQPCtRa+0qytRYPEs9IYT9qITY9buezqUH5uqyzlWLcufrzU2rffdg==
 
-argle@~1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/argle/-/argle-1.1.1.tgz#0cfe3bc032c36b2f48ba42b9c17f89f70607e994"
-  integrity sha1-DP47wDLDay9IukK5wX+J9wYH6ZQ=
-  dependencies:
-    lodash.isfunction "^3.0.8"
-    lodash.isnumber "^3.0.3"
-
 argparse@^1.0.7:
   version "1.0.10"
   resolved "https://registry.yarnpkg.com/argparse/-/argparse-1.0.10.tgz#bcd6791ea5ae09725e17e5ad988134cd40b3d911"
@@ -1467,11 +1478,6 @@ array-union@^1.0.1:
   integrity sha1-mjRBDk9OPaI96jdb5b5w8kd47Dk=
   dependencies:
     array-uniq "^1.0.1"
-
-array-uniq@1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/array-uniq/-/array-uniq-1.0.2.tgz#5fcc373920775723cfd64d65c64bef53bf9eba6d"
-  integrity sha1-X8w3OSB3VyPP1k1lxkvvU7+eum0=
 
 array-uniq@^1.0.1:
   version "1.0.3"
@@ -1908,15 +1914,6 @@ camelcase@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-5.0.0.tgz#03295527d58bd3cd4aa75363f35b2e8d97be2f42"
   integrity sha512-faqwZqnWxbxn+F1d399ygeamQNy3lPp/H9H6rNrqYh4FSVCtcY+3cub1MxA8o9mDd55mM8Aghuu/kuyYA6VTsA==
-
-capture-console@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/capture-console/-/capture-console-1.0.1.tgz#db63c39ac73239019badd7fbb10143eda380ff71"
-  integrity sha1-22PDmscyOQGbrdf7sQFD7aOA/3E=
-  dependencies:
-    argle "~1.1.1"
-    lodash.isfunction "~3.0.8"
-    randomstring "~1.1.5"
 
 capture-exit@^1.2.0:
   version "1.2.0"
@@ -4548,11 +4545,6 @@ lodash.isboolean@^3.0.3:
   resolved "https://registry.yarnpkg.com/lodash.isboolean/-/lodash.isboolean-3.0.3.tgz#6c2e171db2a257cd96802fd43b01b20d5f5870f6"
   integrity sha1-bC4XHbKiV82WgC/UOwGyDV9YcPY=
 
-lodash.isfunction@^3.0.8, lodash.isfunction@~3.0.8:
-  version "3.0.9"
-  resolved "https://registry.yarnpkg.com/lodash.isfunction/-/lodash.isfunction-3.0.9.tgz#06de25df4db327ac931981d1bdb067e5af68d051"
-  integrity sha512-AirXNj15uRIMMPihnkInB4i3NHeb4iBtNg9WRWuK2o31S+ePwwNmDPaTL3o7dTJ+VXNZim7rFs4rxN4YU1oUJw==
-
 lodash.isinteger@^4.0.4:
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/lodash.isinteger/-/lodash.isinteger-4.0.4.tgz#619c0af3d03f8b04c31f5882840b77b11cd68343"
@@ -5950,13 +5942,6 @@ quick-lru@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/quick-lru/-/quick-lru-1.1.0.tgz#4360b17c61136ad38078397ff11416e186dcfbb8"
   integrity sha1-Q2CxfGETatOAeDl/8RQW4Ybc+7g=
-
-randomstring@~1.1.5:
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/randomstring/-/randomstring-1.1.5.tgz#6df0628f75cbd5932930d9fe3ab4e956a18518c3"
-  integrity sha1-bfBij3XL1ZMpMNn+OrTpVqGFGMM=
-  dependencies:
-    array-uniq "1.0.2"
 
 rc@^1.2.7:
   version "1.2.8"
