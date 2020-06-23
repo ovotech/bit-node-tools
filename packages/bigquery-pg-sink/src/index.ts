@@ -1,2 +1,2 @@
 export { BigQueryPGSinkStream } from './PGSinkStream';
-export { PGSinkStreamOptions } from './types';
+export { PGSinkStreamOptions, InsertBatch } from './types';
