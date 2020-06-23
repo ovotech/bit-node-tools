@@ -7,12 +7,47 @@ Stream the results of query made by [nodejs-bigquery](https://github.com/googlea
 ```bash
 yarn add @ovotech/bigquery-pg-sink
 ```
+#### Creating a Sink
+```
+const pg = new Client('postgresql://postgres:dev-pass@0.0.0.0:5432/postgres');
+const pgSink = new BigQueryPGSinkStream({
+  pg: db,
+  insert: insertQuery,
+});
 
+bigquery
+    .createQueryStream('___BIGQUERY_QUERY_STRING___')
+    .pipe(pgSink)
+
+```
+
+#### Creating insert functions
+You can directly map each record returned to it a single insert query
 ```typescript
-import { BigQueryPGSinkStream } from '@ovotech/bigquery-pg-sink';
+import { RowMetadata } from '@google-cloud/bigquery';
+import { BigQueryPGSinkStream, InsertBatch } from '@ovotech/bigquery-pg-sink';
 import { Client } from 'pg';
 
-export const insertQuery = (table: string, rows: any[]): [string, any[]] => {
+export const insertQuery = (rows: RowMetadata): InsertBatch[] => {
+  return rows.map(bigQueryResult => ({
+    query: `INSERT INTO table
+      (
+        id,
+        balance
+      ) VALUES $1, $2
+    `,
+    values: [bigQueryResult.id, bigQueryResult.balance],
+  }));
+```
+
+It is possible to speed up the insertion by using a bulk insert, however this would mean you need to programatically build up the query based on the size of the rows passed to your insertQuery function
+
+```typescript
+import { RowMetadata } from '@google-cloud/bigquery';
+import { BigQueryPGSinkStream, InsertBatch } from '@ovotech/bigquery-pg-sink';
+import { Client } from 'pg';
+
+export const insertQuery = (rows: RowMetadata): InsertBatch[] => {
   // transform each result into a flat array of values
   // i.e. [1, 200, 2, 300]
   const flatRows = rows.map(bigQueryResult => {
@@ -21,7 +56,7 @@ export const insertQuery = (table: string, rows: any[]): [string, any[]] => {
       bigQueryResult.balance,
     ]
   }).flat();
-
+  
   // generate the values insert string
   // i.e. ($1,$2,$3,.....)
   const columns = [...Array(11)];
@@ -33,28 +68,17 @@ export const insertQuery = (table: string, rows: any[]): [string, any[]] => {
           .join(',')})`,
     )
     .join(',');
-  return [
-    `INSERT INTO ${table}
+
+  return [{
+    query: `INSERT INTO table
       (
         id,
         balance
       ) VALUES ${insertValuesString}
     `,
-    flatRows,
-  ];
+    values: flatRows,
+  }];
 };
-
-const pg = new Client('postgresql://postgres:dev-pass@0.0.0.0:5432/postgres');
-const pgSink = new BigQueryPGSinkStream({
-  pg: db,
-  table: 'NAME_OF_TABLE_IN_DATABASE',
-  insert: insertQuery,
-});
-
-bigquery
-    .createQueryStream('___BIGQUERY_QUERY_STRING___')
-    .pipe(pgSink)
-
 ```
 
 ### Coding style (linting, etc) tests

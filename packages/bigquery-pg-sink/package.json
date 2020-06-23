@@ -1,7 +1,7 @@
 {
   "name": "@ovotech/bigquery-pg-sink",
   "description": "Stream BigQuery query results into a postgres database",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "main": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
@@ -28,5 +28,8 @@
   },
   "jest": {
     "preset": "../../jest-preset.json"
+  },
+  "dependencies": {
+    "@google-cloud/bigquery": "^4.7.0"
   }
 }
