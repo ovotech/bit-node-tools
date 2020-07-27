@@ -24,6 +24,34 @@ BIT Team tools for working with Kafka, Avro and other misc stuff. They are split
 | [@ovotech/bigquery-pg-sink](packages/bigquery-pg-sink/README.md)               | Used in prod | Stream the results of query made by [nodejs-bigquery](https://github.com/googleapis/nodejs-bigquery) into a [postgres database](https://www.postgresql.org/).             |
 | [@ovotech/influx-metrics-tracker](packages/influx-metrics-tracker/README.md)   | Used in prod | Track metrics and store them in an Influx database, with secondary [logging](packages/winston-logger/README.md) if Influx is unavailable.                                 |
 
+## Getting Started
+
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+
+### Prerequisites
+
+To get up and running, you will need the following tools. Use [Homebrew](https://docs.brew.sh/Installation) for installation where possible.
+
+#### Code
+
+To write and test code you will need [node v12.4.1+](https://nodejs.org/en/) and [yarn](https://yarnpkg.com/lang/en/) installed. It has been tested with node version 12.4.1.
+
+```shell
+brew install node@12
+brew install yarn
+```
+
+### Installing
+
+To get a development environment running:
+
+Change to the root directory and install required packages.
+
+```
+# Install required packages
+yarn
+```
+
 ## Running the tests
 
 The tests require a running schema registry service, and we're using docker compose to start it, alongside kafka, zookeeper and postgres.
@@ -40,9 +68,9 @@ Then you can run the tests with:
 yarn test
 ```
 
-### Coding style (linting, etc) tests
+### Coding Style Tests
 
-Style is maintained with prettier and tslint
+Code style is enforced by using a linter ([tslint](https://palantir.github.io/tslint/)) and [Prettier](https://prettier.io/).
 
 ```
 yarn lint
@@ -50,7 +78,24 @@ yarn lint
 
 ## Deployment
 
-Deployment is preferment by lerna automatically on merge / push to master, but you'll need to bump the package version numbers yourself. Only updated packages with newer versions will be pushed to the npm registry.
+Deployment is performed by lerna automatically on merge / push to master. You'll need to bump the package version numbers yourself. Only updated packages with newer versions will be pushed to the npm registry.
+
+## Built With
+
+### Languages / Core Tools
+
+- [Typescript](http://www.typescriptlang.org/) - The primary language
+- [NPM](https://www.npmjs.com/) - Node package registry
+
+### Secondary Tooling
+
+- [jest](https://jestjs.io/) - Unit and integration testing framework
+- [yarn](https://yarnpkg.com/lang/en/) - Typescript package management
+- [Lerna](https://www.npmjs.com/package/lerna) - Tool for managing JavaScript projects with multiple packages
+
+## Versioning
+
+You'll need to bump the package version numbers yourself. Only updated packages with newer versions will be pushed to the npm registry.
 
 ## Contributing
 
