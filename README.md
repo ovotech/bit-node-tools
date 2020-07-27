@@ -89,7 +89,7 @@ Deployment is performed by lerna automatically on merge / push to master. You'll
 
 ### Secondary Tooling
 
-- [jest](https://jestjs.io/) - Unit and integration testing framework
+- [jest](https://jestjs.io/) - Testing framework used for unit and integration tests
 - [yarn](https://yarnpkg.com/lang/en/) - Typescript package management
 - [lerna](https://www.npmjs.com/package/lerna) - Tool for managing JavaScript projects with multiple packages
 - [docker](https://www.docker.com/) - Deployable containers for code
