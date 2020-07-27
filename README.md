@@ -34,7 +34,7 @@ To get up and running, you will need the following tools. Use [Homebrew](https:/
 
 #### Code
 
-To write and test code you will need [node v12.4.1+](https://nodejs.org/en/) and [yarn](https://yarnpkg.com/lang/en/) installed. It has been tested with node version 12.4.1.
+To install dependencies and run the code you will need [node v12.4.1+](https://nodejs.org/en/) and [yarn](https://yarnpkg.com/lang/en/) installed. It has been tested with node version 12.4.1.
 
 ```shell
 brew install node@12
