@@ -33,7 +33,14 @@ const apiFetch = async <T>(req: string | Request, init: RequestInit = {}): Promi
     },
   };
   const res = await fetch(req, { ...defaultInit, ...init });
-  const data = await res.json();
+  let data;
+  try {
+    data = await res.json();
+  } catch (e) {
+    // Generic error to avoid including URL in message, as it may contain
+    // sensitive credentials.
+    throw TypeError('Schema registry responded with invalid JSON.');
+  }
   if (!res.ok) {
     throw new SchemaRegistryError(data.message, data.error_code);
   } else {
