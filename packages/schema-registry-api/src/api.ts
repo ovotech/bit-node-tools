@@ -32,15 +32,17 @@ const apiFetch = async <T>(req: string | Request, init: RequestInit = {}): Promi
       'Content-Type': 'application/vnd.schemaregistry.v1+json',
     },
   };
-  const res = await fetch(req, { ...defaultInit, ...init });
+
+  let res;
   let data;
   try {
+    res = await fetch(req, { ...defaultInit, ...init });
     data = await res.json();
   } catch (error) {
-    // Generic error to avoid including URL in message, as it may contain
-    // sensitive credentials.
-    throw TypeError('Schema registry responded with invalid JSON.');
+    // Use regex to sanitize error logging in order avoid basic auth credentials leakage
+    throw Error(error.toString().replace(/[^/]*@/g, '{CREDENTIALS}'));
   }
+
   if (!res.ok) {
     throw new SchemaRegistryError(data.message, data.error_code);
   } else {
