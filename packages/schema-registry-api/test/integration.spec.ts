@@ -125,7 +125,7 @@ describe('Integration test', () => {
 
     const notASchemaRegistryUrl = 'http://github.com';
     const normalError = schemaToId(notASchemaRegistryUrl, subject, schema1);
-    await expect(normalError).rejects.toEqual(expect.any(TypeError));
+    await expect(normalError).rejects.toEqual(expect.any(Error));
 
     const incompatibleSchema = schemaToId(baseUrl, subject, schema1);
     await expect(incompatibleSchema).rejects.toEqual(
