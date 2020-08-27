@@ -30,6 +30,6 @@
     "preset": "../../jest-preset.json"
   },
   "dependencies": {
-    "@google-cloud/bigquery": "^4.7.0"
+    "@google-cloud/bigquery": "^5.0.0"
   }
 }
