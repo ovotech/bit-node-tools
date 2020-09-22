@@ -35,8 +35,8 @@
     "preset": "../../jest-preset.json"
   },
   "dependencies": {
-    "apollo-datasource": "^0.5.0",
-    "apollo-server-caching": "^0.4.0",
+    "apollo-datasource": "^0.7.2",
+    "apollo-server-caching": "^0.5.2",
     "apollo-server-errors": "^2.3.0",
     "axios": "^0.19.0",
     "http-cache-semantics": "^4.0.3"
