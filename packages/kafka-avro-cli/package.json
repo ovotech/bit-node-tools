@@ -21,7 +21,7 @@
     "progress": "^2.0.3",
     "supports-color": "^6.1.0",
     "uuid": "^3.3.2",
-    "yargs": "^13.2.4"
+    "yargs": "^16.0.0"
   },
   "scripts": {
     "test": "jest --runInBand",
