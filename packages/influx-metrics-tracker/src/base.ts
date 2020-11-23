@@ -10,7 +10,7 @@ export abstract class MetricsTracker {
     },
   ) {}
 
-  protected trackPoint(
+  protected async trackPoint(
     measurementName: string,
     tags: { [name: string]: string },
     fields: { [name: string]: any },
@@ -18,22 +18,24 @@ export abstract class MetricsTracker {
     const validTags = this.getValidTags(tags);
     this.logInvalidTags(measurementName, tags);
 
-    this.influx.writePoints([
-      {
-        measurement: measurementName,
-        tags: {
-          ...this.staticMeta,
-          ...validTags,
+    try {
+      await this.influx.writePoints([
+        {
+          measurement: measurementName,
+          tags: {
+            ...this.staticMeta,
+            ...validTags,
+          },
+          fields,
         },
-        fields,
-      },
-    ]).catch(err => {
+      ]);
+    } catch (err) {
       this.logger.error('Error tracking Influx metric', {
         metric: measurementName,
         tags: JSON.stringify(validTags),
         fields: JSON.stringify(fields),
       });
-    })
+    }
   }
 
   private getInvalidTagNames(tags: { [name: string]: string }) {
