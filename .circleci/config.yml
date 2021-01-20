@@ -17,7 +17,7 @@ save-cache: &save-cache
 jobs:
   test:
     docker:
-      - image: circleci/node:8.10.0
+      - image: circleci/node:latest
       - image: confluentinc/cp-zookeeper:5.0.1
         environment:
           ZOOKEEPER_CLIENT_PORT: 2181
