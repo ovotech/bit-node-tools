@@ -32,8 +32,17 @@ const apiFetch = async <T>(req: string | Request, init: RequestInit = {}): Promi
       'Content-Type': 'application/vnd.schemaregistry.v1+json',
     },
   };
-  const res = await fetch(req, { ...defaultInit, ...init });
-  const data = await res.json();
+
+  let res;
+  let data;
+  try {
+    res = await fetch(req, { ...defaultInit, ...init });
+    data = await res.json();
+  } catch (error) {
+    // Use regex to sanitize error logging in order avoid basic auth credentials leakage
+    throw Error(error.toString().replace(/[^/]*@/g, '{CREDENTIALS}'));
+  }
+
   if (!res.ok) {
     throw new SchemaRegistryError(data.message, data.error_code);
   } else {
