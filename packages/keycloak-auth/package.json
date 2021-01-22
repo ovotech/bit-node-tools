@@ -13,14 +13,14 @@
     "@types/jsonwebtoken": "^8.3.2",
     "@types/nock": "^10.0.3",
     "@types/node": "^11.10.5",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "jest": "^24.8.0",
     "nock": "^10.0.6",
     "prettier": "^1.17.1",
     "ts-jest": "^24.0.2",
     "tslint": "^5.17.0",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.5.1"
+    "typescript": "^3.7.0"
   },
   "dependencies": {
     "@types/express-jwt": "^0.0.42",

@@ -129,7 +129,8 @@ describe('Integration test', () => {
       expect.objectContaining({
         response: {
           method: 'get',
-          url: 'http://api.example.com/users/18',
+          params: undefined,
+          url: '/users/18',
           status: 500,
           statusText: null,
           data: { message: 'unknown' },

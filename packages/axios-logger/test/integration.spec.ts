@@ -58,8 +58,9 @@ describe('Integration test', () => {
     });
 
     expect(log).toHaveBeenCalledWith('info', {
-      uri: 'http://api.example.com/users/13',
+      uri: '/users/13',
       method: 'post',
+      params: undefined,
       responseBody: {
         cards: [{ id: '111', name: '<Removed>' }, { id: '222', name: '<Removed>' }],
         saved: 'yes',
@@ -87,7 +88,8 @@ describe('Integration test', () => {
     ).rejects.toHaveProperty('response', expect.objectContaining({ status: 404 }));
 
     expect(log).toHaveBeenCalledWith('error', {
-      uri: 'http://api.example.com/users/13',
+      uri: '/users/13',
+      params: undefined,
       method: 'patch',
       status: 404,
       requestBody: {
