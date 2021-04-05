@@ -1,5 +1,4 @@
 import { Schema } from 'avsc';
-import { FetchError } from 'node-fetch';
 import * as uuid from 'uuid';
 import {
   addSubjectVersion,
@@ -15,6 +14,7 @@ import {
   schemaToId,
   toSubject,
 } from '../src';
+import { getSubjectVersion } from '../src/api';
 import { SchemaRegistryError } from '../src/SchemaRegistryError';
 
 const schema1: Schema = {
@@ -72,6 +72,9 @@ describe('Integration test', () => {
 
     const subjects = await getSubjects(baseUrl);
     expect(subjects).toContain(subject);
+
+    const version = await getSubjectVersion(baseUrl, subject, 1);
+    expect(version).toEqual({ ...newVersion, subject, version: 1, schema: JSON.stringify(schema1) });
 
     const deleteSubjectResult = await deleteSubject(baseUrl, subject);
     expect(deleteSubjectResult).toEqual([1]);

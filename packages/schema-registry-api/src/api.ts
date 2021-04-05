@@ -62,6 +62,9 @@ export const deleteSubject = (baseUrl: string, subject: string) =>
 export const getSubjectVersions = (baseUrl: string, subject: string) =>
   apiFetch<SubjectVersionsResponse>(`${baseUrl}/subjects/${subject}/versions`);
 
+export const getSubjectVersion = (baseUrl: string, subject: string, version: number) =>
+  apiFetch<SchemaVersionResponse>(`${baseUrl}/subjects/${subject}/versions/${version}`);
+
 export const getSubjectVersionSchema = async (baseUrl: string, subject: string, version: number) =>
   apiFetch<Schema>(`${baseUrl}/subjects/${subject}/versions/${version}/schema`);
 
