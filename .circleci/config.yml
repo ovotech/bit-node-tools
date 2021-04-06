@@ -47,7 +47,7 @@ jobs:
 
   publish:
     docker:
-      - image: circleci/node:8.10.0
+      - image: circleci/node:11
     steps:
       - checkout
       - *restore-cache

@@ -9,12 +9,12 @@ import {
   getSchema,
   getSubjects,
   getSubjectVersions,
+  getSubjectVersion,
   getSubjectVersionSchema,
   idToSchema,
   schemaToId,
   toSubject,
 } from '../src';
-import { getSubjectVersion } from '../src/api';
 import { SchemaRegistryError } from '../src/SchemaRegistryError';
 
 const schema1: Schema = {

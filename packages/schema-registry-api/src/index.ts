@@ -8,6 +8,7 @@ export {
   getSchema,
   getSubjects,
   getSubjectVersions,
+  getSubjectVersion,
   getSubjectVersionSchema,
   idToSchema,
   schemaToId,
