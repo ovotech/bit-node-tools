@@ -19,7 +19,7 @@ export const decodeAccessToken = (accessToken: string, config: BouncerConfig) =>
       if (err) {
         callback(err);
       } else {
-        const signingKey = key.publicKey || key.rsaPublicKey;
+        const signingKey = key.getPublicKey();
         callback(null, signingKey);
       }
     });
