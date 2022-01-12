@@ -85,6 +85,7 @@ describe('Base metrics class', () => {
     await tracker.trackSomething({ testTag: 'Bob' }, { timeMs: 0 });
 
     expect(mockLogger.error).toHaveBeenLastCalledWith('Error tracking Influx metric', {
+      error: 'Influx raised an error',
       metric: testMeasurementName,
       tags: '{"testTag":"Bob"}',
       fields: '{"timeMs":0}',
