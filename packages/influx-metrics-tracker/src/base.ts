@@ -34,6 +34,7 @@ export abstract class MetricsTracker {
         metric: measurementName,
         tags: JSON.stringify(validTags),
         fields: JSON.stringify(fields),
+        error: err,
       });
     }
   }
