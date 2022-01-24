@@ -1,4 +1,4 @@
-import { ReadableMock } from 'stream-mock';
+import { ObjectReadableMock } from 'stream-mock';
 import { Message, PGSinkError, PGSinkMultipleError } from '../src';
 import { groupChunks, insertQuery, PGSinkStream } from '../src/PGSinkStream';
 
@@ -86,7 +86,7 @@ describe('Integration test', () => {
 
   it('Should not batch with low water mark', async () => {
     const pg = { query: jest.fn().mockResolvedValue({}) };
-    const sourceStream = new ReadableMock(sourceData, { objectMode: true });
+    const sourceStream = new ObjectReadableMock(sourceData, { objectMode: true });
 
     const pgSinkStream = new PGSinkStream<TValue1 | TValue2>({
       pg: pg as any,
@@ -140,7 +140,7 @@ describe('Integration test', () => {
 
   it('Should batch when with high water mark', async () => {
     const pg = { query: jest.fn().mockResolvedValue({}) };
-    const sourceStream = new ReadableMock(sourceData, { objectMode: true });
+    const sourceStream = new ObjectReadableMock(sourceData, { objectMode: true });
 
     const pgSinkStream = new PGSinkStream<TValue1 | TValue2>({
       pg: pg as any,
@@ -185,7 +185,7 @@ describe('Integration test', () => {
         .mockRejectedValueOnce(pgError)
         .mockResolvedValue({}),
     };
-    const sourceStream = new ReadableMock(sourceData, { objectMode: true });
+    const sourceStream = new ObjectReadableMock(sourceData, { objectMode: true });
 
     const pgSinkStream = new PGSinkStream<TValue1 | TValue2>({
       pg: pg as any,
@@ -220,7 +220,7 @@ describe('Integration test', () => {
         .mockRejectedValueOnce(pgError)
         .mockResolvedValue({}),
     };
-    const sourceStream = new ReadableMock(sourceData, { objectMode: true });
+    const sourceStream = new ObjectReadableMock(sourceData, { objectMode: true });
 
     const pgSinkStream = new PGSinkStream<TValue1 | TValue2>({
       pg: pg as any,
@@ -266,7 +266,7 @@ describe('Integration test', () => {
     const pg = {
       query: jest.fn().mockResolvedValue({}),
     };
-    const sourceStream = new ReadableMock(sourceData, { objectMode: true });
+    const sourceStream = new ObjectReadableMock(sourceData, { objectMode: true });
 
     const pgSinkStream = new PGSinkStream({
       pg: pg as any,

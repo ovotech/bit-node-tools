@@ -1,5 +1,5 @@
 import { Client } from 'pg';
-import { ReadableMock } from 'stream-mock';
+import { ObjectReadableMock } from 'stream-mock';
 import { Message, PGSinkStream } from '../src';
 
 let pg: Client;
@@ -36,7 +36,7 @@ describe('Integration test', () => {
       { topic: 'test-topic-2', value: { dd: 22, effectiveEnrollmentDate: 17567 } },
     ];
 
-    const sourceStream = new ReadableMock(sourceData, { objectMode: true });
+    const sourceStream = new ObjectReadableMock(sourceData, { objectMode: true });
     const sink = new PGSinkStream<TValue1 | TValue2>({
       pg,
       topics: {
