@@ -1,6 +1,6 @@
 {
   "name": "@ovotech/keycloak-auth",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "main": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
@@ -26,7 +26,7 @@
     "@types/express-jwt": "^0.0.42",
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^1.12.1",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.7"
   },
   "scripts": {
     "build": "tsc --outDir dist --declaration",
