@@ -1,5 +1,5 @@
 import { Transform } from 'stream';
-import { BufferReadableMock, BufferWritableMock } from 'stream-mock';
+import { ObjectReadableMock, ObjectWritableMock } from 'stream-mock';
 import { pipelinePromise, rePipeline } from '../src';
 
 describe('Re Pipeline', () => {
@@ -14,8 +14,8 @@ describe('Re Pipeline', () => {
       transform: (item, encoding, callback) => callback(undefined, String(item).toUpperCase()),
     });
 
-    const start = new BufferReadableMock(['test', '   other', ' last  '], { objectMode: true });
-    const end = new BufferWritableMock({ objectMode: true });
+    const start = new ObjectReadableMock(['test', '   other', ' last  '], { objectMode: true });
+    const end = new ObjectWritableMock({ objectMode: true });
 
     await pipelinePromise(start, trimStream, uppercaseStream, end);
 
@@ -39,8 +39,8 @@ describe('Re Pipeline', () => {
         callback(item === 'error' ? new Error('from stream') : undefined, item !== 'error' ? item : undefined),
     });
 
-    const start = new BufferReadableMock(['test', '   other', 'error', ' last  '], { objectMode: true });
-    const end = new BufferWritableMock({ objectMode: true });
+    const start = new ObjectReadableMock(['test', '   other', 'error', ' last  '], { objectMode: true });
+    const end = new ObjectWritableMock({ objectMode: true });
     const errorCheck = jest.fn();
 
     await pipelinePromise(start, trimStream, throwStream, uppercaseStream, end).catch(errorCheck);
@@ -61,8 +61,8 @@ describe('Re Pipeline', () => {
         callback(item === 'error' ? new Error('from stream') : undefined, item !== 'error' ? item : undefined),
     });
 
-    const start = new BufferReadableMock(['test', '   other', 'error', 'error', ' last  '], { objectMode: true });
-    const end = new BufferWritableMock({ objectMode: true });
+    const start = new ObjectReadableMock(['test', '   other', 'error', 'error', ' last  '], { objectMode: true });
+    const end = new ObjectWritableMock({ objectMode: true });
 
     const errorCheck = jest.fn();
     const pipeline = rePipeline(errorCheck, start, trimStream, throwStream, end);
