@@ -1,0 +1,39 @@
+{
+  "name": "@ovotech/kafka-datadog",
+  "version": "1.0.1",
+  "description": "Middleware that instruments a Kafka consumer with datadog APM (Application Performance Monitoring) and metrics",
+  "main": "dist/index.js",
+  "source": "src/index.ts",
+  "types": "dist/index.d.ts",
+  "author": "Theodore J H Jones <https://github.com/MrKiplin>",
+  "license": "Apache-2.0",
+  "keywords": [
+    "kafka",
+    "datadog",
+    "middleware"
+  ],
+  "scripts": {
+    "lint-prettier": "prettier --list-different {src,test}/**/*.ts",
+    "lint-tslint": "tslint --config tslint.json '{src,test}/**/*.ts'",
+    "lint": "yarn lint-prettier && yarn lint-tslint",
+    "build": "tsc --outDir dist --declaration"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.13",
+    "@types/node": "^11.11.4",
+    "jest": "^24.8.0",
+    "prettier": "^1.17.1",
+    "tslint": "^5.17.0",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.7.0"
+  },
+  "jest": {
+    "preset": "../../jest-preset.json"
+  },
+  "dependencies": {
+    "@ovotech/castle": "^0.6.3"
+  },
+  "peerDependencies": {
+    "@ovotech/castle": "^0.6.3"
+  }
+}
