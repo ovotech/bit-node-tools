@@ -7411,6 +7411,11 @@ ts-node@^8.2.0:
     source-map-support "^0.5.6"
     yn "^3.0.0"
 
+ts-retry-promise@^0.6.0:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/ts-retry-promise/-/ts-retry-promise-0.6.1.tgz#cade4d8c72ee177b9f0b9ec3ab21770752996543"
+  integrity sha512-6L9PAWahkRtZ4mG48wz3Mxk7LfW1eZKEPsCteIa5fbDE1G2kFk4ThHXbynKlIZLg0RdenDBDw6CLME5liOrBSQ==
+
 tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.3.tgz#d7e4dd79245d85428c4d7e4822a79917954ca286"

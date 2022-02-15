@@ -16,7 +16,8 @@
     "lint-prettier": "prettier --list-different {src,test}/**/*.ts",
     "lint-tslint": "tslint --config tslint.json '{src,test}/**/*.ts'",
     "lint": "yarn lint-prettier && yarn lint-tslint",
-    "build": "tsc --outDir dist --declaration"
+    "build": "tsc -p ./tsconfig.build.json --outDir dist --declaration",
+    "test": "jest --runInBand"
   },
   "devDependencies": {
     "@types/jest": "^24.0.13",
@@ -26,6 +27,7 @@
     "prettier": "^1.17.1",
     "tslint": "^5.17.0",
     "tslint-config-prettier": "^1.18.0",
+    "ts-retry-promise": "^0.6.0",
     "typescript": "^3.7.0"
   },
   "jest": {
