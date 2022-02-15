@@ -5,12 +5,5 @@
   "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
   "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
   "testURL": "http://localhost/",
-  "testEnvironment": "node",
-  "globals": {
-    "ts-jest": {
-      "tsconfig": {
-        "resolveJsonModule": true
-      }
-    }
-  }
+  "testEnvironment": "node"
 }
