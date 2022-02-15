@@ -16,25 +16,30 @@
     "lint-prettier": "prettier --list-different {src,test}/**/*.ts",
     "lint-tslint": "tslint --config tslint.json '{src,test}/**/*.ts'",
     "lint": "yarn lint-prettier && yarn lint-tslint",
-    "build": "tsc --outDir dist --declaration"
+    "test": "jest --runInBand",
+    "build": "tsc --outDir dist --declaration",
+    "build-types:avro": "avro-ts --logical-type date=Date --logical-type timestamp-millis=Date test/topics/schemas/*.json --output-dir test/topics/__generated__ && prettier --write test/topics/__generated__/*.ts"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.13",
+    "@ovotech/avro-ts-cli": "^3.4.1",
+    "@types/jest": "^26.0.14",
     "@types/long": "^4.0.1",
     "@types/node": "^11.11.4",
-    "jest": "^24.8.0",
+    "jest": "^26.5.3",
     "prettier": "^1.17.1",
+    "ts-jest": "^26.4.1",
     "tslint": "^5.17.0",
     "tslint-config-prettier": "^1.18.0",
+    "ts-retry-promise": "^0.6.0",
     "typescript": "^3.7.0"
   },
   "jest": {
     "preset": "../../jest-preset.json"
   },
   "dependencies": {
-    "@ovotech/castle": "^0.8.1"
+    "@ovotech/castle": "^0.6.3"
   },
   "peerDependencies": {
-    "@ovotech/castle": "^0.8.1"
+    "@ovotech/castle": "^0.6.3"
   }
 }
