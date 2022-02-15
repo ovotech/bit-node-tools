@@ -1057,10 +1057,10 @@
     universal-user-agent "^2.0.0"
     url-template "^2.0.8"
 
-"@ovotech/avro-kafkajs@^0.6.3":
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/@ovotech/avro-kafkajs/-/avro-kafkajs-0.6.3.tgz#d501955013f8b44ac0afd95627aca09ca34c1313"
-  integrity sha512-F9khlsH5PIIYYJtWRhaPzjSu0MHy+uR12lcwhOrvh//Axm9BU5Pur8g8w7EWd73p6Qe+hZFfL49fKOe+7JtZeA==
+"@ovotech/avro-kafkajs@^0.8.1":
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/@ovotech/avro-kafkajs/-/avro-kafkajs-0.8.1.tgz#4b67d37a493cb984b460a98ddb2fbf35baeca624"
+  integrity sha512-xfHQM0tp0Cc9BwKK2V05jIQlaos0LyxHTZDSAfYbEMqS2XipK/fUsA1Upr9vMrFyMF1qTBl/yoOaWmm7oyYMIA==
   dependencies:
     "@ovotech/schema-registry-api" "^1.1.1"
     avsc "^5.5.6"
@@ -1084,12 +1084,12 @@
     "@ovotech/ts-compose" "^0.14.0"
     typescript "^3.9.6"
 
-"@ovotech/castle@^0.6.3":
-  version "0.6.5"
-  resolved "https://registry.yarnpkg.com/@ovotech/castle/-/castle-0.6.5.tgz#1e575b4eaeb9eee50f6f8a7bfd8e44f18ca8d57a"
-  integrity sha512-GTB21eGFMkcRYgYlkNnaHiD9hTZJSckdrlMYJS/iLWnwfEg/DPNSdE+MDMZNi+MVinxKJl8EGSSKsRCx3K3ucg==
+"@ovotech/castle@^0.8.1":
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/@ovotech/castle/-/castle-0.8.1.tgz#258a551a2f26a625f5ae10fa79c452be8c38eef7"
+  integrity sha512-4xQXgK1UGMNGz1c29Q6JwX1m2a2x8RmW4z5CvCQG4esAIN8QUy0w7NTJ0VixOT0aayO+juQC7qJapA0MVNjb1g==
   dependencies:
-    "@ovotech/avro-kafkajs" "^0.6.3"
+    "@ovotech/avro-kafkajs" "^0.8.1"
     kafkajs "^1.15.0"
     lodash.chunk "^4.2.0"
 
@@ -1250,6 +1250,11 @@
   integrity sha512-Mkjljd9DTpkPlrmGfTJvcP4aBU7yO2QmW7wNVhV4/6AEUxYoacqU7FJU/N0yFEHTsIrE4da3rUrjrR5ejicFmA==
   dependencies:
     "@types/node" "*"
+
+"@types/long@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@types/long/-/long-4.0.1.tgz#459c65fa1867dafe6a8f322c4c51695663cc55e9"
+  integrity sha512-5tXH6Bx/kNGd3MgffdmP4dy2Z+G4eaXw0SE81Tq3BNadtnMR5/ySMzX4SLEzHJzSmPNn4HIdpQsBvXMUykr58w==
 
 "@types/mime@*":
   version "2.0.1"
