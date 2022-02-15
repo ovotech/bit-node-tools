@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "@types/jest": "^24.0.13",
+    "@types/long": "^4.0.1",
     "@types/node": "^11.11.4",
     "jest": "^24.8.0",
     "prettier": "^1.17.1",
@@ -31,9 +32,9 @@
     "preset": "../../jest-preset.json"
   },
   "dependencies": {
-    "@ovotech/castle": "^0.6.3"
+    "@ovotech/castle": "^0.8.1"
   },
   "peerDependencies": {
-    "@ovotech/castle": "^0.6.3"
+    "@ovotech/castle": "^0.8.1"
   }
 }
