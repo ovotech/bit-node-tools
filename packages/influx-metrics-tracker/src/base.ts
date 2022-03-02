@@ -1,14 +1,40 @@
 import { Logger } from '@ovotech/winston-logger';
 import { InfluxDB } from 'influx';
 
+interface Point {
+  measurementName: string;
+  tags: { [name: string]: string };
+  fields: { [name: string]: any };
+}
+
 export abstract class MetricsTracker {
+  private batchData: Point[];
   constructor(
     protected influx: InfluxDB,
     protected logger: Logger,
     protected staticMeta?: {
       [key: string]: any;
     },
-  ) {}
+    protected batchSendIntervalMs = 1000,
+  ) {
+    this.batchData = [];
+    this.startBatchEventLoop(batchSendIntervalMs);
+  }
+
+  private startBatchEventLoop(batchSendIntervalMs: number) {
+    setInterval(async () => {
+      await this.sendBatches();
+      this.flushBatchData();
+    }, batchSendIntervalMs);
+  }
+
+  private async sendBatches() {
+    await this.influx.writePoints(this.batchData);
+  }
+
+  private flushBatchData() {
+    this.batchData = [];
+  }
 
   protected async trackPoint(
     measurementName: string,
@@ -19,16 +45,14 @@ export abstract class MetricsTracker {
     this.logInvalidTags(measurementName, tags);
 
     try {
-      await this.influx.writePoints([
-        {
-          measurement: measurementName,
-          tags: {
-            ...this.staticMeta,
-            ...validTags,
-          },
-          fields,
+      this.batchData.push({
+        measurementName,
+        tags: {
+          ...this.staticMeta,
+          ...validTags,
         },
-      ]);
+        fields,
+      });
     } catch (err) {
       this.logger.error('Error tracking Influx metric', {
         metric: measurementName,
