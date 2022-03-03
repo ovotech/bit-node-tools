@@ -1,5 +1,9 @@
 import { Logger } from '@ovotech/winston-logger';
 import { InfluxDB } from 'influx';
+import BatchCalls from './helpers/batch-calls';
+import { executeCallbackOrExponentiallyBackOff } from './helpers/exponential-backoff';
+
+const ONE_MINUTE = 60000;
 
 interface Point {
   measurementName: string;
@@ -7,10 +11,9 @@ interface Point {
   fields: { [name: string]: any };
 }
 
-const ONE_MINUTE = 60000;
-
 export abstract class MetricsTracker {
-  private batchData: Point[];
+  private batchCalls = new BatchCalls(this.batchSendIntervalMs, this.sendPointsToInflux);
+
   constructor(
     protected influx: InfluxDB,
     protected logger: Logger,
@@ -18,25 +21,10 @@ export abstract class MetricsTracker {
       [key: string]: any;
     },
     protected batchSendIntervalMs = ONE_MINUTE,
-  ) {
-    this.batchData = [];
-    this.startBatchEventLoop(batchSendIntervalMs);
-  }
+  ) {}
 
-  // Split out into helper?
-  private startBatchEventLoop(batchSendIntervalMs: number) {
-    setInterval(async () => {
-      await this.sendBatches();
-      this.flushBatchData();
-    }, batchSendIntervalMs);
-  }
-
-  private async sendBatches() {
-    await this.influx.writePoints(this.batchData);
-  }
-
-  private flushBatchData() {
-    this.batchData = [];
+  private sendPointsToInflux(points: Point[]) {
+    executeCallbackOrExponentiallyBackOff(() => this.influx.writePoints(points));
   }
 
   protected async trackPoint(
@@ -48,7 +36,7 @@ export abstract class MetricsTracker {
     this.logInvalidTags(measurementName, tags);
 
     try {
-      this.batchData.push({
+      this.batchCalls.addToBatch({
         measurementName,
         tags: {
           ...this.staticMeta,

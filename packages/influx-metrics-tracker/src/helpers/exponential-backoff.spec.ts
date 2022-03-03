@@ -22,18 +22,7 @@ describe('executeCallbackOrExponentiallyBackOff', () => {
     exponentialBackoff.executeCallbackOrExponentiallyBackOff(mockFunction);
 
     expect(mockFunction).toBeCalledTimes(1);
-    // expect(setTimeout).toHaveBeenCalledTimes(1);
-  });
-  it('Retries an unsuccessful call for a second time after 1 second', () => {
-    setMockToThrowErrorNTimes(1);
-
-    exponentialBackoff.executeCallbackOrExponentiallyBackOff(mockFunction);
-
-    jest.runAllTimers();
-
-    expect(mockFunction).toBeCalledTimes(2);
-    expect(setTimeout).toHaveBeenCalledTimes(1);
-    expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 1000);
+    expect(setTimeout).not.toBeCalled();
   });
 
   it.each`
