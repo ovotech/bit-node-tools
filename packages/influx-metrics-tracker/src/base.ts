@@ -7,6 +7,8 @@ interface Point {
   fields: { [name: string]: any };
 }
 
+const ONE_MINUTE = 60000;
+
 export abstract class MetricsTracker {
   private batchData: Point[];
   constructor(
@@ -15,12 +17,13 @@ export abstract class MetricsTracker {
     protected staticMeta?: {
       [key: string]: any;
     },
-    protected batchSendIntervalMs = 1000,
+    protected batchSendIntervalMs = ONE_MINUTE,
   ) {
     this.batchData = [];
     this.startBatchEventLoop(batchSendIntervalMs);
   }
 
+  // Split out into helper?
   private startBatchEventLoop(batchSendIntervalMs: number) {
     setInterval(async () => {
       await this.sendBatches();
