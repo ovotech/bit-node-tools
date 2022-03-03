@@ -9,6 +9,7 @@ describe('BatchCalls', () => {
     jest.clearAllMocks();
     mockFunction = jest.fn();
   });
+
   it('Calls the given function with a single item of batch data after the given period of time', () => {
     const batchCalls = new BatchCalls(1000, mockFunction);
     batchCalls.addToBatch({ data: 'its here yesss' });

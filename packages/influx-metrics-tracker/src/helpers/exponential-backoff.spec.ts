@@ -3,6 +3,7 @@ import * as exponentialBackoff from './exponential-backoff';
 const mockFunction = jest.fn();
 jest.useFakeTimers();
 jest.spyOn(global, 'setTimeout');
+
 function setMockToThrowErrorNTimes(times: number) {
   for (let i = 0; i < times; i++) {
     mockFunction.mockImplementationOnce(() => {
