@@ -60,7 +60,7 @@ describe('BatchCalls', () => {
 
     expect(mockFunction).toBeCalledTimes(2);
     expect(mockFunction).toHaveBeenNthCalledWith(1, [{ data: 'its here yesss' }]);
-    // expect(mockFunction).toHaveBeenNthCalledWith(2, [{ data: 'its also here yesss' }]);
+    expect(mockFunction).toHaveBeenNthCalledWith(2, [{ data: 'its also here yesss' }]);
   });
 
   it('Does not call the given function a second time after all data is erased and no new data is added', async () => {
