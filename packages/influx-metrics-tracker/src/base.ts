@@ -15,7 +15,7 @@ export abstract class MetricsTracker {
   constructor(
     protected influx: InfluxDB,
     protected logger: Logger,
-    protected batchCalls: BatchCalls,
+    protected batchCalls?: BatchCalls,
     protected staticMeta?: {
       [key: string]: any;
     },
@@ -33,7 +33,7 @@ export abstract class MetricsTracker {
     this.logInvalidTags(measurementName, tags);
 
     try {
-      this.batchCalls.addToBatch({
+      this.batchCalls!.addToBatch({
         measurementName,
         tags: {
           ...this.staticMeta,
