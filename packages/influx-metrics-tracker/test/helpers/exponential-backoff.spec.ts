@@ -1,4 +1,4 @@
-import * as exponentialBackoff from './exponential-backoff';
+import * as exponentialBackoff from '../../src/helpers/exponential-backoff';
 
 const mockFunction = jest.fn();
 jest.useFakeTimers();

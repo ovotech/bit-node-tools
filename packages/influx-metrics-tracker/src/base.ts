@@ -12,19 +12,16 @@ interface Point {
 }
 
 export abstract class MetricsTracker {
-  private batchCalls = new BatchCalls(this.batchSendIntervalMs, this.sendPointsToInflux);
-
   constructor(
     protected influx: InfluxDB,
     protected logger: Logger,
+    protected batchCalls: BatchCalls,
     protected staticMeta?: {
       [key: string]: any;
     },
     protected batchSendIntervalMs = ONE_MINUTE,
-  ) {}
-
-  private sendPointsToInflux(points: Point[]) {
-    executeCallbackOrExponentiallyBackOff(() => this.influx.writePoints(points));
+  ) {
+    this.batchCalls = batchCalls || new BatchCalls(this.batchSendIntervalMs, this.sendPointsToInflux, this.logger);
   }
 
   protected async trackPoint(
@@ -52,6 +49,10 @@ export abstract class MetricsTracker {
         error: err,
       });
     }
+  }
+
+  private sendPointsToInflux(points: Point[]) {
+    executeCallbackOrExponentiallyBackOff(() => this.influx.writePoints(points));
   }
 
   private getInvalidTagNames(tags: { [name: string]: string }) {

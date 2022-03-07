@@ -2,13 +2,15 @@ import { ExternalRequestMetricsTracker } from '../src/external-request';
 
 describe('Track actions relating to consuming an event from Kafka', () => {
   let mockInflux: any;
+  let mockBatchCalls: any;
   let mockLogger: any;
   let tracker: ExternalRequestMetricsTracker;
 
   beforeEach(() => {
     mockInflux = { writePoints: jest.fn().mockResolvedValue(undefined) };
+    mockBatchCalls = { addToBatch: jest.fn().mockResolvedValue(undefined) };
     mockLogger = { error: jest.fn(), warn: jest.fn() };
-    tracker = new ExternalRequestMetricsTracker(mockInflux, mockLogger);
+    tracker = new ExternalRequestMetricsTracker(mockInflux, mockLogger, mockBatchCalls);
   });
 
   it('Should track a request time without a status code', async () => {
@@ -18,19 +20,17 @@ describe('Track actions relating to consuming an event from Kafka', () => {
 
     await tracker.trackRequestTime(externalServiceName, requestName, timeMs);
 
-    expect(mockInflux.writePoints).toHaveBeenLastCalledWith([
-      {
-        measurement: 'external-request-time',
-        tags: {
-          externalServiceName,
-          requestName,
-        },
-        fields: {
-          count: 1,
-          timeMs: 1234,
-        },
+    expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
+      measurementName: 'external-request-time',
+      tags: {
+        externalServiceName,
+        requestName,
       },
-    ]);
+      fields: {
+        count: 1,
+        timeMs: 1234,
+      },
+    });
   });
 
   it.each([200, 404, 500])('Should track a request time with a status code: %d', async statusCode => {
@@ -40,43 +40,40 @@ describe('Track actions relating to consuming an event from Kafka', () => {
 
     await tracker.trackRequestTime(externalServiceName, requestName, timeMs, statusCode);
 
-    expect(mockInflux.writePoints).toHaveBeenLastCalledWith([
-      {
-        measurement: 'external-request-time',
-        tags: {
-          externalServiceName,
-          requestName,
-          status: statusCode.toString(10),
-        },
-        fields: {
-          count: 1,
-          timeMs: 123,
-        },
+    expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
+      measurementName: 'external-request-time',
+      tags: {
+        externalServiceName,
+        requestName,
+        status: statusCode.toString(10),
       },
-    ]);
+      fields: {
+        count: 1,
+        timeMs: 123,
+      },
+    });
   });
 
-  it.each([[1234.5, 1235], [123.4, 123], [10, 10]])(
-    'Should round response times to the nearest millisecond: %d',
-    async (exactTime, expectedTrackedTime) => {
-      const externalServiceName = 'test-external-service';
-      const requestName = 'test-request';
+  it.each([
+    [1234.5, 1235],
+    [123.4, 123],
+    [10, 10],
+  ])('Should round response times to the nearest millisecond: %d', async (exactTime, expectedTrackedTime) => {
+    const externalServiceName = 'test-external-service';
+    const requestName = 'test-request';
 
-      await tracker.trackRequestTime(externalServiceName, requestName, exactTime);
+    await tracker.trackRequestTime(externalServiceName, requestName, exactTime);
 
-      expect(mockInflux.writePoints).toHaveBeenLastCalledWith([
-        {
-          measurement: 'external-request-time',
-          tags: {
-            externalServiceName,
-            requestName,
-          },
-          fields: {
-            count: 1,
-            timeMs: expectedTrackedTime,
-          },
-        },
-      ]);
-    },
-  );
+    expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
+      measurementName: 'external-request-time',
+      tags: {
+        externalServiceName,
+        requestName,
+      },
+      fields: {
+        count: 1,
+        timeMs: expectedTrackedTime,
+      },
+    });
+  });
 });

@@ -2,13 +2,15 @@ import { ResponseMetricsTracker } from '../src/response';
 
 describe('Track actions relating to responding to an API request', () => {
   let mockInflux: any;
+  let mockBatchCalls: any;
   let mockLogger: any;
   let tracker: ResponseMetricsTracker;
 
   beforeEach(() => {
     mockInflux = { writePoints: jest.fn().mockResolvedValue(undefined) };
+    mockBatchCalls = { addToBatch: jest.fn().mockResolvedValue(undefined) };
     mockLogger = { error: jest.fn(), warn: jest.fn() };
-    tracker = new ResponseMetricsTracker(mockInflux, mockLogger);
+    tracker = new ResponseMetricsTracker(mockInflux, mockLogger, mockBatchCalls);
   });
 
   it('Should track a response time without a status code', async () => {
@@ -17,18 +19,16 @@ describe('Track actions relating to responding to an API request', () => {
 
     await tracker.trackOwnResponseTime(requestName, timeMs);
 
-    expect(mockInflux.writePoints).toHaveBeenLastCalledWith([
-      {
-        measurement: 'own-response-time',
-        tags: {
-          requestName,
-        },
-        fields: {
-          count: 1,
-          timeMs: 1234,
-        },
+    expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
+      measurementName: 'own-response-time',
+      tags: {
+        requestName,
       },
-    ]);
+      fields: {
+        count: 1,
+        timeMs: 1234,
+      },
+    });
   });
 
   it.each([200, 404, 500])('Should track a response time with a status code: %d', async statusCode => {
@@ -37,40 +37,37 @@ describe('Track actions relating to responding to an API request', () => {
 
     await tracker.trackOwnResponseTime(requestName, timeMs, statusCode);
 
-    expect(mockInflux.writePoints).toHaveBeenLastCalledWith([
-      {
-        measurement: 'own-response-time',
-        tags: {
-          requestName,
-          status: statusCode.toString(10),
-        },
-        fields: {
-          count: 1,
-          timeMs: 123,
-        },
+    expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
+      measurementName: 'own-response-time',
+      tags: {
+        requestName,
+        status: statusCode.toString(10),
       },
-    ]);
+      fields: {
+        count: 1,
+        timeMs: 123,
+      },
+    });
   });
 
-  it.each([[1234.5, 1235], [123.4, 123], [10, 10]])(
-    'Should round response times to the nearest millisecond: %d',
-    async (exactTime, expectedTrackedTime) => {
-      const requestName = 'test-request';
+  it.each([
+    [1234.5, 1235],
+    [123.4, 123],
+    [10, 10],
+  ])('Should round response times to the nearest millisecond: %d', async (exactTime, expectedTrackedTime) => {
+    const requestName = 'test-request';
 
-      await tracker.trackOwnResponseTime(requestName, exactTime);
+    await tracker.trackOwnResponseTime(requestName, exactTime);
 
-      expect(mockInflux.writePoints).toHaveBeenLastCalledWith([
-        {
-          measurement: 'own-response-time',
-          tags: {
-            requestName,
-          },
-          fields: {
-            count: 1,
-            timeMs: expectedTrackedTime,
-          },
-        },
-      ]);
-    },
-  );
+    expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
+      measurementName: 'own-response-time',
+      tags: {
+        requestName,
+      },
+      fields: {
+        count: 1,
+        timeMs: expectedTrackedTime,
+      },
+    });
+  });
 });
