@@ -52,6 +52,11 @@ Change to the root directory and install required packages.
 yarn
 ```
 
+```
+# Build packages that are dependencies of other packages
+yarn build
+```
+
 ## Running the tests
 
 The tests require a running schema registry service, and we're using docker compose to start it, alongside kafka, zookeeper and postgres.

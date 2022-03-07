@@ -1,14 +1,28 @@
 import { Logger } from '@ovotech/winston-logger';
 import { InfluxDB } from 'influx';
+import BatchCalls from './helpers/batch-calls';
+import { executeCallbackOrExponentiallyBackOff } from './helpers/exponential-backoff';
+
+const ONE_MINUTE = 60000;
+
+interface Point {
+  measurementName: string;
+  tags: { [name: string]: string };
+  fields: { [name: string]: any };
+}
 
 export abstract class MetricsTracker {
   constructor(
     protected influx: InfluxDB,
     protected logger: Logger,
+    protected batchCalls?: BatchCalls,
     protected staticMeta?: {
       [key: string]: any;
     },
-  ) {}
+    protected batchSendIntervalMs = ONE_MINUTE,
+  ) {
+    this.batchCalls = batchCalls || new BatchCalls(this.batchSendIntervalMs, this.sendPointsToInflux, this.logger);
+  }
 
   protected async trackPoint(
     measurementName: string,
@@ -19,16 +33,14 @@ export abstract class MetricsTracker {
     this.logInvalidTags(measurementName, tags);
 
     try {
-      await this.influx.writePoints([
-        {
-          measurement: measurementName,
-          tags: {
-            ...this.staticMeta,
-            ...validTags,
-          },
-          fields,
+      this.batchCalls!.addToBatch({
+        measurementName,
+        tags: {
+          ...this.staticMeta,
+          ...validTags,
         },
-      ]);
+        fields,
+      });
     } catch (err) {
       this.logger.error('Error tracking Influx metric', {
         metric: measurementName,
@@ -37,6 +49,10 @@ export abstract class MetricsTracker {
         error: err,
       });
     }
+  }
+
+  private sendPointsToInflux(points: Point[]) {
+    executeCallbackOrExponentiallyBackOff(() => this.influx.writePoints(points));
   }
 
   private getInvalidTagNames(tags: { [name: string]: string }) {
