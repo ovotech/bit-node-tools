@@ -15,10 +15,10 @@ export abstract class MetricsTracker {
   constructor(
     protected influx: InfluxDB,
     protected logger: Logger,
-    protected batchCalls?: BatchCalls,
     protected staticMeta?: {
       [key: string]: any;
     },
+    protected batchCalls?: BatchCalls,
     protected batchSendIntervalMs = ONE_MINUTE,
   ) {
     this.batchCalls = batchCalls || new BatchCalls(this.batchSendIntervalMs, this.sendPointsToInflux, this.logger);

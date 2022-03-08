@@ -10,7 +10,7 @@ describe('Track actions relating to responding to an API request', () => {
     mockInflux = { writePoints: jest.fn().mockResolvedValue(undefined) };
     mockBatchCalls = { addToBatch: jest.fn().mockResolvedValue(undefined) };
     mockLogger = { error: jest.fn(), warn: jest.fn() };
-    tracker = new ResponseMetricsTracker(mockInflux, mockLogger, mockBatchCalls);
+    tracker = new ResponseMetricsTracker(mockInflux, mockLogger, {}, mockBatchCalls);
   });
 
   it('Should track a response time without a status code', async () => {
