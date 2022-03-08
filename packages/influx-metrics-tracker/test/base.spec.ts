@@ -23,7 +23,7 @@ describe('Base metrics class', () => {
     mockInflux = {};
     mockBatchCalls = { addToBatch: jest.fn().mockResolvedValue(undefined) };
     mockLogger = { error: jest.fn(), warn: jest.fn() };
-    tracker = new TestTracker(mockInflux, mockLogger, mockBatchCalls, metricsMeta);
+    tracker = new TestTracker(mockInflux, mockLogger, metricsMeta, mockBatchCalls);
   });
 
   it('Should track valid tags', async () => {

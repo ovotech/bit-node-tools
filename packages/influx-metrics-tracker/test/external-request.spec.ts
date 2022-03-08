@@ -10,7 +10,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
     mockInflux = { writePoints: jest.fn().mockResolvedValue(undefined) };
     mockBatchCalls = { addToBatch: jest.fn().mockResolvedValue(undefined) };
     mockLogger = { error: jest.fn(), warn: jest.fn() };
-    tracker = new ExternalRequestMetricsTracker(mockInflux, mockLogger, mockBatchCalls);
+    tracker = new ExternalRequestMetricsTracker(mockInflux, mockLogger, {}, mockBatchCalls);
   });
 
   it('Should track a request time without a status code', async () => {

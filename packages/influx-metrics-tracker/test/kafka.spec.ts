@@ -10,7 +10,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
     mockInflux = { writePoints: jest.fn().mockResolvedValue(undefined) };
     mockBatchCalls = { addToBatch: jest.fn().mockResolvedValue(undefined) };
     mockLogger = { error: jest.fn(), warn: jest.fn() };
-    tracker = new KafkaMetricsTracker(mockInflux, mockLogger, mockBatchCalls);
+    tracker = new KafkaMetricsTracker(mockInflux, mockLogger, {}, mockBatchCalls);
   });
 
   it('Should track a single event being received', async () => {
