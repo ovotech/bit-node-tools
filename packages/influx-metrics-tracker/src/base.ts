@@ -52,7 +52,8 @@ export abstract class MetricsTracker {
   }
 
   private sendPointsToInflux(points: Point[]) {
-    executeCallbackOrExponentiallyBackOff(() => this.influx.writePoints(points));
+    this.logger.info('Sending points to Influx')
+    executeCallbackOrExponentiallyBackOff(() => this.influx.writePoints(points), this.logger);
   }
 
   private getInvalidTagNames(tags: { [name: string]: string }) {
