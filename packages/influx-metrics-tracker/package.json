@@ -1,7 +1,7 @@
 {
   "name": "@ovotech/influx-metrics-tracker",
   "description": "Track metrics and store them in an Influx database, with secondary logging if Influx is unavailable",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "main": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
