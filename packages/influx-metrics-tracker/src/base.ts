@@ -34,6 +34,7 @@ export abstract class MetricsTracker {
     this.logInvalidTags(measurementName, tags);
 
     try {
+      this.logger.info(`Tracking point for ${measurementName}`);
       this.batchCalls!.addToBatch({
         measurementName,
         tags: {
