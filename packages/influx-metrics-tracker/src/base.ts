@@ -56,7 +56,7 @@ export abstract class MetricsTracker {
     }
   }
 
-  sendPointsToInflux(points: Point[]) {
+  private sendPointsToInflux(points: Point[]) {
     this.logger.info('Sending points to Influx');
 
     executeCallbackOrExponentiallyBackOff(() => {
