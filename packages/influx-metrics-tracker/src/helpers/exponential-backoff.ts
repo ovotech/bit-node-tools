@@ -16,8 +16,8 @@ export function executeCallbackOrExponentiallyBackOff(
 
       logger.error(
         `Influx Metrics Tracker callback failed. Exponentially backing off and trying again in ${newTimeout /
-          1000} seconds`,
-        err,
+          1000} seconds ${err}`,
+        { error: err },
       );
 
       executeCallbackOrExponentiallyBackOff(callback, logger, newTimeout);
