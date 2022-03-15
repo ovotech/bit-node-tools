@@ -22,7 +22,7 @@ describe('Base metrics class', () => {
   beforeEach(() => {
     mockInflux = {};
     mockBatchCalls = { addToBatch: jest.fn().mockResolvedValue(undefined) };
-    mockLogger = { error: jest.fn(), warn: jest.fn() };
+    mockLogger = { error: jest.fn(), warn: jest.fn(), info: jest.fn() };
     tracker = new TestTracker(mockInflux, mockLogger, metricsMeta, mockBatchCalls);
   });
 

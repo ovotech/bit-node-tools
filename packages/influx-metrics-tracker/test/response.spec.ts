@@ -9,7 +9,7 @@ describe('Track actions relating to responding to an API request', () => {
   beforeEach(() => {
     mockInflux = { writePoints: jest.fn().mockResolvedValue(undefined) };
     mockBatchCalls = { addToBatch: jest.fn().mockResolvedValue(undefined) };
-    mockLogger = { error: jest.fn(), warn: jest.fn() };
+    mockLogger = { error: jest.fn(), warn: jest.fn(), info: jest.fn() };
     tracker = new ResponseMetricsTracker(mockInflux, mockLogger, {}, mockBatchCalls);
   });
 

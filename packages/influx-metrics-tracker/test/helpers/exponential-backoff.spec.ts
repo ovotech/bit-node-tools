@@ -13,14 +13,17 @@ function setMockToThrowErrorNTimes(times: number) {
 }
 
 describe('executeCallbackOrExponentiallyBackOff', () => {
+  let mockLogger: any;
+
   const spy = jest.spyOn(exponentialBackoff, 'executeCallbackOrExponentiallyBackOff');
 
   beforeEach(() => {
+    mockLogger = { error: jest.fn(), warn: jest.fn(), info: jest.fn() };
     jest.clearAllMocks();
   });
 
   it('Executes a successful call once and does not retry', () => {
-    exponentialBackoff.executeCallbackOrExponentiallyBackOff(mockFunction);
+    exponentialBackoff.executeCallbackOrExponentiallyBackOff(mockFunction, mockLogger);
 
     expect(mockFunction).toBeCalledTimes(1);
     expect(setTimeout).not.toBeCalled();
@@ -39,7 +42,7 @@ describe('executeCallbackOrExponentiallyBackOff', () => {
     ({ retryTimes, numberOfSeconds }) => {
       setMockToThrowErrorNTimes(retryTimes);
 
-      exponentialBackoff.executeCallbackOrExponentiallyBackOff(mockFunction);
+      exponentialBackoff.executeCallbackOrExponentiallyBackOff(mockFunction, mockLogger);
 
       jest.runAllTimers();
 
