@@ -21,6 +21,7 @@ export abstract class MetricsTracker {
     protected batchCalls?: BatchCalls,
     protected batchSendIntervalMs = ONE_MINUTE,
   ) {
+    this.logger.info('Instantiated new Metrics Tracker');
     this.batchCalls = batchCalls || new BatchCalls(this.batchSendIntervalMs, this.sendPointsToInflux, this.logger);
   }
 
@@ -41,6 +42,7 @@ export abstract class MetricsTracker {
         },
         fields,
       });
+      return;
     } catch (err) {
       this.logger.error('Error tracking Influx metric', {
         metric: measurementName,
@@ -48,11 +50,12 @@ export abstract class MetricsTracker {
         fields: JSON.stringify(fields),
         error: err,
       });
+      return;
     }
   }
 
   private sendPointsToInflux(points: Point[]) {
-    this.logger.info('Sending points to Influx')
+    this.logger.info('Sending points to Influx');
     executeCallbackOrExponentiallyBackOff(() => this.influx.writePoints(points), this.logger);
   }
 
