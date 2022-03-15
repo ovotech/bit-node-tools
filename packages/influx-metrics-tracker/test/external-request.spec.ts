@@ -9,7 +9,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
   beforeEach(() => {
     mockInflux = { writePoints: jest.fn().mockResolvedValue(undefined) };
     mockBatchCalls = { addToBatch: jest.fn().mockResolvedValue(undefined) };
-    mockLogger = { error: jest.fn(), warn: jest.fn() };
+    mockLogger = { error: jest.fn(), warn: jest.fn(), info: jest.fn() };
     tracker = new ExternalRequestMetricsTracker(mockInflux, mockLogger, {}, mockBatchCalls);
   });
 

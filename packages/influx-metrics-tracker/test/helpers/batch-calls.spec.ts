@@ -8,7 +8,7 @@ describe('BatchCalls', () => {
   let mockLogger: any;
 
   beforeEach(() => {
-    mockLogger = { error: jest.fn(), warn: jest.fn() };
+    mockLogger = { error: jest.fn(), warn: jest.fn(), info: jest.fn() };
   });
 
   beforeEach(() => {
