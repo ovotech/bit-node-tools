@@ -10,6 +10,8 @@ export class TestTracker extends MetricsTracker {
   }
 }
 
+jest.useFakeTimers();
+
 describe('Base metrics class', () => {
   const metricsMeta = {
     extraTagName: 'some-value',
@@ -20,39 +22,45 @@ describe('Base metrics class', () => {
   let tracker: TestTracker;
 
   beforeEach(() => {
-    mockInflux = {};
+    mockInflux = { writePoints: jest.fn() };
     mockBatchCalls = { addToBatch: jest.fn().mockResolvedValue(undefined) };
     mockLogger = { error: jest.fn(), warn: jest.fn(), info: jest.fn() };
-    tracker = new TestTracker(mockInflux, mockLogger, metricsMeta, mockBatchCalls);
+    tracker = new TestTracker(mockInflux, mockLogger, metricsMeta);
   });
 
-  it('Should track valid tags', async () => {
+  it('Should track valid tags and write the points to Influx in a batch call', async () => {
     const tags = { value: 'A string' };
 
     await tracker.trackSomething(tags, {});
+    jest.runTimersToTime(60000);
 
-    expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
-      measurementName: testMeasurementName,
-      tags: {
-        ...metricsMeta,
-        ...tags,
+    expect(mockInflux.writePoints).toHaveBeenLastCalledWith([
+      {
+        measurementName: testMeasurementName,
+        tags: {
+          ...metricsMeta,
+          ...tags,
+        },
+        fields: {},
       },
-      fields: {},
-    });
+    ]);
   });
 
-  it('Should track valid metrics', async () => {
+  it('Should track valid metrics and write the points to Influx in a batch call', async () => {
     const metrics = { string: 'A string', integer: 3, float: 1.23, boolean: true };
 
     await tracker.trackSomething({}, metrics);
+    jest.runTimersToTime(60000);
 
-    expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
-      measurementName: testMeasurementName,
-      tags: {
-        ...metricsMeta,
+    expect(mockInflux.writePoints).toHaveBeenLastCalledWith([
+      {
+        measurementName: testMeasurementName,
+        tags: {
+          ...metricsMeta,
+        },
+        fields: { ...metrics },
       },
-      fields: { ...metrics },
-    });
+    ]);
   });
 
   it('Should log rather than track that have empty values', async () => {
@@ -61,14 +69,17 @@ describe('Base metrics class', () => {
 
     await tracker.trackSomething({ ...validTags, ...invalidTags }, {});
 
-    expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
-      measurementName: testMeasurementName,
-      tags: {
-        ...metricsMeta,
-        ...validTags,
+    jest.runTimersToTime(60000);
+    expect(mockInflux.writePoints).toHaveBeenLastCalledWith([
+      {
+        measurementName: testMeasurementName,
+        tags: {
+          ...metricsMeta,
+          ...validTags,
+        },
+        fields: {},
       },
-      fields: {},
-    });
+    ]);
     expect(mockLogger.warn).toHaveBeenLastCalledWith('Attempted to track tags with no value', {
       metric: testMeasurementName,
       tagNames: 'anotherInvalidTag, invalidTag',
