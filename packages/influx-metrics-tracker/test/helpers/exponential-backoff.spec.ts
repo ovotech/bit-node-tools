@@ -7,7 +7,7 @@ jest.spyOn(global, 'setTimeout');
 function setMockToThrowErrorNTimes(times: number) {
   for (let i = 0; i < times; i++) {
     mockFunction.mockImplementationOnce(() => {
-      throw Error;
+      throw Error();
     });
   }
 }
