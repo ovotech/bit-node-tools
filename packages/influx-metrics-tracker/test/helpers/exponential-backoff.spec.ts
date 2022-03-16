@@ -7,7 +7,7 @@ jest.spyOn(global, 'setTimeout');
 function setMockToThrowErrorNTimes(times: number) {
   for (let i = 0; i < times; i++) {
     mockFunction.mockImplementationOnce(() => {
-      throw Error();
+      throw Error;
     });
   }
 }
@@ -15,15 +15,15 @@ function setMockToThrowErrorNTimes(times: number) {
 describe('executeCallbackOrExponentiallyBackOff', () => {
   let mockLogger: any;
 
-  const spy = jest.spyOn(exponentialBackoff, 'executeCallbackOrExponentiallyBackOff');
+  jest.spyOn(exponentialBackoff, 'executeCallbackOrExponentiallyBackOff');
 
   beforeEach(() => {
     mockLogger = { error: jest.fn(), warn: jest.fn(), info: jest.fn() };
     jest.clearAllMocks();
   });
 
-  it('Executes a successful call once and does not retry', () => {
-    exponentialBackoff.executeCallbackOrExponentiallyBackOff(mockFunction, mockLogger);
+  it('Executes a successful call once and does not retry', async () => {
+    await exponentialBackoff.executeCallbackOrExponentiallyBackOff(mockFunction, mockLogger);
 
     expect(mockFunction).toBeCalledTimes(1);
     expect(setTimeout).not.toBeCalled();
@@ -39,10 +39,10 @@ describe('executeCallbackOrExponentiallyBackOff', () => {
     ${40}      | ${549755813888}
   `(
     'Retries an unsuccessful call $retryTimes time(s) after $numberOfSeconds second(s)',
-    ({ retryTimes, numberOfSeconds }) => {
+    async ({ retryTimes, numberOfSeconds }) => {
       setMockToThrowErrorNTimes(retryTimes);
 
-      exponentialBackoff.executeCallbackOrExponentiallyBackOff(mockFunction, mockLogger);
+      await exponentialBackoff.executeCallbackOrExponentiallyBackOff(mockFunction, mockLogger);
 
       jest.runAllTimers();
 
