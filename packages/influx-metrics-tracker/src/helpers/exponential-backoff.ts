@@ -15,7 +15,7 @@ export async function executeCallbackOrExponentiallyBackOff(
       const newTimeout = timer * 2;
       logger.error(
         `Influx Metrics Tracker callback failed. Exponentially backing off and trying again in ${newTimeout /
-          1000} seconds`,
+          1000} seconds ${err}`,
       );
 
       executeCallbackOrExponentiallyBackOff(callback, logger, newTimeout);
