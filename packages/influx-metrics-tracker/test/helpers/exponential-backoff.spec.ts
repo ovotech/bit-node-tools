@@ -21,7 +21,7 @@ describe('executeCallbackOrExponentiallyBackOff', () => {
   });
 
   it('Executes a successful call once and does not retry', async () => {
-    const executeFunction = exponentialBackoff.executeCallbackOrExponentiallyBackOff(mockFunction);
+    const executeFunction = exponentialBackoff.executeCallbackOrExponentiallyBackOff(mockFunction, mockLogger);
     jest.runAllTimers();
     await executeFunction;
 
@@ -41,7 +41,7 @@ describe('executeCallbackOrExponentiallyBackOff', () => {
     async ({ retryTimes, numberOfSeconds }) => {
       setMockToThrowErrorNTimes(retryTimes);
 
-      await exponentialBackoff.executeCallbackOrExponentiallyBackOff(mockFunction, 0, jest.runAllTimers);
+      await exponentialBackoff.executeCallbackOrExponentiallyBackOff(mockFunction, mockLogger, 0, jest.runAllTimers);
 
       expect(mockFunction).toBeCalledTimes(retryTimes + 1);
       expect(setTimeout).toHaveBeenCalledTimes(retryTimes + 1);
