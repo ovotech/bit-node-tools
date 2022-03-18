@@ -17,13 +17,11 @@ describe('Base metrics class', () => {
     extraTagName: 'some-value',
   };
   let mockInflux: any;
-  let mockBatchCalls: any;
   let mockLogger: any;
   let tracker: TestTracker;
 
   beforeEach(() => {
     mockInflux = { writePoints: jest.fn() };
-    mockBatchCalls = { addToBatch: jest.fn().mockResolvedValue(undefined) };
     mockLogger = { error: jest.fn(), warn: jest.fn(), info: jest.fn() };
     tracker = new TestTracker(mockInflux, mockLogger, metricsMeta);
   });

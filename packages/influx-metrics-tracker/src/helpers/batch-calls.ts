@@ -16,10 +16,10 @@ export default class BatchCalls {
     this.batchData.push(item);
   }
 
-  private async sendBatches() {
-    if (this.batchData.length > 0) {
+  private async sendBatches(batchData: unknown[]) {
+    if (batchData.length > 0) {
       try {
-        return this.batchCall(this.batchData);
+        return this.batchCall(batchData);
       } catch (error) {
         this.logger.error('Error sending batch call to external service', {
           error: error && error.message ? error.message : 'Unknown error',
@@ -34,8 +34,9 @@ export default class BatchCalls {
 
   private startBatchEventLoop(batchSendIntervalMs: number) {
     setInterval(async () => {
-      await this.sendBatches();
+      const tempBatchData = [...this.batchData];
       this.flushBatchData();
+      await this.sendBatches(tempBatchData);
     }, batchSendIntervalMs);
   }
 }
