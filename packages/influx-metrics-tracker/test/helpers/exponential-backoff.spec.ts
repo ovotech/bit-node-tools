@@ -4,9 +4,22 @@ const mockFunction = jest.fn();
 jest.useFakeTimers();
 jest.spyOn(global, 'setTimeout');
 
+function innerFunctionThatThrowsError() {
+  return Promise.reject();
+}
+
 function setMockToThrowErrorNTimes(times: number) {
   for (let i = 0; i < times; i++) {
-    mockFunction.mockRejectedValueOnce('');
+    // mockFunction.mockImplementationOnce(async () => {
+    //   try {
+    //     console.log('aah');
+    //     await innerFunctionThatThrowsError();
+    //     console.log('oowee');
+    //   } catch (err) {
+    //     throw new Error(err);
+    //   }
+    // });
+    mockFunction.mockImplementationOnce(async () => innerFunctionThatThrowsError());
   }
 }
 
