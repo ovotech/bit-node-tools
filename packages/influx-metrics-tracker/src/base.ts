@@ -35,6 +35,16 @@ export abstract class MetricsTracker {
 
     try {
       this.logger.info(`Tracking point for ${measurementName}`);
+      this.sendPointsToInflux([
+        {
+          measurementName,
+          tags: {
+            ...this.staticMeta,
+            ...validTags,
+          },
+          fields,
+        },
+      ]);
       this.batchCalls!.addToBatch({
         measurementName,
         tags: {
@@ -56,10 +66,11 @@ export abstract class MetricsTracker {
   }
 
   private async sendPointsToInflux(points: Point[]) {
-    this.logger.info('Sending points to Influx');
+    this.logger.info(`Sending ${points.length} points to Influx`);
 
     try {
       await this.influx.writePoints(points);
+      this.logger.info(`Successfully sent ${points.length} point to Influx`);
     } catch (err) {
       this.logger.error(`Influx write failed with error: ${err}`);
     }
