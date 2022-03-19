@@ -18,9 +18,13 @@ export async function executeCallbackOrExponentiallyBackOff(
 ): Promise<void> {
   try {
     logger.info('Executing Influx Metrics Tracker batch callback');
+    logger.info(`Sleeping for ${timer / 1000} seconds`);
+
     const sleepTimer = sleep(timer);
     di_runAllTimers();
     await sleepTimer;
+
+    logger.info(`Completed sleeping for ${timer / 1000} seconds`);
     await callback();
     logger.info('Completed Influx Metrics Tracker batch callback');
   } catch (err) {
