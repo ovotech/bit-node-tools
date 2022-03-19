@@ -20,7 +20,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
     await tracker.trackEventReceived(eventName, ageMs);
 
     expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
-      measurementName: 'kafka-event-received',
+      measurement: 'kafka-event-received',
       tags: {
         eventName,
       },
@@ -41,7 +41,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
     await tracker.trackEventReceived(eventName, exactAge);
 
     expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
-      measurementName: 'kafka-event-received',
+      measurement: 'kafka-event-received',
       tags: {
         eventName,
       },
@@ -60,7 +60,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
       await tracker.trackEventProcessed(eventName, processingState);
 
       expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
-        measurementName: 'kafka-event-processed',
+        measurement: 'kafka-event-processed',
         tags: {
           eventName,
           processingState,

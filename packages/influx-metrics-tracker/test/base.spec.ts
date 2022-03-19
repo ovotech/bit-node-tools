@@ -34,7 +34,7 @@ describe('Base metrics class', () => {
     await tracker.trackSomething(tags, {});
 
     expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
-      measurementName: testMeasurementName,
+      measurement: testMeasurementName,
       tags: {
         ...metricsMeta,
         ...tags,
@@ -49,7 +49,7 @@ describe('Base metrics class', () => {
     await tracker.trackSomething({}, metrics);
 
     expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
-      measurementName: testMeasurementName,
+      measurement: testMeasurementName,
       tags: {
         ...metricsMeta,
       },
@@ -65,7 +65,7 @@ describe('Base metrics class', () => {
 
     jest.runTimersToTime(60000);
     expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
-      measurementName: testMeasurementName,
+      measurement: testMeasurementName,
       tags: {
         ...metricsMeta,
         ...validTags,

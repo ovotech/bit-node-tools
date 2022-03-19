@@ -25,14 +25,18 @@ export abstract class MetricsTracker {
     this.batchCalls = batchCalls || new BatchCalls(this.batchSendIntervalMs, this.sendPointsToInflux, this.logger);
   }
 
-  protected async trackPoint(measurement: string, tags: { [name: string]: string }, fields: { [name: string]: any }) {
+  protected async trackPoint(
+    measurementName: string,
+    tags: { [name: string]: string },
+    fields: { [name: string]: any },
+  ) {
     const validTags = this.getValidTags(tags);
-    this.logInvalidTags(measurement, tags);
+    this.logInvalidTags(measurementName, tags);
 
     try {
-      this.logger.info(`Tracking point for ${measurement}`);
+      this.logger.info(`Tracking point for ${measurementName}`);
       this.batchCalls!.addToBatch({
-        measurement,
+        measurement: measurementName,
         tags: {
           ...this.staticMeta,
           ...validTags,
@@ -42,7 +46,7 @@ export abstract class MetricsTracker {
       return;
     } catch (err) {
       this.logger.error('Error tracking Influx metric', {
-        metric: measurement,
+        metric: measurementName,
         tags: JSON.stringify(validTags),
         fields: JSON.stringify(fields),
         error: err,

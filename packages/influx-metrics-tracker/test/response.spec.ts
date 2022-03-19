@@ -20,7 +20,7 @@ describe('Track actions relating to responding to an API request', () => {
     await tracker.trackOwnResponseTime(requestName, timeMs);
 
     expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
-      measurementName: 'own-response-time',
+      measurement: 'own-response-time',
       tags: {
         requestName,
       },
@@ -38,7 +38,7 @@ describe('Track actions relating to responding to an API request', () => {
     await tracker.trackOwnResponseTime(requestName, timeMs, statusCode);
 
     expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
-      measurementName: 'own-response-time',
+      measurement: 'own-response-time',
       tags: {
         requestName,
         status: statusCode.toString(10),
@@ -60,7 +60,7 @@ describe('Track actions relating to responding to an API request', () => {
     await tracker.trackOwnResponseTime(requestName, exactTime);
 
     expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
-      measurementName: 'own-response-time',
+      measurement: 'own-response-time',
       tags: {
         requestName,
       },
