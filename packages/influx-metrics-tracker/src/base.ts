@@ -5,7 +5,7 @@ import BatchCalls from './helpers/batch-calls';
 const ONE_MINUTE = 60000;
 
 interface Point {
-  measurementName: string;
+  measurement: string;
   tags: { [name: string]: string };
   fields: { [name: string]: any };
 }
@@ -25,28 +25,14 @@ export abstract class MetricsTracker {
     this.batchCalls = batchCalls || new BatchCalls(this.batchSendIntervalMs, this.sendPointsToInflux, this.logger);
   }
 
-  protected async trackPoint(
-    measurementName: string,
-    tags: { [name: string]: string },
-    fields: { [name: string]: any },
-  ) {
+  protected async trackPoint(measurement: string, tags: { [name: string]: string }, fields: { [name: string]: any }) {
     const validTags = this.getValidTags(tags);
-    this.logInvalidTags(measurementName, tags);
+    this.logInvalidTags(measurement, tags);
 
     try {
-      this.logger.info(`Tracking point for ${measurementName}`);
-      this.sendPointsToInflux([
-        {
-          measurementName,
-          tags: {
-            ...this.staticMeta,
-            ...validTags,
-          },
-          fields,
-        },
-      ]);
+      this.logger.info(`Tracking point for ${measurement}`);
       this.batchCalls!.addToBatch({
-        measurementName,
+        measurement,
         tags: {
           ...this.staticMeta,
           ...validTags,
@@ -56,7 +42,7 @@ export abstract class MetricsTracker {
       return;
     } catch (err) {
       this.logger.error('Error tracking Influx metric', {
-        metric: measurementName,
+        metric: measurement,
         tags: JSON.stringify(validTags),
         fields: JSON.stringify(fields),
         error: err,
@@ -70,7 +56,7 @@ export abstract class MetricsTracker {
 
     try {
       await this.influx.writePoints(points);
-      this.logger.info(`Successfully sent ${points.length} point to Influx`);
+      this.logger.info(`Successfully sent ${points.length} points to Influx`);
     } catch (err) {
       this.logger.error(`Influx write failed with error: ${err}`);
     }
