@@ -5,7 +5,7 @@ import BatchCalls from './helpers/batch-calls';
 const ONE_MINUTE = 60000;
 
 interface Point {
-  measurementName: string;
+  measurement: string;
   tags: { [name: string]: string };
   fields: { [name: string]: any };
 }
@@ -35,18 +35,8 @@ export abstract class MetricsTracker {
 
     try {
       this.logger.info(`Tracking point for ${measurementName}`);
-      this.sendPointsToInflux([
-        {
-          measurementName,
-          tags: {
-            ...this.staticMeta,
-            ...validTags,
-          },
-          fields,
-        },
-      ]);
       this.batchCalls!.addToBatch({
-        measurementName,
+        measurement: measurementName,
         tags: {
           ...this.staticMeta,
           ...validTags,
@@ -70,7 +60,7 @@ export abstract class MetricsTracker {
 
     try {
       await this.influx.writePoints(points);
-      this.logger.info(`Successfully sent ${points.length} point to Influx`);
+      this.logger.info(`Successfully sent ${points.length} points to Influx`);
     } catch (err) {
       this.logger.error(`Influx write failed with error: ${err}`);
     }

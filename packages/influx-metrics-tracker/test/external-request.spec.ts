@@ -21,7 +21,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
     await tracker.trackRequestTime(externalServiceName, requestName, timeMs);
 
     expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
-      measurementName: 'external-request-time',
+      measurement: 'external-request-time',
       tags: {
         externalServiceName,
         requestName,
@@ -41,7 +41,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
     await tracker.trackRequestTime(externalServiceName, requestName, timeMs, statusCode);
 
     expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
-      measurementName: 'external-request-time',
+      measurement: 'external-request-time',
       tags: {
         externalServiceName,
         requestName,
@@ -65,7 +65,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
     await tracker.trackRequestTime(externalServiceName, requestName, exactTime);
 
     expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
-      measurementName: 'external-request-time',
+      measurement: 'external-request-time',
       tags: {
         externalServiceName,
         requestName,
