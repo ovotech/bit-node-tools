@@ -1,6 +1,7 @@
 import { Logger } from '@ovotech/winston-logger';
 import { InfluxDB } from 'influx';
 import BatchCalls from './helpers/batch-calls';
+import { executeCallbackOrExponentiallyBackOff } from './helpers/exponential-backoff';
 
 const ONE_MINUTE = 60000;
 
@@ -58,12 +59,7 @@ export abstract class MetricsTracker {
   private async sendPointsToInflux(points: Point[]) {
     this.logger.info(`Sending ${points.length} points to Influx`);
 
-    try {
-      await this.influx.writePoints(points);
-      this.logger.info(`Successfully sent ${points.length} points to Influx`);
-    } catch (err) {
-      this.logger.error(`Influx write failed with error: ${err}`);
-    }
+    executeCallbackOrExponentiallyBackOff(() => this.influx.writePoints(points), this.logger);
   }
 
   private getInvalidTagNames(tags: { [name: string]: string }) {
