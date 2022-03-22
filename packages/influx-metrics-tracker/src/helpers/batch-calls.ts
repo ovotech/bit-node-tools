@@ -41,6 +41,8 @@ class BatchCalls {
   }
 }
 
+export type BatchCallsInterface = InstanceType<typeof BatchCalls>;
+
 interface Instance {
   classInstance: BatchCalls;
   batchSendIntervalMs: number;
