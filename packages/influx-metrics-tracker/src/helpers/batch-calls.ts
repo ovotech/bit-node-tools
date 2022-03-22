@@ -1,6 +1,6 @@
 import { Logger } from '@ovotech/winston-logger';
 
-class BatchCalls {
+export class BatchCalls {
   private batchData: unknown[];
 
   constructor(
@@ -40,8 +40,6 @@ class BatchCalls {
     }, batchSendIntervalMs);
   }
 }
-
-export type BatchCallsInterface = InstanceType<typeof BatchCalls>;
 
 interface Instance {
   classInstance: BatchCalls;
