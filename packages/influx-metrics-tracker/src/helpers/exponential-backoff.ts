@@ -14,13 +14,13 @@ export async function executeCallbackOrExponentiallyBackOff(
   callback: (...args: any[]) => void,
   logger: Logger,
   timer = 0,
-  di_runAllTimers = () => {},
+  dependencyInjectionRunAllTimers = () => {},
 ): Promise<void> {
   try {
     logger.info('Executing Influx Metrics Tracker batch callback');
 
     const sleepTimer = sleep(timer);
-    di_runAllTimers();
+    dependencyInjectionRunAllTimers();
     await sleepTimer;
 
     await callback();
@@ -32,6 +32,6 @@ export async function executeCallbackOrExponentiallyBackOff(
       `Influx Metrics Tracker callback failed. Exponentially backing off and trying again in ${newTimeout /
         1000} seconds ${err}`,
     );
-    return executeCallbackOrExponentiallyBackOff(callback, logger, newTimeout, di_runAllTimers);
+    return executeCallbackOrExponentiallyBackOff(callback, logger, newTimeout, dependencyInjectionRunAllTimers);
   }
 }
