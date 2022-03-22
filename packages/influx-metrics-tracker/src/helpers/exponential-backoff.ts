@@ -14,7 +14,7 @@ export async function executeCallbackOrExponentiallyBackOff(
   callback: (...args: any[]) => void,
   logger: Logger,
   timer = 0,
-  dependencyInjectionRunAllTimers = () => undefined,
+  dependencyInjectionRunAllTimers = () => {},
 ): Promise<void> {
   try {
     logger.info('Executing Influx Metrics Tracker batch callback');
