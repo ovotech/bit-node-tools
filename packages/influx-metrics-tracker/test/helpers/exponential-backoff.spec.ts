@@ -35,17 +35,27 @@ describe('executeCallbackOrExponentiallyBackOff', () => {
     ${3}       | ${4}
     ${4}       | ${8}
     ${10}      | ${512}
-    ${40}      | ${549755813888}
   `(
     'Retries an unsuccessful call $retryTimes time(s) after $numberOfSeconds second(s)',
     async ({ retryTimes, numberOfSeconds }) => {
       setMockToThrowErrorNTimes(retryTimes);
 
-      await exponentialBackoff.executeCallbackOrExponentiallyBackOff(mockFunction, mockLogger, 0, jest.runAllTimers);
+      await exponentialBackoff.executeCallbackOrExponentiallyBackOff(mockFunction, mockLogger, 0, 0, jest.runAllTimers);
 
       expect(mockFunction).toBeCalledTimes(retryTimes + 1);
       expect(setTimeout).toHaveBeenCalledTimes(retryTimes + 1);
       expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), numberOfSeconds * 1000);
     },
   );
+
+  it('Does not retry after 20 attempts', async () => {
+    const retryTimes = 25;
+    setMockToThrowErrorNTimes(retryTimes);
+
+    await exponentialBackoff.executeCallbackOrExponentiallyBackOff(mockFunction, mockLogger, 0, 0, jest.runAllTimers);
+
+    expect(mockFunction).toBeCalledTimes(16);
+    expect(setTimeout).toHaveBeenCalledTimes(16);
+    expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 16384000);
+  });
 });
