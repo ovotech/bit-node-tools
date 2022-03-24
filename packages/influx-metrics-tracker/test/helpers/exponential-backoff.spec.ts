@@ -48,8 +48,12 @@ describe('executeCallbackOrExponentiallyBackOff', () => {
     },
   );
 
-  it('Does not retry after 20 attempts', async () => {
-    const retryTimes = 25;
+  it.each`
+    retryTimes
+    ${16}
+    ${25}
+    ${300}
+  `('Does not retry after 15 attempts. Testing after $retryTimes attempts', async ({ retryTimes }) => {
     setMockToThrowErrorNTimes(retryTimes);
 
     await exponentialBackoff.executeCallbackOrExponentiallyBackOff(mockFunction, mockLogger, 0, 0, jest.runAllTimers);
