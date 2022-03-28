@@ -63,6 +63,8 @@ export default function getBatchCallsInstance(
   );
 
   if (!foundInstance) {
+    logger.info('Instantiating new Influx Batch Calls class instance');
+
     foundInstance = {
       classInstance: new BatchCalls(batchSendIntervalMs, callback, logger),
       batchSendIntervalMs,
