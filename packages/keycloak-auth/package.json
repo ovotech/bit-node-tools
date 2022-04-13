@@ -25,7 +25,7 @@
   "dependencies": {
     "@types/express-jwt": "^0.0.42",
     "jsonwebtoken": "^8.5.1",
-    "jwks-rsa": "^1.12.1",
+    "jwks-rsa": "^2.0.5",
     "node-fetch": "^2.6.7"
   },
   "scripts": {
