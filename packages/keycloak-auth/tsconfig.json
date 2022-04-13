@@ -6,7 +6,7 @@
     "target": "es2018",
     "sourceMap": false,
     "outDir": "dist",
-    "lib": ["es2018", "esnext.asynciterable"]
+    "lib": ["es2018", "dom", "esnext.asynciterable"]
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]
