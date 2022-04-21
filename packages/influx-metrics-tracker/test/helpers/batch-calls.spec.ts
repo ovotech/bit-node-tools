@@ -17,10 +17,10 @@ describe('BatchCalls', () => {
   });
 
   it('Does not create any new class instances but instead returns the same singleton class', () => {
-    const firstInstance = getBatchCallsInstance(1000, mockFunction, mockLogger);
-    const secondInstance = getBatchCallsInstance(1000, mockFunction, mockLogger);
-    const thirdInstance = getBatchCallsInstance(1000, mockFunction, mockLogger);
-    const fourthInstance = getBatchCallsInstance(1000, mockFunction, mockLogger);
+    const firstInstance = getBatchCallsInstance(mockFunction, mockLogger);
+    const secondInstance = getBatchCallsInstance(mockFunction, mockLogger);
+    const thirdInstance = getBatchCallsInstance(mockFunction, mockLogger);
+    const fourthInstance = getBatchCallsInstance(mockFunction, mockLogger);
 
     expect(firstInstance).toBe(secondInstance);
     expect(secondInstance).toBe(thirdInstance);
@@ -28,23 +28,25 @@ describe('BatchCalls', () => {
   });
 
   it('Creates a new instance of a class if the second instance has different parameters', () => {
-    const firstInstance = getBatchCallsInstance(1000, mockFunction, mockLogger);
-    const secondInstance = getBatchCallsInstance(2000, mockFunction, mockLogger);
+    const anotherMockFunction = jest.fn().mockReturnValue('blaa');
+    const firstInstance = getBatchCallsInstance(mockFunction, mockLogger);
+    const secondInstance = getBatchCallsInstance(anotherMockFunction, mockLogger);
 
     expect(firstInstance).not.toBe(secondInstance);
   });
 
   it('Returns the correct instance of a class if it has the same parameters', () => {
-    const firstInstance = getBatchCallsInstance(1000, mockFunction, mockLogger);
-    const secondInstance = getBatchCallsInstance(2000, mockFunction, mockLogger);
-    const thirdInstance = getBatchCallsInstance(1000, mockFunction, mockLogger);
+    const anotherMockFunction = jest.fn().mockReturnValue('blaa');
+    const firstInstance = getBatchCallsInstance(mockFunction, mockLogger);
+    const secondInstance = getBatchCallsInstance(anotherMockFunction, mockLogger);
+    const thirdInstance = getBatchCallsInstance(mockFunction, mockLogger);
 
     expect(thirdInstance).toBe(firstInstance);
     expect(thirdInstance).not.toBe(secondInstance);
   });
 
   it('Calls the given function when 50 items are in the batch', () => {
-    const batchCalls = getBatchCallsInstance(1000, mockFunction, mockLogger);
+    const batchCalls = getBatchCallsInstance(mockFunction, mockLogger);
     let expected = [];
 
     for (let i = 0; i < 50; i++) {
@@ -57,7 +59,7 @@ describe('BatchCalls', () => {
   });
 
   it('Calls the given function twice when 100 identical items are in the batch', () => {
-    const batchCalls = getBatchCallsInstance(1000, mockFunction, mockLogger);
+    const batchCalls = getBatchCallsInstance(mockFunction, mockLogger);
     let expected = [];
 
     for (let i = 0; i < 100; i++) {
@@ -73,7 +75,7 @@ describe('BatchCalls', () => {
   });
 
   it('Calls the given function twice when 100 different items are in the batch', () => {
-    const batchCalls = getBatchCallsInstance(1000, mockFunction, mockLogger);
+    const batchCalls = getBatchCallsInstance(mockFunction, mockLogger);
     let firstExpectedResult = [];
     let secondExpectedResult = [];
 
@@ -91,7 +93,7 @@ describe('BatchCalls', () => {
   });
 
   it('Calls the given function once with 50 items when there is more than 50 items but less than 100 items in the batch', () => {
-    const batchCalls = getBatchCallsInstance(1000, mockFunction, mockLogger);
+    const batchCalls = getBatchCallsInstance(mockFunction, mockLogger);
     let expected = [];
 
     for (let i = 0; i < 67; i++) {
@@ -106,7 +108,7 @@ describe('BatchCalls', () => {
   });
 
   it('Does not call the given function when less than 50 items are in the batch', () => {
-    const batchCalls = getBatchCallsInstance(1000, mockFunction, mockLogger);
+    const batchCalls = getBatchCallsInstance(mockFunction, mockLogger);
     let expected = [];
 
     for (let i = 0; i < 16; i++) {
