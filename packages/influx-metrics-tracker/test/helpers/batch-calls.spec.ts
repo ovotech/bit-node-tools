@@ -86,7 +86,7 @@ describe('BatchCalls', () => {
     expect(mockFunction).not.toBeCalled();
   });
 
-  it('Adds to the same batch even when the data is added to two different BatchCalls instatiations', () => {
+  it('Adds to the same batch even when the data is added to two different BatchCalls instantiations', () => {
     const batchCalls = new BatchCalls(mockFunction, batchManagement);
     const batchCalls2 = new BatchCalls(mockFunction, batchManagement);
     let expectedResult = [];
