@@ -1,18 +1,51 @@
-import { Logger } from '@ovotech/winston-logger';
+const BATCH_SIZE_LIMIT = 50;
 
-export class BatchCalls {
-  private batchData: unknown[];
+export class BatchManagement {
+  private _batchData: unknown[];
 
-  constructor(private callback: (...args: any[]) => void) {
-    this.batchData = [];
+  constructor() {
+    this._batchData = [];
   }
 
-  public async addToBatch(item: unknown) {
-    this.batchData.push(item);
+  public addToBatch(item: unknown) {
+    this._batchData.push(item);
+  }
 
-    if (this.batchData.length >= 50) {
-      const tempBatchData = [...this.batchData];
-      this.flushBatchData();
+  public flushBatchData() {
+    this._batchData = [];
+  }
+
+  public isBatchFull() {
+    return this._batchData.length >= BATCH_SIZE_LIMIT;
+  }
+
+  public get batchData() {
+    return this._batchData;
+  }
+}
+
+let batchManagement: BatchManagement;
+
+function getBatchManagementInstance() {
+  if (!batchManagement) {
+    batchManagement = new BatchManagement();
+  }
+
+  return batchManagement;
+}
+
+export default class BatchCalls {
+  constructor(
+    private callback: (...args: any[]) => void,
+    private batchManagement: BatchManagement = getBatchManagementInstance(),
+  ) {}
+
+  public async addToBatch(item: unknown) {
+    this.batchManagement.addToBatch(item);
+
+    if (this.batchManagement.isBatchFull()) {
+      const tempBatchData = [...this.batchManagement.batchData];
+      this.batchManagement.flushBatchData();
       await this.executeCallbackForBatch(tempBatchData);
     }
   }
@@ -22,31 +55,4 @@ export class BatchCalls {
       return this.callback(batchData);
     }
   }
-
-  private flushBatchData() {
-    this.batchData = [];
-  }
-}
-
-interface Instance {
-  classInstance: BatchCalls;
-  callback: (...args: any[]) => void;
-}
-
-const currentInstances: Instance[] = [];
-
-export default function getBatchCallsInstance(callback: (...args: any[]) => void, logger: Logger): BatchCalls {
-  let foundInstance = currentInstances.find(currentInstance => currentInstance.callback === callback);
-
-  if (!foundInstance) {
-    logger.info('Instantiating new Influx Batch Calls class instance');
-
-    foundInstance = {
-      classInstance: new BatchCalls(callback),
-      callback,
-    };
-    currentInstances.push(foundInstance);
-  }
-
-  return foundInstance.classInstance;
 }
