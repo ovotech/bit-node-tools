@@ -3,7 +3,7 @@ import { Logger } from '@ovotech/winston-logger';
 export class BatchCalls {
   private batchData: unknown[];
 
-  constructor(private callback: (...args: any[]) => void, protected logger: Logger) {
+  constructor(private callback: (...args: any[]) => void) {
     this.batchData = [];
   }
 
@@ -19,13 +19,7 @@ export class BatchCalls {
 
   private async executeCallbackForBatch(batchData: unknown[]) {
     if (batchData.length > 0) {
-      try {
-        return this.callback(batchData);
-      } catch (error) {
-        this.logger.error('Error sending batch call to external service', {
-          error: error && error.message ? error.message : 'Unknown error',
-        });
-      }
+      return this.callback(batchData);
     }
   }
 
@@ -37,23 +31,19 @@ export class BatchCalls {
 interface Instance {
   classInstance: BatchCalls;
   callback: (...args: any[]) => void;
-  logger: Logger;
 }
 
 const currentInstances: Instance[] = [];
 
 export default function getBatchCallsInstance(callback: (...args: any[]) => void, logger: Logger): BatchCalls {
-  let foundInstance = currentInstances.find(
-    currentInstance => currentInstance.callback === callback && currentInstance.logger === logger,
-  );
+  let foundInstance = currentInstances.find(currentInstance => currentInstance.callback === callback);
 
   if (!foundInstance) {
     logger.info('Instantiating new Influx Batch Calls class instance');
 
     foundInstance = {
-      classInstance: new BatchCalls(callback, logger),
+      classInstance: new BatchCalls(callback),
       callback,
-      logger,
     };
     currentInstances.push(foundInstance);
   }
