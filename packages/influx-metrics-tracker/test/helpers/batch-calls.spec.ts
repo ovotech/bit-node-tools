@@ -17,10 +17,10 @@ describe('BatchCalls', () => {
   });
 
   it('Does not create any new class instances but instead returns the same singleton class', () => {
-    const firstInstance = getBatchCallsInstance(1000, mockFunction, mockLogger);
-    const secondInstance = getBatchCallsInstance(1000, mockFunction, mockLogger);
-    const thirdInstance = getBatchCallsInstance(1000, mockFunction, mockLogger);
-    const fourthInstance = getBatchCallsInstance(1000, mockFunction, mockLogger);
+    const firstInstance = getBatchCallsInstance(mockFunction, mockLogger);
+    const secondInstance = getBatchCallsInstance(mockFunction, mockLogger);
+    const thirdInstance = getBatchCallsInstance(mockFunction, mockLogger);
+    const fourthInstance = getBatchCallsInstance(mockFunction, mockLogger);
 
     expect(firstInstance).toBe(secondInstance);
     expect(secondInstance).toBe(thirdInstance);
@@ -28,108 +28,93 @@ describe('BatchCalls', () => {
   });
 
   it('Creates a new instance of a class if the second instance has different parameters', () => {
-    const firstInstance = getBatchCallsInstance(1000, mockFunction, mockLogger);
-    const secondInstance = getBatchCallsInstance(2000, mockFunction, mockLogger);
+    const anotherMockFunction = jest.fn().mockReturnValue('blaa');
+    const firstInstance = getBatchCallsInstance(mockFunction, mockLogger);
+    const secondInstance = getBatchCallsInstance(anotherMockFunction, mockLogger);
 
     expect(firstInstance).not.toBe(secondInstance);
   });
 
   it('Returns the correct instance of a class if it has the same parameters', () => {
-    const firstInstance = getBatchCallsInstance(1000, mockFunction, mockLogger);
-    const secondInstance = getBatchCallsInstance(2000, mockFunction, mockLogger);
-    const thirdInstance = getBatchCallsInstance(1000, mockFunction, mockLogger);
+    const anotherMockFunction = jest.fn().mockReturnValue('blaa');
+    const firstInstance = getBatchCallsInstance(mockFunction, mockLogger);
+    const secondInstance = getBatchCallsInstance(anotherMockFunction, mockLogger);
+    const thirdInstance = getBatchCallsInstance(mockFunction, mockLogger);
 
     expect(thirdInstance).toBe(firstInstance);
     expect(thirdInstance).not.toBe(secondInstance);
   });
 
-  it('Calls the given function with a single item of batch data after the given period of time', () => {
-    const batchCalls = getBatchCallsInstance(1000, mockFunction, mockLogger);
-    batchCalls.addToBatch({ data: 'its here yesss' });
-    jest.runTimersToTime(1000);
+  it('Calls the given function when 50 items are in the batch', () => {
+    const batchCalls = getBatchCallsInstance(mockFunction, mockLogger);
+    let expected = [];
+
+    for (let i = 0; i < 50; i++) {
+      batchCalls.addToBatch({ data: 'its here yesss' });
+      expected.push({ data: 'its here yesss' });
+    }
 
     expect(mockFunction).toBeCalledTimes(1);
-    expect(mockFunction).toBeCalledWith([{ data: 'its here yesss' }]);
+    expect(mockFunction).toBeCalledWith(expected);
   });
 
-  it('Calls the given function with multiple items of batch data after the given period of time', () => {
-    const batchCalls = getBatchCallsInstance(2000, mockFunction, mockLogger);
-    batchCalls.addToBatch({ data: 'its here yesss' });
-    batchCalls.addToBatch({ data: 'its also here yesss' });
+  it('Calls the given function twice when 100 identical items are in the batch', () => {
+    const batchCalls = getBatchCallsInstance(mockFunction, mockLogger);
+    let expected = [];
 
-    jest.runTimersToTime(2000);
-    expect(mockFunction).toBeCalledTimes(1);
-    expect(mockFunction).toBeCalledWith([{ data: 'its here yesss' }, { data: 'its also here yesss' }]);
-  });
-
-  it('Calls the given function with multiple items of batch data after the given period of time', () => {
-    const batchCalls = getBatchCallsInstance(2000, mockFunction, mockLogger);
-    const secondBatchCalls = getBatchCallsInstance(2000, mockFunction, mockLogger);
-
-    batchCalls.addToBatch({ data: 'its here yesss' });
-    secondBatchCalls.addToBatch({ data: 'its also here yesss' });
-
-    jest.runTimersToTime(2000);
-    expect(mockFunction).toBeCalledTimes(1);
-    expect(mockFunction).toBeCalledWith([{ data: 'its here yesss' }, { data: 'its also here yesss' }]);
-  });
-
-  it('Does not call the given function before the time has elapsed', () => {
-    const batchCalls = getBatchCallsInstance(1000, mockFunction, mockLogger);
-    batchCalls.addToBatch({ data: 'its here yesss' });
-    jest.runTimersToTime(900);
-
-    expect(mockFunction).not.toBeCalled();
-  });
-
-  it('Does not call the given function if the batch has no data in it', () => {
-    const _ = getBatchCallsInstance(1000, mockFunction, mockLogger);
-    jest.runTimersToTime(1000);
-
-    expect(mockFunction).not.toBeCalled();
-  });
-
-  it('Calls the given function with a second set of batch data after the initial time has elapsed', async () => {
-    const batchCalls = getBatchCallsInstance(2000, mockFunction, mockLogger);
-    batchCalls.addToBatch({ data: 'its here yesss' });
-    await jest.runTimersToTime(2000);
-
-    batchCalls.addToBatch({ data: 'its also here yesss' });
-    await jest.runTimersToTime(3000);
+    for (let i = 0; i < 100; i++) {
+      batchCalls.addToBatch({ data: 'its here yesss' });
+    }
+    for (let i = 0; i < 50; i++) {
+      expected.push({ data: 'its here yesss' });
+    }
 
     expect(mockFunction).toBeCalledTimes(2);
-    expect(mockFunction).toHaveBeenNthCalledWith(1, [{ data: 'its here yesss' }]);
-    expect(mockFunction).toHaveBeenNthCalledWith(2, [{ data: 'its also here yesss' }]);
+    expect(mockFunction).toHaveBeenNthCalledWith(1, expected);
+    expect(mockFunction).toHaveBeenNthCalledWith(2, expected);
   });
 
-  it('Does not call the given function a second time after all data is erased and no new data is added', async () => {
-    const batchCalls = getBatchCallsInstance(2000, mockFunction, mockLogger);
-    batchCalls.addToBatch({ data: 'its here yesss' });
-    await jest.runTimersToTime(2000);
+  it('Calls the given function twice when 100 different items are in the batch', () => {
+    const batchCalls = getBatchCallsInstance(mockFunction, mockLogger);
+    let firstExpectedResult = [];
+    let secondExpectedResult = [];
+
+    for (let i = 0; i < 100; i++) {
+      batchCalls.addToBatch({ data: `its here yesss ${i}` });
+    }
+    for (let i = 0; i < 50; i++) {
+      firstExpectedResult.push({ data: `its here yesss ${i}` });
+      secondExpectedResult.push({ data: `its here yesss ${i + 50}` });
+    }
+
+    expect(mockFunction).toBeCalledTimes(2);
+    expect(mockFunction).toHaveBeenNthCalledWith(1, firstExpectedResult);
+    expect(mockFunction).toHaveBeenNthCalledWith(2, secondExpectedResult);
+  });
+
+  it('Calls the given function once with 50 items when there is more than 50 items but less than 100 items in the batch', () => {
+    const batchCalls = getBatchCallsInstance(mockFunction, mockLogger);
+    let expected = [];
+
+    for (let i = 0; i < 67; i++) {
+      batchCalls.addToBatch({ data: 'its here yesss' });
+    }
+    for (let i = 0; i < 50; i++) {
+      expected.push({ data: 'its here yesss' });
+    }
 
     expect(mockFunction).toBeCalledTimes(1);
-    expect(mockFunction).toHaveBeenCalledWith([{ data: 'its here yesss' }]);
-
-    mockFunction = jest.fn();
-    await jest.runTimersToTime(2000);
-
-    expect(mockFunction).not.toBeCalled();
+    expect(mockFunction).toHaveBeenCalledWith(expected);
   });
 
-  it('Logs the error message if the call to the external service fails', async () => {
-    const batchCalls = getBatchCallsInstance(
-      2000,
-      () => {
-        throw new Error('IT BROKE');
-      },
-      mockLogger,
-    );
-    batchCalls.addToBatch({ data: 'its here yesss' });
+  it('Does not call the given function when less than 50 items are in the batch', () => {
+    const batchCalls = getBatchCallsInstance(mockFunction, mockLogger);
+    let expected = [];
 
-    await jest.runTimersToTime(2000);
+    for (let i = 0; i < 16; i++) {
+      batchCalls.addToBatch({ data: 'its here yesss' });
+    }
 
-    expect(mockLogger.error).toBeCalledWith('Error sending batch call to external service', {
-      error: 'IT BROKE',
-    });
+    expect(mockFunction).not.toBeCalled();
   });
 });

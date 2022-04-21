@@ -21,10 +21,8 @@ export abstract class MetricsTracker {
     protected batchCalls?: BatchCalls,
     protected batchSendIntervalMs = ONE_MINUTE,
   ) {
-    this.logger.info('Instantiated new Metrics Tracker');
     this.sendPointsToInflux = this.sendPointsToInflux.bind(this);
-    this.batchCalls =
-      batchCalls || getBatchCallsInstance(this.batchSendIntervalMs, this.sendPointsToInflux, this.logger);
+    this.batchCalls = batchCalls || getBatchCallsInstance(this.sendPointsToInflux, this.logger);
   }
 
   protected async trackPoint(
