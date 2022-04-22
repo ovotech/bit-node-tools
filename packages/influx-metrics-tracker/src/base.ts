@@ -1,6 +1,6 @@
 import { Logger } from '@ovotech/winston-logger';
 import { InfluxDB } from 'influx';
-import getBatchCallsInstance, { BatchCalls } from './helpers/batch-calls';
+import BatchCalls from './helpers/batch-calls';
 import { executeCallbackOrExponentiallyBackOff } from './helpers/exponential-backoff';
 
 const ONE_MINUTE = 60000;
@@ -22,7 +22,7 @@ export abstract class MetricsTracker {
     protected batchSendIntervalMs = ONE_MINUTE,
   ) {
     this.sendPointsToInflux = this.sendPointsToInflux.bind(this);
-    this.batchCalls = batchCalls || getBatchCallsInstance(this.sendPointsToInflux, this.logger);
+    this.batchCalls = batchCalls || new BatchCalls(this.sendPointsToInflux);
   }
 
   protected async trackPoint(

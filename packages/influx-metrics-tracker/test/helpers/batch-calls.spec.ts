@@ -1,52 +1,20 @@
-import getBatchCallsInstance from '../../src/helpers/batch-calls';
+import BatchCalls, { BatchManagement } from '../../src/helpers/batch-calls';
 
 let mockFunction = jest.fn();
 jest.useFakeTimers();
 jest.spyOn(global, 'setTimeout');
 
 describe('BatchCalls', () => {
-  let mockLogger: any;
-
-  beforeEach(() => {
-    mockLogger = { error: jest.fn(), warn: jest.fn(), info: jest.fn() };
-  });
+  let batchManagement: BatchManagement;
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockFunction = jest.fn();
-  });
-
-  it('Does not create any new class instances but instead returns the same singleton class', () => {
-    const firstInstance = getBatchCallsInstance(mockFunction, mockLogger);
-    const secondInstance = getBatchCallsInstance(mockFunction, mockLogger);
-    const thirdInstance = getBatchCallsInstance(mockFunction, mockLogger);
-    const fourthInstance = getBatchCallsInstance(mockFunction, mockLogger);
-
-    expect(firstInstance).toBe(secondInstance);
-    expect(secondInstance).toBe(thirdInstance);
-    expect(thirdInstance).toBe(fourthInstance);
-  });
-
-  it('Creates a new instance of a class if the second instance has different parameters', () => {
-    const anotherMockFunction = jest.fn().mockReturnValue('blaa');
-    const firstInstance = getBatchCallsInstance(mockFunction, mockLogger);
-    const secondInstance = getBatchCallsInstance(anotherMockFunction, mockLogger);
-
-    expect(firstInstance).not.toBe(secondInstance);
-  });
-
-  it('Returns the correct instance of a class if it has the same parameters', () => {
-    const anotherMockFunction = jest.fn().mockReturnValue('blaa');
-    const firstInstance = getBatchCallsInstance(mockFunction, mockLogger);
-    const secondInstance = getBatchCallsInstance(anotherMockFunction, mockLogger);
-    const thirdInstance = getBatchCallsInstance(mockFunction, mockLogger);
-
-    expect(thirdInstance).toBe(firstInstance);
-    expect(thirdInstance).not.toBe(secondInstance);
+    batchManagement = new BatchManagement();
   });
 
   it('Calls the given function when 50 items are in the batch', () => {
-    const batchCalls = getBatchCallsInstance(mockFunction, mockLogger);
+    const batchCalls = new BatchCalls(mockFunction, batchManagement);
     let expected = [];
 
     for (let i = 0; i < 50; i++) {
@@ -59,7 +27,7 @@ describe('BatchCalls', () => {
   });
 
   it('Calls the given function twice when 100 identical items are in the batch', () => {
-    const batchCalls = getBatchCallsInstance(mockFunction, mockLogger);
+    const batchCalls = new BatchCalls(mockFunction, batchManagement);
     let expected = [];
 
     for (let i = 0; i < 100; i++) {
@@ -75,7 +43,7 @@ describe('BatchCalls', () => {
   });
 
   it('Calls the given function twice when 100 different items are in the batch', () => {
-    const batchCalls = getBatchCallsInstance(mockFunction, mockLogger);
+    const batchCalls = new BatchCalls(mockFunction, batchManagement);
     let firstExpectedResult = [];
     let secondExpectedResult = [];
 
@@ -93,7 +61,7 @@ describe('BatchCalls', () => {
   });
 
   it('Calls the given function once with 50 items when there is more than 50 items but less than 100 items in the batch', () => {
-    const batchCalls = getBatchCallsInstance(mockFunction, mockLogger);
+    const batchCalls = new BatchCalls(mockFunction, batchManagement);
     let expected = [];
 
     for (let i = 0; i < 67; i++) {
@@ -108,13 +76,34 @@ describe('BatchCalls', () => {
   });
 
   it('Does not call the given function when less than 50 items are in the batch', () => {
-    const batchCalls = getBatchCallsInstance(mockFunction, mockLogger);
-    let expected = [];
+    const batchManagement = new BatchManagement();
+    const batchCalls = new BatchCalls(mockFunction, batchManagement);
 
     for (let i = 0; i < 16; i++) {
       batchCalls.addToBatch({ data: 'its here yesss' });
     }
 
     expect(mockFunction).not.toBeCalled();
+  });
+
+  it('Adds to the same batch even when the data is added to two different BatchCalls instantiations', () => {
+    const batchCalls = new BatchCalls(mockFunction, batchManagement);
+    const batchCalls2 = new BatchCalls(mockFunction, batchManagement);
+    let expectedResult = [];
+
+    for (let i = 0; i < 25; i++) {
+      batchCalls.addToBatch({ data: `its here yesss ${i}` });
+    }
+
+    for (let i = 25; i < 50; i++) {
+      batchCalls2.addToBatch({ data: `its here yesss ${i}` });
+    }
+
+    for (let i = 0; i < 50; i++) {
+      expectedResult.push({ data: `its here yesss ${i}` });
+    }
+
+    expect(mockFunction).toBeCalledTimes(1);
+    expect(mockFunction).toHaveBeenCalledWith(expectedResult);
   });
 });
