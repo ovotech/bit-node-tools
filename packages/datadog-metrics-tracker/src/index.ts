@@ -11,12 +11,13 @@ export interface DataDogConfig extends NodeJS.ProcessEnv {
 }
 
 export const createDataDogConnection = ({DATADOG_HOST = '', DATADOG_PORT = '15661'}: DataDogConfig) => {
-  var dogstatsd = new StatsD({
+  var client  = new StatsD({
     port: DATADOG_PORT,
     host: DATADOG_HOST,
     errorHandler: (error:Error) => {
       console.error(error);
     }
   });
-  return new dogstatsd;
+
+  return client ;
 };

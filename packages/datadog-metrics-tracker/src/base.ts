@@ -24,8 +24,8 @@ export abstract class MetricsTracker {
     protected batchCalls?: BatchCalls,
     protected batchSendIntervalMs = ONE_MINUTE,
   ) {
-    this.sendPointsToInflux = this.sendPointsToInflux.bind(this);
-    this.batchCalls = batchCalls || new BatchCalls(this.sendPointsToInflux);
+    this.sendPointsToDataDog = this.sendPointsToDataDog.bind(this);
+    this.batchCalls = batchCalls || new BatchCalls(this.sendPointsToDataDog);
   }
 
   protected async trackPoint(
@@ -48,7 +48,7 @@ export abstract class MetricsTracker {
       });
       return;
     } catch (err) {
-      this.logger.error('Error tracking Influx metric', {
+      this.logger.error('Error tracking DataDog metric', {
         metric: measurementName,
         tags: JSON.stringify(validTags),
         fields: JSON.stringify(fields),
@@ -58,8 +58,8 @@ export abstract class MetricsTracker {
     }
   }
 
-  private async sendPointsToInflux(points: Point[]) {
-    this.logger.info(`Sending ${points.length} points to Influx`);
+  private async sendPointsToDataDog(points: Point[]) {
+    this.logger.info(`Sending ${points.length} points to DataDog`);
     executeCallbackOrExponentiallyBackOff(() => dogstatsd.increment(points), this.logger);
   }
 

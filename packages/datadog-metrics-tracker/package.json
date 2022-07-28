@@ -16,6 +16,7 @@
     "build": "tsc --outDir dist --declaration"
   },
   "dependencies": {
+    "@ovotech/winston-logger": "^1.2.6",
     "hot-shots": "^9.1.0"
   },
   "peerDependencies": {
