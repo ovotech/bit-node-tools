@@ -1,4 +1,3 @@
-jest.mock('influx');
 import { createDataDogConnection, DataDogConfig } from '../src/index';
 
 
