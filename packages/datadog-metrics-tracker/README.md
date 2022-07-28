@@ -1,6 +1,6 @@
 # Influx Metrics Tracker
 
-Track metrics and store them in an DataDog.
+Track metrics and store them in DataDog.
 
 ## Using
 TODO
