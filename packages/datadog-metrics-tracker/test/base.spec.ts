@@ -25,7 +25,7 @@ describe('Base metrics class', () => {
     mockDatadog = { increment: jest.fn() };
     mockLogger = { error: jest.fn(), warn: jest.fn(), info: jest.fn() };
     mockBatchCalls = { addToBatch: jest.fn() };
-    tracker = new TestTracker(mockDatadog, mockLogger, mockBatchCalls);
+    tracker = new TestTracker(mockDatadog, mockLogger, metricsMeta, mockBatchCalls);
   });
 
   it('Should track valid tags and write the points to Datadog in a batch call', async () => {

@@ -7,10 +7,10 @@ describe('Track actions relating to consuming an event from Kafka', () => {
   let tracker: ExternalRequestMetricsTracker;
 
   beforeEach(() => {
-    mockDatadog = { writePoints: jest.fn().mockResolvedValue(undefined) };
+    mockDatadog = { increment: jest.fn().mockResolvedValue(undefined) };
     mockBatchCalls = { addToBatch: jest.fn().mockResolvedValue(undefined) };
     mockLogger = { error: jest.fn(), warn: jest.fn(), info: jest.fn() };
-    tracker = new ExternalRequestMetricsTracker(mockDatadog, mockLogger, mockBatchCalls);
+    tracker = new ExternalRequestMetricsTracker(mockDatadog, mockLogger, {}, mockBatchCalls);
   });
 
   it('Should track a request time without a status code', async () => {
