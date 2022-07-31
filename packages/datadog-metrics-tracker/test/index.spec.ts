@@ -4,8 +4,12 @@ import { createDataDogConnection, DataDogConfig } from '../src/index';
 describe('Create Datadog and connection', () => {
 
   const config: DataDogConfig = {
-    DATADOG_HOST: '10.145.0.113',
-    DATADOG_PORT: '8125'
+    DD_AGENT_PORT: '8125',
+    DD_SERVICE: 'retail-payg-portal-api',
+    DD_TAGS: 'env:nonprod,team:retail-payg,',
+    DD_ENV: 'Uat',
+    DD_AGENT_HOST: '10.145.0.113',
+    DD_VERSION: 'uat-0.0.177',
   };
   const client  = createDataDogConnection(config);
 
@@ -18,7 +22,7 @@ describe('Create Datadog and connection', () => {
       globalTags: { globalTag1: 'forAllMetricsFromChildClient'}
     });
 
-    expect(childClient.host).toBe(config.DATADOG_HOST);
+    expect(childClient.host).toBe(config.DD_AGENT_HOST);
 
   });
 
