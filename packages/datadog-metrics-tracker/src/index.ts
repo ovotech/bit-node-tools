@@ -19,7 +19,7 @@ export const createDataDogConnection = (config: DataDogConfig) => {
     host: config.DD_AGENT_HOST, //It collects events and metrics from hosts and sends them to Datadog
     globalTags: {
     env: config.DD_ENV, //To check the metrics according to environment wise
-    service: config.DD_SERVICE, //To check the deployment over the datadog
+    service: config.DD_SERVICE, //To check the metrics according to service wise
   },
     errorHandler: (error:Error, logger:Logger) => {
       logger.error('Error tracking Datadog metric',error);
