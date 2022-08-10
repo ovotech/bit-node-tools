@@ -58,8 +58,7 @@ export abstract class MetricsTracker {
 
   private async sendPointsToDatadog(points: Point[]) {
     this.logger.info(`Sending ${points.length} points to Datadog`);
-
-    executeCallbackOrExponentiallyBackOff(() => dogstatsd.increment(points), this.logger);
+    executeCallbackOrExponentiallyBackOff(() => dogstatsd.increment('retail-payg-balance-rest-service', points), this.logger);
   }
 
   private getInvalidTagNames(tags: { [name: string]: string }) {
