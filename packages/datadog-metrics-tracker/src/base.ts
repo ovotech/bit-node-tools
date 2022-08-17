@@ -2,8 +2,12 @@ import { Logger } from '@ovotech/winston-logger';
 import BatchCalls from './helpers/batch-calls';
 import { executeCallbackOrExponentiallyBackOff } from './helpers/exponential-backoff';
 
-var StatsD = require("hot-shots");
-var dogstatsd = new StatsD();
+var StatsD = require('hot-shots');
+var dogstatsd = new StatsD({
+  port: '8125',
+  host: '10.145.0.4',
+});
+
 const ONE_MINUTE = 60000;
 
 interface Point {
@@ -58,7 +62,8 @@ export abstract class MetricsTracker {
 
   private async sendPointsToDatadog(points: Point[]) {
     this.logger.info(`Sending ${points.length} points to Datadog`);
-    executeCallbackOrExponentiallyBackOff(() => dogstatsd.increment('retail-payg-balance-rest-service', points), this.logger);
+    //datadog metrics tag
+    executeCallbackOrExponentiallyBackOff(() => dogstatsd.increment('retail.payg.test.service', points), this.logger);
   }
 
   private getInvalidTagNames(tags: { [name: string]: string }) {
