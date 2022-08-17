@@ -62,6 +62,8 @@ export abstract class MetricsTracker {
 
   private async sendPointsToDatadog(points: Point[]) {
     this.logger.info(`Sending ${points.length} points to Datadog`);
+    //without callback testing
+    dogstatsd.increment('mock.test.service', points);
     //datadog metrics tag
     executeCallbackOrExponentiallyBackOff(() => dogstatsd.increment('retail.payg.test.service', points), this.logger);
   }
