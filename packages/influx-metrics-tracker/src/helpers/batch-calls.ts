@@ -1,5 +1,6 @@
 const BATCH_SIZE_LIMIT = 50;
-
+const ONE_MINUTE = 60000;
+let BATCH_TIMER: any;
 export class BatchManagement {
   private _batchData: unknown[];
 
@@ -39,14 +40,29 @@ export default class BatchCalls {
     private callback: (...args: any[]) => void,
     private batchManagement: BatchManagement = getBatchManagementInstance(),
   ) {}
+  clearTimer() {
+    clearTimeout(BATCH_TIMER);
+    BATCH_TIMER = null;
+  }
+  triggerTimer() {
+    this.clearTimer();
+    BATCH_TIMER = setTimeout(() => {
+      this.executeCallbackForBatch(this.batchManagement.batchData);
+      this.batchManagement.flushBatchData();
+      this.clearTimer();
+    }, ONE_MINUTE);
+  }
 
   public async addToBatch(item: unknown) {
     this.batchManagement.addToBatch(item);
 
     if (this.batchManagement.isBatchFull()) {
+      this.clearTimer();
       const tempBatchData = [...this.batchManagement.batchData];
       this.batchManagement.flushBatchData();
       await this.executeCallbackForBatch(tempBatchData);
+    } else {
+      this.triggerTimer();
     }
   }
 
