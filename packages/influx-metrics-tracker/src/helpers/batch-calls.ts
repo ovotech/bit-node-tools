@@ -40,18 +40,19 @@ export default class BatchCalls {
     private callback: (...args: any[]) => void,
     private batchManagement: BatchManagement = getBatchManagementInstance(),
   ) {}
-  triggerTimer() {
+  clearTimer() {
     clearTimeout(BATCH_TIMER);
+    BATCH_TIMER = null;
+  }
+  triggerTimer() {
+    this.clearTimer();
     BATCH_TIMER = setTimeout(() => {
       this.executeCallbackForBatch(this.batchManagement.batchData);
       this.batchManagement.flushBatchData();
       this.clearTimer();
     }, ONE_MINUTE);
   }
-  clearTimer() {
-    clearTimeout(BATCH_TIMER);
-    BATCH_TIMER = null;
-  }
+
   public async addToBatch(item: unknown) {
     this.batchManagement.addToBatch(item);
 
