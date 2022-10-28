@@ -1,12 +1,12 @@
 import { MetricsTracker } from '../src';
 
 const testMeasurementName = 'test-metrics';
-
+const timestamp = new Date();
 export class TestTracker extends MetricsTracker {
   private static testMeasurementName = testMeasurementName;
 
   async trackSomething(tags: { [name: string]: string }, fields: { [name: string]: any }) {
-    await this.trackPoint(TestTracker.testMeasurementName, tags, fields);
+    await this.trackPoint(TestTracker.testMeasurementName, tags, fields, timestamp);
   }
 }
 
@@ -40,6 +40,7 @@ describe('Base metrics class', () => {
         ...tags,
       },
       fields: {},
+      timestamp,
     });
   });
 
@@ -54,6 +55,7 @@ describe('Base metrics class', () => {
         ...metricsMeta,
       },
       fields: { ...metrics },
+      timestamp,
     });
   });
 
@@ -71,6 +73,7 @@ describe('Base metrics class', () => {
         ...validTags,
       },
       fields: {},
+      timestamp,
     });
     expect(mockLogger.warn).toHaveBeenLastCalledWith('Attempted to track tags with no value', {
       metric: testMeasurementName,

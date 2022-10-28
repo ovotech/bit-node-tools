@@ -3,8 +3,6 @@ import { InfluxDB } from 'influx';
 import BatchCalls from './helpers/batch-calls';
 import { executeCallbackOrExponentiallyBackOff } from './helpers/exponential-backoff';
 
-const ONE_MINUTE = 60000;
-
 interface Point {
   measurement: string;
   tags: { [name: string]: string };
@@ -19,7 +17,6 @@ export abstract class MetricsTracker {
       [key: string]: any;
     },
     protected batchCalls?: BatchCalls,
-    protected batchSendIntervalMs = ONE_MINUTE,
   ) {
     this.sendPointsToInflux = this.sendPointsToInflux.bind(this);
     this.batchCalls = batchCalls || new BatchCalls(this.sendPointsToInflux);
@@ -29,6 +26,7 @@ export abstract class MetricsTracker {
     measurementName: string,
     tags: { [name: string]: string },
     fields: { [name: string]: any },
+    timestamp?: Date,
   ) {
     const validTags = this.getValidTags(tags);
     this.logInvalidTags(measurementName, tags);
@@ -42,6 +40,7 @@ export abstract class MetricsTracker {
           ...validTags,
         },
         fields,
+        timestamp: timestamp || new Date(),
       });
       return;
     } catch (err) {
