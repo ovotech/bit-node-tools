@@ -3,11 +3,7 @@ import BatchCalls from './helpers/batch-calls';
 import { executeCallbackOrExponentiallyBackOff } from './helpers/exponential-backoff';
 
 var StatsD = require('hot-shots');
-var dogstatsd = new StatsD({
-  port: '8125',
-  host: '10.145.0.4',
-});
-
+var dogstatsd = new StatsD();
 const ONE_MINUTE = 60000;
 
 interface Point {
@@ -62,10 +58,8 @@ export abstract class MetricsTracker {
 
   private async sendPointsToDatadog(points: Point[]) {
     this.logger.info(`Sending ${points.length} points to Datadog`);
-    //without callback testing
-    dogstatsd.increment('mock.test.service', points);
     //datadog metrics tag
-    executeCallbackOrExponentiallyBackOff(() => dogstatsd.increment('retail.payg.test.service', points), this.logger);
+    executeCallbackOrExponentiallyBackOff(() => dogstatsd.increment(points), this.logger);
   }
 
   private getInvalidTagNames(tags: { [name: string]: string }) {
