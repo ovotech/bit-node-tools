@@ -2,15 +2,13 @@ import { KafkaMetricsTracker, ProcessingState } from '../src/kafka';
 
 describe('Track actions relating to consuming an event from Kafka', () => {
   let mockDatadog: any;
-  let mockBatchCalls: any;
   let mockLogger: any;
   let tracker: KafkaMetricsTracker;
 
   beforeEach(() => {
     mockDatadog = { increment: jest.fn().mockResolvedValue(undefined) };
-    mockBatchCalls = { addToBatch: jest.fn().mockResolvedValue(undefined) };
     mockLogger = { error: jest.fn(), warn: jest.fn(), info: jest.fn() };
-    tracker = new KafkaMetricsTracker(mockDatadog, mockLogger, {}, mockBatchCalls);
+    tracker = new KafkaMetricsTracker(mockDatadog, mockLogger, {});
   });
 
   it('Should track a single event being received', async () => {
@@ -18,17 +16,12 @@ describe('Track actions relating to consuming an event from Kafka', () => {
     const ageMs = 123;
 
     await tracker.trackEventReceived(eventName, ageMs);
-
-    expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
-      measurement: 'kafka-event-received',
-      tags: {
-        eventName,
-      },
-      fields: {
-        count: 1,
-        ageMs,
-      },
-    });
+    const data = {
+      eventName,
+      count: 1,
+      ageMs,
+    };
+    expect(mockDatadog.increment).toHaveBeenLastCalledWith('kafka-event-received', data);
   });
 
   it.each([
@@ -39,17 +32,12 @@ describe('Track actions relating to consuming an event from Kafka', () => {
     const eventName = 'test-event';
 
     await tracker.trackEventReceived(eventName, exactAge);
-
-    expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
-      measurement: 'kafka-event-received',
-      tags: {
-        eventName,
-      },
-      fields: {
-        count: 1,
-        ageMs: expectedTrackedAge,
-      },
-    });
+    const data = {
+      eventName,
+      count: 1,
+      ageMs: expectedTrackedAge,
+    };
+    expect(mockDatadog.increment).toHaveBeenLastCalledWith('kafka-event-received', data);
   });
 
   it.each([ProcessingState.Error, ProcessingState.Success])(
@@ -58,17 +46,12 @@ describe('Track actions relating to consuming an event from Kafka', () => {
       const eventName = 'test-event';
 
       await tracker.trackEventProcessed(eventName, processingState);
-
-      expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
-        measurement: 'kafka-event-processed',
-        tags: {
-          eventName,
-          processingState,
-        },
-        fields: {
-          count: 1,
-        },
-      });
+      const data = {
+        eventName,
+        processingState,
+        count: 1,
+      };
+      expect(mockDatadog.increment).toHaveBeenLastCalledWith('kafka-event-processed', data);
     },
   );
 });

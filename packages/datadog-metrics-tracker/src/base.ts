@@ -1,29 +1,21 @@
 import { Logger } from '@ovotech/winston-logger';
-import BatchCalls from './helpers/batch-calls';
-import { executeCallbackOrExponentiallyBackOff } from './helpers/exponential-backoff';
-
-var StatsD = require('hot-shots');
-var dogstatsd = new StatsD();
-const ONE_MINUTE = 60000;
+import { StatsD } from 'hot-shots';
 
 interface Point {
-  measurement: string;
   tags: { [name: string]: string };
   fields: { [name: string]: any };
+  measurement: string;
 }
 
 export abstract class MetricsTracker {
   constructor(
-    protected dogstatsd: () => {},
+    protected dogstatsd: StatsD,
     protected logger: Logger,
     protected staticMeta?: {
       [key: string]: any;
     },
-    protected batchCalls?: BatchCalls,
-    protected batchSendIntervalMs = ONE_MINUTE,
   ) {
     this.sendPointsToDatadog = this.sendPointsToDatadog.bind(this);
-    this.batchCalls = batchCalls || new BatchCalls(this.sendPointsToDatadog);
   }
 
   protected async trackPoint(
@@ -36,7 +28,7 @@ export abstract class MetricsTracker {
 
     try {
       this.logger.info(`Tracking point for ${measurementName}`);
-      this.batchCalls!.addToBatch({
+      this.sendPointsToDatadog({
         measurement: measurementName,
         tags: {
           ...this.staticMeta,
@@ -56,10 +48,11 @@ export abstract class MetricsTracker {
     }
   }
 
-  private async sendPointsToDatadog(points: Point[]) {
-    this.logger.info(`Sending ${points.length} points to Datadog`);
+  private async sendPointsToDatadog(point: Point) {
+    this.logger.info(`Sending metrics to Datadog`);
+    const { measurement, tags, fields } = point;
     //datadog metrics tag
-    executeCallbackOrExponentiallyBackOff(() => dogstatsd.increment(points), this.logger);
+    this.dogstatsd.increment(measurement, { ...tags, ...fields });
   }
 
   private getInvalidTagNames(tags: { [name: string]: string }) {
