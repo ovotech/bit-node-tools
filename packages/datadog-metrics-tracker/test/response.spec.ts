@@ -2,15 +2,13 @@ import { ResponseMetricsTracker } from '../src/response';
 
 describe('Track actions relating to responding to an API request', () => {
   let mockDatadog: any;
-  let mockBatchCalls: any;
   let mockLogger: any;
   let tracker: ResponseMetricsTracker;
 
   beforeEach(() => {
     mockDatadog = { increment: jest.fn().mockResolvedValue(undefined) };
-    mockBatchCalls = { addToBatch: jest.fn().mockResolvedValue(undefined) };
     mockLogger = { error: jest.fn(), warn: jest.fn(), info: jest.fn() };
-    tracker = new ResponseMetricsTracker(mockDatadog, mockLogger, {}, mockBatchCalls);
+    tracker = new ResponseMetricsTracker(mockDatadog, mockLogger, {});
   });
 
   it('Should track a response time without a status code', async () => {
@@ -18,17 +16,12 @@ describe('Track actions relating to responding to an API request', () => {
     const timeMs = 1234;
 
     await tracker.trackOwnResponseTime(requestName, timeMs);
-
-    expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
-      measurement: 'own-response-time',
-      tags: {
-        requestName,
-      },
-      fields: {
-        count: 1,
-        timeMs: 1234,
-      },
-    });
+    const data = {
+      requestName,
+      count: 1,
+      timeMs,
+    };
+    expect(mockDatadog.increment).toHaveBeenLastCalledWith('own-response-time', data);
   });
 
   it.each([200, 404, 500])('Should track a response time with a status code: %d', async statusCode => {
@@ -36,18 +29,13 @@ describe('Track actions relating to responding to an API request', () => {
     const timeMs = 123;
 
     await tracker.trackOwnResponseTime(requestName, timeMs, statusCode);
-
-    expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
-      measurement: 'own-response-time',
-      tags: {
-        requestName,
-        status: statusCode.toString(10),
-      },
-      fields: {
-        count: 1,
-        timeMs: 123,
-      },
-    });
+    const data = {
+      requestName,
+      status: statusCode.toString(10),
+      count: 1,
+      timeMs,
+    };
+    expect(mockDatadog.increment).toHaveBeenLastCalledWith('own-response-time', data);
   });
 
   it.each([
@@ -58,16 +46,11 @@ describe('Track actions relating to responding to an API request', () => {
     const requestName = 'test-request';
 
     await tracker.trackOwnResponseTime(requestName, exactTime);
-
-    expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
-      measurement: 'own-response-time',
-      tags: {
-        requestName,
-      },
-      fields: {
-        count: 1,
-        timeMs: expectedTrackedTime,
-      },
-    });
+    const data = {
+      requestName,
+      count: 1,
+      timeMs: expectedTrackedTime,
+    };
+    expect(mockDatadog.increment).toHaveBeenLastCalledWith('own-response-time', data);
   });
 });
