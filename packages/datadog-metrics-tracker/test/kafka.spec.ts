@@ -6,7 +6,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
   let tracker: KafkaMetricsTracker;
 
   beforeEach(() => {
-    mockDatadog = { increment: jest.fn().mockResolvedValue(undefined) };
+    mockDatadog = { distribution: jest.fn().mockResolvedValue(undefined) };
     mockLogger = { error: jest.fn(), warn: jest.fn(), info: jest.fn() };
     tracker = new KafkaMetricsTracker(mockDatadog, mockLogger, {});
   });
@@ -21,7 +21,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
       count: 1,
       ageMs,
     };
-    expect(mockDatadog.increment).toHaveBeenLastCalledWith('kafka-event-received', data);
+    expect(mockDatadog.distribution).toHaveBeenLastCalledWith('kafka-event-received',1, data);
   });
 
   it.each([
@@ -37,7 +37,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
       count: 1,
       ageMs: expectedTrackedAge,
     };
-    expect(mockDatadog.increment).toHaveBeenLastCalledWith('kafka-event-received', data);
+    expect(mockDatadog.distribution).toHaveBeenLastCalledWith('kafka-event-received', 1,data);
   });
 
   it.each([ProcessingState.Error, ProcessingState.Success])(
@@ -51,7 +51,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
         processingState,
         count: 1,
       };
-      expect(mockDatadog.increment).toHaveBeenLastCalledWith('kafka-event-processed', data);
+      expect(mockDatadog.distribution).toHaveBeenLastCalledWith('kafka-event-processed', 1, data);
     },
   );
 });
