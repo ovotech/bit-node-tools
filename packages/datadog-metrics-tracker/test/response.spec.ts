@@ -6,7 +6,7 @@ describe('Track actions relating to responding to an API request', () => {
   let tracker: ResponseMetricsTracker;
 
   beforeEach(() => {
-    mockDatadog = { increment: jest.fn().mockResolvedValue(undefined) };
+    mockDatadog = { distribution: jest.fn().mockResolvedValue(undefined) };
     mockLogger = { error: jest.fn(), warn: jest.fn(), info: jest.fn() };
     tracker = new ResponseMetricsTracker(mockDatadog, mockLogger, {});
   });
@@ -21,7 +21,7 @@ describe('Track actions relating to responding to an API request', () => {
       count: 1,
       timeMs,
     };
-    expect(mockDatadog.increment).toHaveBeenLastCalledWith('own-response-time', data);
+    expect(mockDatadog.distribution).toHaveBeenLastCalledWith('own-response-time',timeMs, data);
   });
 
   it.each([200, 404, 500])('Should track a response time with a status code: %d', async statusCode => {
@@ -35,7 +35,7 @@ describe('Track actions relating to responding to an API request', () => {
       count: 1,
       timeMs,
     };
-    expect(mockDatadog.increment).toHaveBeenLastCalledWith('own-response-time', data);
+    expect(mockDatadog.distribution).toHaveBeenLastCalledWith('own-response-time',timeMs, data);
   });
 
   it.each([
@@ -51,6 +51,6 @@ describe('Track actions relating to responding to an API request', () => {
       count: 1,
       timeMs: expectedTrackedTime,
     };
-    expect(mockDatadog.increment).toHaveBeenLastCalledWith('own-response-time', data);
+    expect(mockDatadog.distribution).toHaveBeenLastCalledWith('own-response-time',expectedTrackedTime, data);
   });
 });

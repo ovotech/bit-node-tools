@@ -6,7 +6,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
   let tracker: ExternalRequestMetricsTracker;
 
   beforeEach(() => {
-    mockDatadog = { increment: jest.fn().mockResolvedValue(undefined) };
+    mockDatadog = { distribution: jest.fn().mockResolvedValue(undefined) };
     mockLogger = { error: jest.fn(), warn: jest.fn(), info: jest.fn() };
     tracker = new ExternalRequestMetricsTracker(mockDatadog, mockLogger, {});
   });
@@ -23,7 +23,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
       count: 1,
       timeMs: 1234,
     };
-    expect(mockDatadog.increment).toHaveBeenLastCalledWith('external-request-time', data);
+    expect(mockDatadog.distribution).toHaveBeenLastCalledWith('external-request-time',timeMs, data);
   });
 
   it.each([200, 404, 500])('Should track a request time with a status code: %d', async statusCode => {
@@ -39,7 +39,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
       count: 1,
       timeMs: 123,
     };
-    expect(mockDatadog.increment).toHaveBeenLastCalledWith('external-request-time', data);
+    expect(mockDatadog.distribution).toHaveBeenLastCalledWith('external-request-time',timeMs, data);
   });
 
   it.each([
@@ -57,6 +57,6 @@ describe('Track actions relating to consuming an event from Kafka', () => {
       count: 1,
       timeMs: expectedTrackedTime,
     };
-    expect(mockDatadog.increment).toHaveBeenLastCalledWith('external-request-time', data);
+    expect(mockDatadog.distribution).toHaveBeenLastCalledWith('external-request-time', expectedTrackedTime, data);
   });
 });
