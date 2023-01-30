@@ -1,6 +1,6 @@
 {
   "name": "@ovotech/keycloak-auth",
-  "version": "2.0.0",
+  "version": "2.0.4",
   "main": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
@@ -13,7 +13,7 @@
     "@types/jsonwebtoken": "^8.3.2",
     "@types/nock": "^10.0.3",
     "@types/node": "^11.10.5",
-    "axios": "^0.21.1",
+    "axios": "^0.24.0",
     "jest": "^24.8.0",
     "nock": "^10.0.6",
     "prettier": "^1.17.1",
@@ -24,9 +24,9 @@
   },
   "dependencies": {
     "@types/express-jwt": "^0.0.42",
-    "jsonwebtoken": "^8.5.1",
-    "jwks-rsa": "^1.5.1",
-    "node-fetch": "^2.6.0"
+    "jsonwebtoken": "^9.0.0",
+    "jwks-rsa": "^2.0.5",
+    "node-fetch": "^2.6.7"
   },
   "scripts": {
     "build": "tsc --outDir dist --declaration",
