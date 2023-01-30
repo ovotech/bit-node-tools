@@ -13,7 +13,7 @@ export const keycloakAxios = (input: KeycloakAxiosOptions | KeycloakAuth) => {
   if (input instanceof KeycloakAuth) {
     return async (config: AxiosRequestConfig) => {
       const authResponse = await input.authenticate();
-      config.headers.Authorization = `Bearer ${authResponse.accessToken}`;
+      config.headers!.Authorization = `Bearer ${authResponse.accessToken}`;
       return config;
     };
   }
@@ -21,7 +21,7 @@ export const keycloakAxios = (input: KeycloakAxiosOptions | KeycloakAuth) => {
   let previous: AuthResponse;
   return async (config: AxiosRequestConfig) => {
     previous = await authenticate({ ...input, previous });
-    config.headers.Authorization = `Bearer ${previous.accessToken}`;
+    config.headers!.Authorization = `Bearer ${previous.accessToken}`;
     return config;
   };
 };

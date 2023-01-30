@@ -15,14 +15,13 @@ export const decodeAccessToken = (accessToken: string, config: BouncerConfig) =>
   });
 
   const getSigningKey = (header: any, callback: any) => {
-    client.getSigningKey(header.kid, (err, key) => {
-      if (err) {
-        callback(err);
-      } else {
+    client.getSigningKey(header.kid).then(
+      key => {
         const signingKey = key.getPublicKey();
         callback(null, signingKey);
-      }
-    });
+      },
+      err => callback(err),
+    );
   };
 
   return new Promise((resolve, reject) => {
