@@ -21,7 +21,7 @@ describe('Base metrics class', () => {
   let tracker: TestTracker;
 
   beforeEach(() => {
-    mockDatadog = { increment: jest.fn() };
+    mockDatadog = { distribution: jest.fn() };
     mockLogger = { error: jest.fn(), warn: jest.fn(), info: jest.fn() };
     tracker = new TestTracker(mockDatadog, mockLogger, metricsMeta);
   });
@@ -34,7 +34,7 @@ describe('Base metrics class', () => {
       ...metricsMeta,
       ...tags,
     };
-    expect(mockDatadog.increment).toHaveBeenLastCalledWith(testMeasurementName, data);
+    expect(mockDatadog.distribution).toHaveBeenLastCalledWith(testMeasurementName,1, data);
   });
 
   it('Should track valid metrics and write the points to Datadog in a batch call', async () => {
@@ -45,7 +45,7 @@ describe('Base metrics class', () => {
       ...metricsMeta,
       ...metrics,
     };
-    expect(mockDatadog.increment).toHaveBeenLastCalledWith(testMeasurementName, data);
+    expect(mockDatadog.distribution).toHaveBeenLastCalledWith(testMeasurementName,1, data);
   });
 
   it('Should log rather than track that have empty values', async () => {
@@ -58,7 +58,7 @@ describe('Base metrics class', () => {
       ...validTags,
     };
     jest.runTimersToTime(60000);
-    expect(mockDatadog.increment).toHaveBeenLastCalledWith(testMeasurementName, data);
+    expect(mockDatadog.distribution).toHaveBeenLastCalledWith(testMeasurementName,1, data);
     expect(mockLogger.warn).toHaveBeenLastCalledWith('Attempted to track tags with no value', {
       metric: testMeasurementName,
       tagNames: 'anotherInvalidTag, invalidTag',

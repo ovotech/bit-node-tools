@@ -5,6 +5,7 @@ interface Point {
   tags: { [name: string]: string };
   fields: { [name: string]: any };
   measurement: string;
+  value?: number;
 }
 
 export abstract class MetricsTracker {
@@ -22,6 +23,7 @@ export abstract class MetricsTracker {
     measurementName: string,
     tags: { [name: string]: string },
     fields: { [name: string]: any },
+    value?: number,
   ) {
     const validTags = this.getValidTags(tags);
     this.logInvalidTags(measurementName, tags);
@@ -35,6 +37,7 @@ export abstract class MetricsTracker {
           ...validTags,
         },
         fields,
+        value,
       });
       return;
     } catch (err) {
@@ -50,9 +53,9 @@ export abstract class MetricsTracker {
 
   private async sendPointsToDatadog(point: Point) {
     this.logger.info(`Sending metrics to Datadog`);
-    const { measurement, tags, fields } = point;
+    const { measurement, tags, fields, value } = point;
     //datadog metrics tag
-    this.dogstatsd.increment(measurement, { ...tags, ...fields });
+    this.dogstatsd.distribution(measurement, value || 1, { ...tags, ...fields });
   }
 
   private getInvalidTagNames(tags: { [name: string]: string }) {
