@@ -1,5 +1,5 @@
 const BATCH_SIZE_LIMIT = 50;
-
+const ONE_MINUTE = 60000;
 export class BatchManagement {
   private _batchData: unknown[];
 
@@ -42,7 +42,6 @@ export default class BatchCalls {
 
   public async addToBatch(item: unknown) {
     this.batchManagement.addToBatch(item);
-
     if (this.batchManagement.isBatchFull()) {
       const tempBatchData = [...this.batchManagement.batchData];
       this.batchManagement.flushBatchData();

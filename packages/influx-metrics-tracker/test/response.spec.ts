@@ -1,5 +1,5 @@
 import { ResponseMetricsTracker } from '../src/response';
-
+const timestamp = new Date();
 describe('Track actions relating to responding to an API request', () => {
   let mockInflux: any;
   let mockBatchCalls: any;
@@ -17,7 +17,7 @@ describe('Track actions relating to responding to an API request', () => {
     const requestName = 'test-request';
     const timeMs = 1234;
 
-    await tracker.trackOwnResponseTime(requestName, timeMs);
+    await tracker.trackOwnResponseTime(requestName, timeMs, undefined, timestamp);
 
     expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
       measurement: 'own-response-time',
@@ -28,6 +28,7 @@ describe('Track actions relating to responding to an API request', () => {
         count: 1,
         timeMs: 1234,
       },
+      timestamp,
     });
   });
 
@@ -35,7 +36,7 @@ describe('Track actions relating to responding to an API request', () => {
     const requestName = 'test-request';
     const timeMs = 123;
 
-    await tracker.trackOwnResponseTime(requestName, timeMs, statusCode);
+    await tracker.trackOwnResponseTime(requestName, timeMs, statusCode, timestamp);
 
     expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
       measurement: 'own-response-time',
@@ -47,6 +48,7 @@ describe('Track actions relating to responding to an API request', () => {
         count: 1,
         timeMs: 123,
       },
+      timestamp,
     });
   });
 
@@ -57,7 +59,7 @@ describe('Track actions relating to responding to an API request', () => {
   ])('Should round response times to the nearest millisecond: %d', async (exactTime, expectedTrackedTime) => {
     const requestName = 'test-request';
 
-    await tracker.trackOwnResponseTime(requestName, exactTime);
+    await tracker.trackOwnResponseTime(requestName, exactTime, undefined, timestamp);
 
     expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
       measurement: 'own-response-time',
@@ -68,6 +70,7 @@ describe('Track actions relating to responding to an API request', () => {
         count: 1,
         timeMs: expectedTrackedTime,
       },
+      timestamp,
     });
   });
 });
