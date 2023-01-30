@@ -1,5 +1,5 @@
 import { ExternalRequestMetricsTracker } from '../src/external-request';
-
+const timestamp = new Date();
 describe('Track actions relating to consuming an event from Kafka', () => {
   let mockInflux: any;
   let mockBatchCalls: any;
@@ -18,7 +18,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
     const requestName = 'test-request';
     const timeMs = 1234;
 
-    await tracker.trackRequestTime(externalServiceName, requestName, timeMs);
+    await tracker.trackRequestTime(externalServiceName, requestName, timeMs, undefined, timestamp);
 
     expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
       measurement: 'external-request-time',
@@ -30,6 +30,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
         count: 1,
         timeMs: 1234,
       },
+      timestamp,
     });
   });
 
@@ -38,7 +39,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
     const requestName = 'test-request';
     const timeMs = 123;
 
-    await tracker.trackRequestTime(externalServiceName, requestName, timeMs, statusCode);
+    await tracker.trackRequestTime(externalServiceName, requestName, timeMs, statusCode, timestamp);
 
     expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
       measurement: 'external-request-time',
@@ -51,6 +52,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
         count: 1,
         timeMs: 123,
       },
+      timestamp,
     });
   });
 
@@ -62,7 +64,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
     const externalServiceName = 'test-external-service';
     const requestName = 'test-request';
 
-    await tracker.trackRequestTime(externalServiceName, requestName, exactTime);
+    await tracker.trackRequestTime(externalServiceName, requestName, exactTime, undefined, timestamp);
 
     expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
       measurement: 'external-request-time',
@@ -74,6 +76,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
         count: 1,
         timeMs: expectedTrackedTime,
       },
+      timestamp,
     });
   });
 });

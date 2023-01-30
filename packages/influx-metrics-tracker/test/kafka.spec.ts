@@ -1,5 +1,5 @@
 import { KafkaMetricsTracker, ProcessingState } from '../src/kafka';
-
+const timestamp = new Date();
 describe('Track actions relating to consuming an event from Kafka', () => {
   let mockInflux: any;
   let mockBatchCalls: any;
@@ -17,7 +17,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
     const eventName = 'test-event';
     const ageMs = 123;
 
-    await tracker.trackEventReceived(eventName, ageMs);
+    await tracker.trackEventReceived(eventName, ageMs, timestamp);
 
     expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
       measurement: 'kafka-event-received',
@@ -28,6 +28,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
         count: 1,
         ageMs,
       },
+      timestamp,
     });
   });
 
@@ -38,7 +39,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
   ])('Should round event ages to the nearest millisecond: %d', async (exactAge, expectedTrackedAge) => {
     const eventName = 'test-event';
 
-    await tracker.trackEventReceived(eventName, exactAge);
+    await tracker.trackEventReceived(eventName, exactAge, timestamp);
 
     expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
       measurement: 'kafka-event-received',
@@ -49,6 +50,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
         count: 1,
         ageMs: expectedTrackedAge,
       },
+      timestamp,
     });
   });
 
@@ -57,7 +59,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
     async processingState => {
       const eventName = 'test-event';
 
-      await tracker.trackEventProcessed(eventName, processingState);
+      await tracker.trackEventProcessed(eventName, processingState, timestamp);
 
       expect(mockBatchCalls.addToBatch).toHaveBeenLastCalledWith({
         measurement: 'kafka-event-processed',
@@ -68,6 +70,7 @@ describe('Track actions relating to consuming an event from Kafka', () => {
         fields: {
           count: 1,
         },
+        timestamp,
       });
     },
   );
