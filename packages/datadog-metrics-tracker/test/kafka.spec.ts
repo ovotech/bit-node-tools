@@ -18,10 +18,8 @@ describe('Track actions relating to consuming an event from Kafka', () => {
     await tracker.trackEventReceived(eventName, ageMs);
     const data = {
       eventName,
-      count: 1,
-      ageMs,
     };
-    expect(mockDatadog.distribution).toHaveBeenLastCalledWith('kafka-event-received',1, data);
+    expect(mockDatadog.distribution).toHaveBeenLastCalledWith('kafka-event-received', 1, data);
   });
 
   it.each([
@@ -34,10 +32,8 @@ describe('Track actions relating to consuming an event from Kafka', () => {
     await tracker.trackEventReceived(eventName, exactAge);
     const data = {
       eventName,
-      count: 1,
-      ageMs: expectedTrackedAge,
     };
-    expect(mockDatadog.distribution).toHaveBeenLastCalledWith('kafka-event-received', 1,data);
+    expect(mockDatadog.distribution).toHaveBeenLastCalledWith('kafka-event-received', 1, data);
   });
 
   it.each([ProcessingState.Error, ProcessingState.Success])(
@@ -49,7 +45,6 @@ describe('Track actions relating to consuming an event from Kafka', () => {
       const data = {
         eventName,
         processingState,
-        count: 1,
       };
       expect(mockDatadog.distribution).toHaveBeenLastCalledWith('kafka-event-processed', 1, data);
     },

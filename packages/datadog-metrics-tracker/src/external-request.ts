@@ -7,7 +7,6 @@ export class ExternalRequestMetricsTracker extends MetricsTracker {
     await this.trackPoint(
       ExternalRequestMetricsTracker.externalRequestTimeMeasurementName,
       { requestName, externalServiceName, status: statusCode ? statusCode.toString() : '' },
-      { timeMs: Math.round(timeMs), count: 1 },
       Math.round(timeMs),
     );
   }

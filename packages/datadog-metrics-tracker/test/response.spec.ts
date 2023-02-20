@@ -18,10 +18,8 @@ describe('Track actions relating to responding to an API request', () => {
     await tracker.trackOwnResponseTime(requestName, timeMs);
     const data = {
       requestName,
-      count: 1,
-      timeMs,
     };
-    expect(mockDatadog.distribution).toHaveBeenLastCalledWith('own-response-time',timeMs, data);
+    expect(mockDatadog.distribution).toHaveBeenLastCalledWith('own-response-time', timeMs, data);
   });
 
   it.each([200, 404, 500])('Should track a response time with a status code: %d', async statusCode => {
@@ -32,10 +30,8 @@ describe('Track actions relating to responding to an API request', () => {
     const data = {
       requestName,
       status: statusCode.toString(10),
-      count: 1,
-      timeMs,
     };
-    expect(mockDatadog.distribution).toHaveBeenLastCalledWith('own-response-time',timeMs, data);
+    expect(mockDatadog.distribution).toHaveBeenLastCalledWith('own-response-time', timeMs, data);
   });
 
   it.each([
@@ -48,9 +44,7 @@ describe('Track actions relating to responding to an API request', () => {
     await tracker.trackOwnResponseTime(requestName, exactTime);
     const data = {
       requestName,
-      count: 1,
-      timeMs: expectedTrackedTime,
     };
-    expect(mockDatadog.distribution).toHaveBeenLastCalledWith('own-response-time',expectedTrackedTime, data);
+    expect(mockDatadog.distribution).toHaveBeenLastCalledWith('own-response-time', expectedTrackedTime, data);
   });
 });

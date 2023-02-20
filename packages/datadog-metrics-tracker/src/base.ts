@@ -3,7 +3,6 @@ import { StatsD } from 'hot-shots';
 
 interface Point {
   tags: { [name: string]: string };
-  fields: { [name: string]: any };
   measurement: string;
   value?: number;
 }
@@ -19,12 +18,7 @@ export abstract class MetricsTracker {
     this.sendPointsToDatadog = this.sendPointsToDatadog.bind(this);
   }
 
-  protected async trackPoint(
-    measurementName: string,
-    tags: { [name: string]: string },
-    fields: { [name: string]: any },
-    value?: number,
-  ) {
+  protected async trackPoint(measurementName: string, tags: { [name: string]: string }, value?: number) {
     const validTags = this.getValidTags(tags);
     this.logInvalidTags(measurementName, tags);
 
@@ -36,7 +30,6 @@ export abstract class MetricsTracker {
           ...this.staticMeta,
           ...validTags,
         },
-        fields,
         value,
       });
       return;
@@ -44,7 +37,6 @@ export abstract class MetricsTracker {
       this.logger.error('Error tracking Datadog metric', {
         metric: measurementName,
         tags: JSON.stringify(validTags),
-        fields: JSON.stringify(fields),
         error: err,
       });
       return;
@@ -53,9 +45,9 @@ export abstract class MetricsTracker {
 
   private async sendPointsToDatadog(point: Point) {
     this.logger.info(`Sending metrics to Datadog`);
-    const { measurement, tags, fields, value } = point;
+    const { measurement, tags, value } = point;
     //datadog metrics tag
-    this.dogstatsd.distribution(measurement, value || 1, { ...tags, ...fields });
+    this.dogstatsd.distribution(measurement, value || 1, { ...tags });
   }
 
   private getInvalidTagNames(tags: { [name: string]: string }) {
