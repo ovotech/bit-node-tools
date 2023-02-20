@@ -20,10 +20,8 @@ describe('Track actions relating to consuming an event from Kafka', () => {
     const data = {
       externalServiceName,
       requestName,
-      count: 1,
-      timeMs: 1234,
     };
-    expect(mockDatadog.distribution).toHaveBeenLastCalledWith('external-request-time',timeMs, data);
+    expect(mockDatadog.distribution).toHaveBeenLastCalledWith('external-request-time', timeMs, data);
   });
 
   it.each([200, 404, 500])('Should track a request time with a status code: %d', async statusCode => {
@@ -36,10 +34,8 @@ describe('Track actions relating to consuming an event from Kafka', () => {
       externalServiceName,
       requestName,
       status: statusCode.toString(10),
-      count: 1,
-      timeMs: 123,
     };
-    expect(mockDatadog.distribution).toHaveBeenLastCalledWith('external-request-time',timeMs, data);
+    expect(mockDatadog.distribution).toHaveBeenLastCalledWith('external-request-time', timeMs, data);
   });
 
   it.each([
@@ -54,8 +50,6 @@ describe('Track actions relating to consuming an event from Kafka', () => {
     const data = {
       externalServiceName,
       requestName,
-      count: 1,
-      timeMs: expectedTrackedTime,
     };
     expect(mockDatadog.distribution).toHaveBeenLastCalledWith('external-request-time', expectedTrackedTime, data);
   });

@@ -5,8 +5,8 @@ const testMeasurementName = 'test-metrics';
 export class TestTracker extends MetricsTracker {
   private static testMeasurementName = testMeasurementName;
 
-  async trackSomething(tags: { [name: string]: string }, fields: { [name: string]: any }) {
-    await this.trackPoint(TestTracker.testMeasurementName, tags, fields);
+  async trackSomething(tags: { [name: string]: string }) {
+    await this.trackPoint(TestTracker.testMeasurementName, tags);
   }
 }
 
@@ -29,36 +29,36 @@ describe('Base metrics class', () => {
   it('Should track valid tags and write the points to Datadog in a batch call', async () => {
     const tags = { value: 'A string' };
 
-    await tracker.trackSomething(tags, {});
+    await tracker.trackSomething(tags);
     const data = {
       ...metricsMeta,
       ...tags,
     };
-    expect(mockDatadog.distribution).toHaveBeenLastCalledWith(testMeasurementName,1, data);
+    expect(mockDatadog.distribution).toHaveBeenLastCalledWith(testMeasurementName, 1, data);
   });
 
   it('Should track valid metrics and write the points to Datadog in a batch call', async () => {
-    const metrics = { string: 'A string', integer: 3, float: 1.23, boolean: true };
+    const metrics = { string: 'A string' };
 
-    await tracker.trackSomething({}, metrics);
+    await tracker.trackSomething(metrics);
     const data = {
       ...metricsMeta,
       ...metrics,
     };
-    expect(mockDatadog.distribution).toHaveBeenLastCalledWith(testMeasurementName,1, data);
+    expect(mockDatadog.distribution).toHaveBeenLastCalledWith(testMeasurementName, 1, data);
   });
 
   it('Should log rather than track that have empty values', async () => {
     const validTags = { validTag: 'A string' };
     const invalidTags = { invalidTag: '', anotherInvalidTag: '' };
 
-    await tracker.trackSomething({ ...validTags, ...invalidTags }, {});
+    await tracker.trackSomething({ ...validTags, ...invalidTags });
     const data = {
       ...metricsMeta,
       ...validTags,
     };
     jest.runTimersToTime(60000);
-    expect(mockDatadog.distribution).toHaveBeenLastCalledWith(testMeasurementName,1, data);
+    expect(mockDatadog.distribution).toHaveBeenLastCalledWith(testMeasurementName, 1, data);
     expect(mockLogger.warn).toHaveBeenLastCalledWith('Attempted to track tags with no value', {
       metric: testMeasurementName,
       tagNames: 'anotherInvalidTag, invalidTag',

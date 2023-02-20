@@ -7,7 +7,6 @@ export class ResponseMetricsTracker extends MetricsTracker {
     await this.trackPoint(
       ResponseMetricsTracker.ownResponseTimeMeasurementName,
       { requestName, status: statusCode ? statusCode.toString() : '' },
-      { timeMs: Math.round(timeMs), count: 1 },
       Math.round(timeMs),
     );
   }
