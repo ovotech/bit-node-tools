@@ -81,15 +81,15 @@ describe('Base metrics class', () => {
       B = 'B',
     }
     enum Cause {
-      A = 'A',
-      B = 'B',
+      A = 'Refund',
+      B = 'Credit',
     }
 
     const metricName = 'measurementName';
     const tags = {
       cause: Cause.A,
       systemType: SystemType.A,
-      requestBy: 'sid@ovo.com',
+      requestBy: 'software client X',
       direction: Direction.Up,
     };
     const values = {
