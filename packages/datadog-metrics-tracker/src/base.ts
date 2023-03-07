@@ -23,8 +23,7 @@ export abstract class MetricsTracker {
     tags: { [name: string]: string },
     values: { [name: string]: number },
   ) {
-    for (let name in values) {
-      let value = values[name];
+    for (const [name, value] of Object.entries(values)) {
       this.trackPoint(`${measurementName}.${name}`, tags, value);
     }
   }
