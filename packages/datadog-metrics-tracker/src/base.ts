@@ -18,6 +18,72 @@ export abstract class MetricsTracker {
     this.sendPointsToDatadog = this.sendPointsToDatadog.bind(this);
   }
 
+  // todo:
+  // make a function that calls trackPoint multiple times
+
+  // here is a 'bad' example, it calls trackPoint
+
+  // 'measurementName',
+  // {
+  //       cause,
+  //       systemType,
+  //       requestBy,
+  //       direction: BalancesMetricsTracker.getDirection(amountInPennies),
+  //       amountInPennies: Math.abs(amountInPennies).toString(), <-- uniques
+  //       repaymentRateAmount: repaymentRateInPennies.toString(),
+  //     },
+  // 1
+
+  // different metric name for each
+
+  // e.g. balance_adjustment.direction
+  // e.g. balance_adjustment.balanceInPennnies
+
+  // N.B. HANDLE WHEN EMPTY
+
+  // this is what we should do
+
+  // 'measurementName',
+  // {
+  //       cause,
+  //       systemType,
+  //       requestBy,
+  // direction: BalancesMetricsTracker.getDirection(100),
+  //
+  //     },
+  //{
+
+  //
+  //       amountInPennies: Math.abs(200).toString(),
+  //       repaymentRateAmount: repaymentRateInPennies.toString(),
+  //     },
+
+  protected async trackPoints(
+    measurementName: string,
+    tags: { [name: string]: string },
+    values: { [name: string]: number },
+  ) {
+    // for each value in the values
+    // --> this.trackPoint()
+    //value => trackPoint(mName, tag, value.value)
+    // direction is a tag
+    // only one value per custom Metric
+    // where mName is
+    // e.g. `balance_adjustment.repaymentRateAmount`
+    // e.g. `balance_adjustment.balanceInPennnies`
+
+    for (let name in values) {
+      console.log(name);
+      let value = values[name];
+      this.trackPoint(`${measurementName}.${name}`, tags, value);
+    }
+    // values.map((value)=> {
+
+    // })
+
+    // this.trackPoint('dave', {});
+  }
+
   protected async trackPoint(measurementName: string, tags: { [name: string]: string }, value?: number) {
     const validTags = this.getValidTags(tags);
     this.logInvalidTags(measurementName, tags);
