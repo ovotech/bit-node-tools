@@ -8,6 +8,10 @@ export class TestTracker extends MetricsTracker {
   async trackSomething(tags: { [name: string]: string }) {
     await this.trackPoint(TestTracker.testMeasurementName, tags);
   }
+
+  async trackMultipleValues(metricName: string, tags: { [name: string]: string }, values: { [name: string]: number }) {
+    await this.trackPoints(metricName, tags, values);
+  }
 }
 
 jest.useFakeTimers();
@@ -19,11 +23,13 @@ describe('Base metrics class', () => {
   let mockDatadog: any;
   let mockLogger: any;
   let tracker: TestTracker;
+  let trackerWithoutMetricsMeta: TestTracker;
 
   beforeEach(() => {
     mockDatadog = { distribution: jest.fn() };
     mockLogger = { error: jest.fn(), warn: jest.fn(), info: jest.fn() };
     tracker = new TestTracker(mockDatadog, mockLogger, metricsMeta);
+    trackerWithoutMetricsMeta = new TestTracker(mockDatadog, mockLogger);
   });
 
   it('Should track valid tags and write the points to Datadog in a batch call', async () => {
@@ -63,5 +69,37 @@ describe('Base metrics class', () => {
       metric: testMeasurementName,
       tagNames: 'anotherInvalidTag, invalidTag',
     });
+  });
+
+  it('Should track a metric with multiple values once per value', async () => {
+    enum Direction {
+      Up = 'Up',
+      Down = 'Down',
+    }
+    enum SystemType {
+      A = 'A',
+      B = 'B',
+    }
+    enum Cause {
+      A = 'Refund',
+      B = 'Credit',
+    }
+
+    const metricName = 'measurementName';
+    const tags = {
+      cause: Cause.A,
+      systemType: SystemType.A,
+      requestBy: 'software client X',
+      direction: Direction.Up,
+    };
+    const values = {
+      amountInPennies: 200,
+      repaymentRateAmount: 0.7,
+    };
+
+    await trackerWithoutMetricsMeta.trackMultipleValues(metricName, tags, values);
+
+    expect(mockDatadog.distribution).toHaveBeenNthCalledWith(1, `${metricName}.amountInPennies`, 200, tags);
+    expect(mockDatadog.distribution).toHaveBeenNthCalledWith(2, `${metricName}.repaymentRateAmount`, 0.7, tags);
   });
 });

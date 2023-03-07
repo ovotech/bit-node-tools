@@ -48,6 +48,11 @@ These allow services to use a common interface and not re-implement the same fun
 - `KafkaMetricsTracker` - track actions around the lifecycle of Kafka events
 - `ResponseMetricsTracker` - track information about responses from an API
 
+## Beware
+
+Don't add too many unique / varying possibilities, e.g. monetary amounts, to the `tags` - they will set off DataDog Monitor alerts within the business, because too many "custom metrics" escalate DataDog costs.
+Multi-variant values, e.g. monetary amounts, should be in the `value(s)`.
+
 ## Running the tests
 
 Then you can run the tests with:

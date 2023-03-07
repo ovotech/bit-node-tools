@@ -18,6 +18,16 @@ export abstract class MetricsTracker {
     this.sendPointsToDatadog = this.sendPointsToDatadog.bind(this);
   }
 
+  protected async trackPoints(
+    measurementName: string,
+    tags: { [name: string]: string },
+    values: { [name: string]: number },
+  ) {
+    for (const [name, value] of Object.entries(values)) {
+      this.trackPoint(`${measurementName}.${name}`, tags, value);
+    }
+  }
+
   protected async trackPoint(measurementName: string, tags: { [name: string]: string }, value?: number) {
     const validTags = this.getValidTags(tags);
     this.logInvalidTags(measurementName, tags);
