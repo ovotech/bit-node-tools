@@ -60,10 +60,19 @@ export abstract class MetricsTracker {
     this.dogstatsd.distribution(measurement, value || 1, { ...tags });
   }
 
-  private getInvalidTagNames(tags: { [name: string]: string }) {
-    return Object.entries(tags)
-      .filter(([_, value]) => value.length === 0)
-      .reduce((names: string[], [key, _]) => names.concat([key]), []);
+  private getInvalidTagNames(tags: { [name: string]: string }, measurementName: string) {
+    try {
+      return Object.entries(tags)
+        .filter(([_, value]) => value.length === 0)
+        .reduce((names: string[], [key, _]) => names.concat([key]), []);
+    } catch (error) {
+      this.logger.error('Error Datadog metric - getInvalidTagNames', {
+        metric: measurementName,
+        tags: JSON.stringify(tags),
+        error: error,
+      });
+      return [];
+    }
   }
 
   private getValidTags(tags: { [name: string]: string }) {
@@ -73,7 +82,7 @@ export abstract class MetricsTracker {
   }
 
   private logInvalidTags(measurementName: string, tags: { [name: string]: string }) {
-    const invalidTagNames = this.getInvalidTagNames(tags);
+    const invalidTagNames = this.getInvalidTagNames(tags, measurementName);
 
     if (invalidTagNames.length) {
       this.logger.warn('Attempted to track tags with no value', {
