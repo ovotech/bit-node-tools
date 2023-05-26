@@ -77,7 +77,7 @@ export abstract class MetricsTracker {
 
   private getValidTags(tags: { [name: string]: string }) {
     return Object.entries(tags)
-      .filter(([_, value]) => value.length > 0)
+      .filter(([_, value]) => value?.length > 0)
       .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
   }
 

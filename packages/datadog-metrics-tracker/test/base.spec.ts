@@ -102,4 +102,22 @@ describe('Base metrics class', () => {
     expect(mockDatadog.distribution).toHaveBeenNthCalledWith(1, `${metricName}.amountInPennies`, 200, tags);
     expect(mockDatadog.distribution).toHaveBeenNthCalledWith(2, `${metricName}.repaymentRateAmount`, 0.7, tags);
   });
+
+  it('Should fail gracefully when undefined tag value is passed', async () => {
+
+    const metricName = 'measurementName';
+    let undefinedString: string;
+    const tags = {
+      cause: 'cause',
+      systemType: 'systemType',
+      requestBy: 'requestBy',
+      direction: undefined as any,
+    };
+    const values = {
+      amountInPennies: 200,
+      repaymentRateAmount: 0.7,
+    };
+
+    expect(() => trackerWithoutMetricsMeta.trackMultipleValues(metricName, tags, values)).not.toThrow();
+  })
 });
