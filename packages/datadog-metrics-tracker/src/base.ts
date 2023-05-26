@@ -63,7 +63,7 @@ export abstract class MetricsTracker {
   private getInvalidTagNames(tags: { [name: string]: string }, measurementName: string) {
     try {
       return Object.entries(tags)
-        .filter(([_, value]) => value.length === 0)
+        .filter(([_, value]) => value?.length === 0)
         .reduce((names: string[], [key, _]) => names.concat([key]), []);
     } catch (error) {
       this.logger.error('Error Datadog metric - getInvalidTagNames', {
