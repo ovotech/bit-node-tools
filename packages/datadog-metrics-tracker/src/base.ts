@@ -33,7 +33,6 @@ export abstract class MetricsTracker {
     this.logInvalidTags(measurementName, tags);
 
     try {
-      this.logger.info(`Tracking point for ${measurementName}`);
       this.sendPointsToDatadog({
         measurement: measurementName,
         tags: {
@@ -54,7 +53,6 @@ export abstract class MetricsTracker {
   }
 
   private async sendPointsToDatadog(point: Point) {
-    this.logger.info(`Sending metrics to Datadog`);
     const { measurement, tags, value } = point;
     //datadog metrics tag
     this.dogstatsd.distribution(measurement, value || 1, { ...tags });
