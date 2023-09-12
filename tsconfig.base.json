@@ -4,6 +4,7 @@
     "module": "commonjs",
     "target": "es2018",
     "sourceMap": true,
+    "skipLibCheck": true,
     "lib": ["es2018", "esnext.asynciterable", "dom"]
   }
 }

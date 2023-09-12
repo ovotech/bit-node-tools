@@ -65,7 +65,7 @@ export const schema: CommandModule<{}, SchemaArgs> = {
             process.stdout.write(`${item}\n`);
           }
       }
-    } catch (error) {
+    } catch (error: any) {
       process.stderr.write(chalk`{red Error ${error.message}}\n`);
     }
   },

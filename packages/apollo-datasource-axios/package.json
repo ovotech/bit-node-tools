@@ -22,14 +22,14 @@
     "@types/http-cache-semantics": "^4.0.0",
     "@types/jest": "^24.0.13",
     "@types/nock": "^10.0.3",
-    "@types/node": "^11.11.4",
+    "@types/node": "^14.14.31",
     "graphql": "^14.3.1",
     "jest": "^24.8.0",
     "nock": "^10.0.6",
     "prettier": "^1.17.1",
     "tslint": "^5.17.0",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.7.0"
+    "typescript": "^4.1.6"
   },
   "jest": {
     "preset": "../../jest-preset.json"

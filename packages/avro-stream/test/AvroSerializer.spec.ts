@@ -47,7 +47,7 @@ describe('Integration test', () => {
 
     sourceStream.pipe(serializer).pipe(sinkStream);
 
-    await new Promise(resolve => {
+    await new Promise<void>(resolve => {
       sinkStream.on('finish', () => {
         expect(schemaResolverMock.toId).toHaveBeenCalledTimes(2);
         expect(schemaResolverMock.toId).toHaveBeenCalledWith(sourceData[0].topic, sourceData[0].schema);
@@ -84,7 +84,7 @@ describe('Integration test', () => {
 
     sourceStream.pipe(serializer).pipe(sinkStream);
 
-    await new Promise(resolve => {
+    await new Promise<void>(resolve => {
       serializer.on('error', (error: AvroSerializerError) => {
         expect(error).toBeInstanceOf(AvroSerializerError);
         expect(error).toMatchObject({

@@ -38,7 +38,7 @@ const apiFetch = async <T>(req: string | Request, init: RequestInit = {}): Promi
   try {
     res = await fetch(req, { ...defaultInit, ...init });
     data = await res.json();
-  } catch (error) {
+  } catch (error: any) {
     // Use regex to sanitize error logging in order avoid basic auth credentials leakage
     throw Error(error.toString().replace(/[^/]*@/g, '{CREDENTIALS}'));
   }
