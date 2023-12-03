@@ -23,7 +23,7 @@ export const topic: CommandModule<{}, TopicArgs> = {
 
     const client = new KafkaClient(kafkaClient);
 
-    await new Promise(resolve => client.on('ready', resolve));
+    await new Promise(resolve => client.on('ready', () => resolve(null)));
 
     const [, { metadata }] = await new Promise<MetadataResult>((resolve, reject) =>
       (client as any).loadMetadataForTopics([], (error: Error | null, results: any) =>

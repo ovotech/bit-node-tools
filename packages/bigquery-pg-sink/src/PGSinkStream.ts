@@ -24,7 +24,7 @@ export class BigQueryPGSinkStream extends Writable {
         await this.pg.query(insert.query, insert.values);
       }
       callback();
-    } catch (error) {
+    } catch (error: any) {
       callback(new Error(error));
     }
   }
@@ -36,7 +36,7 @@ export class BigQueryPGSinkStream extends Writable {
         await this.pg.query(insert.query, insert.values);
       }
       callback();
-    } catch (error) {
+    } catch (error: any) {
       callback(new Error(error));
     }
   }

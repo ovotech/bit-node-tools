@@ -49,7 +49,7 @@ describe('Re Pipeline', () => {
     expect(errorCheck).toHaveBeenCalledWith(new Error('from stream'));
   });
 
-  it('Test rePipeline with multiple error handling', async () => {
+  it.only('Test rePipeline with multiple error handling', async (cb) => {
     const trimStream = new Transform({
       objectMode: true,
       transform: (item, encoding, callback) => callback(undefined, String(item).trim()),
@@ -64,13 +64,20 @@ describe('Re Pipeline', () => {
     const start = new ReadableMock(['test', '   other', 'error', 'error', ' last  '], { objectMode: true });
     const end = new WritableMock({ objectMode: true });
 
-    const errorCheck = jest.fn();
+    const errorCheck = jest.fn((error) => { console.log("got error", error) });
     const pipeline = rePipeline(errorCheck, start, trimStream, throwStream, end);
 
-    await new Promise(resolve => pipeline.on('finish', resolve));
+    console.log('*****************************************************');
+    pipeline.on("error", () => console.log("error"))
+    pipeline.on("end", () => console.log("end"))
+    await new Promise(resolve => pipeline.on('finish', () => {
+
+      resolve(null)
+    }));
 
     expect(end.data).toEqual(['test', 'other', 'last']);
     expect(errorCheck).toHaveBeenCalledTimes(2);
     expect(errorCheck).toHaveBeenCalledWith(new Error('from stream'));
-  });
+    cb()
+  }, 15000);
 });

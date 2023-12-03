@@ -7,7 +7,7 @@ export class StopOnFinishProgressTransform extends Transform {
     super({ objectMode: true });
   }
 
-  async _transform(message: ProgressMessage, encoding: string, callback: TransformCallback) {
+  async _transform(message: ProgressMessage, encoding: BufferEncoding, callback: TransformCallback) {
     this.push(message, encoding);
 
     if (this.active && message.progress.total >= 1) {
