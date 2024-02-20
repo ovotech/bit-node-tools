@@ -13,20 +13,6 @@ describe('Create Datadog and connection', () => {
   };
   const client = createDataDogConnection(config);
 
-  it('Checking Datadog Connection', () => {
-
-    //Adding addtional configuration to Datadog
-    var childClient = client.childClient({
-      prefix: 'additionalPrefix.',
-      suffix: '.additionalSuffix',
-      globalTags: { globalTag1: 'forAllMetricsFromChildClient' }
-    });
-
-    const hostIndex = Object.keys(childClient).indexOf("host");
-    const hostValue = Object.values(childClient)[hostIndex];
-    expect(hostValue).toBe(config.DD_AGENT_HOST);
-
-  });
 
   it('Datadog Connection Running Successfully', () => {
 

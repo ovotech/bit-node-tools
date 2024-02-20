@@ -12,8 +12,7 @@ export interface DataDogConfig extends NodeJS.ProcessEnv {
   DD_AGENT_HOST?: string,
 }
 
-export const createDataDogConnection = (config: DataDogConfig): StatsD => {
-  let logger: Logger;
+export const createDataDogConnection = (config: DataDogConfig, logger?: Logger) => {
   const client = new StatsD({
     port: Number(config.DD_AGENT_PORT), //To make the connection b/w agent and datadog
     host: config.DD_AGENT_HOST, //It collects events and metrics from hosts and sends them to Datadog
@@ -22,7 +21,7 @@ export const createDataDogConnection = (config: DataDogConfig): StatsD => {
       service: config.DD_SERVICE, //To check the metrics according to service wise
     } as Tags,
     errorHandler: (error: Error) => {
-      logger.error('Error tracking Datadog metric', error);
+      logger?.error('Error tracking Datadog metric', error);
     }
   });
 
