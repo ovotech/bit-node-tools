@@ -14,7 +14,7 @@ export interface DataDogConfig extends NodeJS.ProcessEnv {
 
 export const createDataDogConnection = (config: DataDogConfig, logger?: Logger) => {
   const client = new StatsD({
-    port: Number(config.DD_AGENT_PORT), //To make the connection b/w agent and datadog
+    port: Number(config.DD_AGENT_PORT), //To make the connection b/w agent & datadog
     host: config.DD_AGENT_HOST, //It collects events and metrics from hosts and sends them to Datadog
     globalTags: {
       env: config.DD_ENV, //To check the metrics according to environment wise
