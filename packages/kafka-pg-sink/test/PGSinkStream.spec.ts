@@ -99,7 +99,7 @@ describe('Integration test', () => {
 
     sourceStream.pipe(pgSinkStream);
 
-    await new Promise(resolve => {
+    await new Promise<void>(resolve => {
       pgSinkStream.on('finish', async () => {
         expect(pg.query).toHaveBeenCalledTimes(6);
 
@@ -153,7 +153,7 @@ describe('Integration test', () => {
 
     sourceStream.pipe(pgSinkStream);
 
-    await new Promise(resolve => {
+    await new Promise<void>(resolve => {
       pgSinkStream.on('finish', async () => {
         expect(pg.query).toHaveBeenCalledTimes(3);
         expect(pg.query).toHaveBeenNthCalledWith(1, 'INSERT INTO test_1 VALUES ($1,$2) ON CONFLICT DO NOTHING', [
@@ -197,7 +197,7 @@ describe('Integration test', () => {
 
     sourceStream.pipe(pgSinkStream);
 
-    await new Promise(resolve => {
+    await new Promise<void>(resolve => {
       pgSinkStream.on('error', (error: PGSinkError) => {
         expect(error).toBeInstanceOf(PGSinkError);
         expect(error).toMatchObject({
@@ -232,7 +232,7 @@ describe('Integration test', () => {
 
     sourceStream.pipe(pgSinkStream);
 
-    await new Promise(resolve => {
+    await new Promise<void>(resolve => {
       pgSinkStream.on('error', (error: PGSinkMultipleError) => {
         expect(error).toBeInstanceOf(PGSinkMultipleError);
         expect(error).toMatchObject({
@@ -275,7 +275,7 @@ describe('Integration test', () => {
 
     sourceStream.pipe(pgSinkStream);
 
-    await new Promise(resolve => {
+    await new Promise<void>(resolve => {
       pgSinkStream.on('error', error => {
         expect(error).toEqual(
           new Error(

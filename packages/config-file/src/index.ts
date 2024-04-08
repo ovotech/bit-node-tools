@@ -33,7 +33,7 @@ export const loadConfigFile = <T>({ env, file, defaults = {}, required = [] }: L
 
   const missingKeys = required.filter(key => !Object.keys(userConfig).includes(String(key)));
   if (missingKeys.length) {
-    throw new Error(`Configuration should include ${missingKeys.map(key => `"${key}"`).join(', ')} in ${file}`);
+    throw new Error(`Configuration should include ${missingKeys.map(key => `"${String(key)}"`).join(', ')} in ${file}`);
   }
   const config = resolveValues(userConfig, env);
 

@@ -18,7 +18,7 @@ describe('Unit test', () => {
     const url = 'foo';
     try {
       await addSubjectVersion(url, '', schema1);
-    } catch (error) {
+    } catch (error: any) {
       expect(error.toString()).toContain('http://{CREDENTIALS}something.com');
     }
   });
