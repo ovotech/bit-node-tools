@@ -49,6 +49,7 @@ jobs:
       - run: yarn test
 
   publish:
+    context: boost-btt
     docker:
       - image: circleci/node:12
     steps:
