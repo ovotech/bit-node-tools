@@ -62,7 +62,7 @@ jobs:
       - run: git config user.name "Ovotech CI"
       - run: yarn lerna publish from-package --yes --no-verify-access
       - *npmrc-git
-      - run: yarn lerna publish from-git --yes --no-verify-access
+      - run: yarn lerna publish from-package --yes --registry https://npm.pkg.github.com
 
 workflows:
   version: 2
