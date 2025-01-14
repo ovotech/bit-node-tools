@@ -14,5 +14,9 @@
   },
   "devDependencies": {
     "lerna": "^3.14.1"
-  }
+  },
+  "repository": {
+		"url": "https://github.com/ovotech/bit-node-tools",
+		"type": "git"
+	}
 }
