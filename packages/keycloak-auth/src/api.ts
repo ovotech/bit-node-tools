@@ -33,6 +33,7 @@ interface KeycloakRequest {
   serverUrl: string;
   clientId: string;
   clientSecret: string;
+  apiKey?: string;
 }
 
 interface RefreshTokenKeycloakRequest extends KeycloakRequest {
@@ -45,17 +46,19 @@ interface AuthRequest extends KeycloakRequest {
   margin?: number;
 }
 
-export const login = ({ serverUrl, clientId, clientSecret }: KeycloakRequest) =>
-  jsonFetch<KeycloakResponse>(serverUrl, {
+export const login = ({ serverUrl, clientId, clientSecret, apiKey }: KeycloakRequest) => {
+  return jsonFetch<KeycloakResponse>(serverUrl, {
     method: 'POST',
     body: new URLSearchParams({
       grant_type: 'client_credentials',
       client_id: clientId,
       client_secret: clientSecret,
     }),
+    ...(apiKey && { headers: { 'X-API-Key': apiKey } }),
   });
+};
 
-export const refresh = ({ serverUrl, clientId, clientSecret, refreshToken }: RefreshTokenKeycloakRequest) =>
+export const refresh = ({ serverUrl, clientId, clientSecret, refreshToken, apiKey }: RefreshTokenKeycloakRequest) =>
   jsonFetch<KeycloakResponse>(serverUrl, {
     method: 'POST',
     body: new URLSearchParams({
@@ -64,6 +67,7 @@ export const refresh = ({ serverUrl, clientId, clientSecret, refreshToken }: Ref
       client_secret: clientSecret,
       refresh_token: refreshToken,
     }),
+    ...(apiKey && { headers: { 'X-API-Key': apiKey } }),
   });
 
 const nowSeconds = () => new Date().getTime() / 1000;
@@ -88,25 +92,28 @@ export const authenticate = async ({
   previous,
   clockTimestamp,
   margin = 10,
+  apiKey,
 }: AuthRequest) => {
   const timestamp = clockTimestamp || nowSeconds();
   if (previous) {
     const { accessTokenExpires, refreshTokenExpires, refreshToken } = previous;
     if (!isExpired(accessTokenExpires, timestamp, margin)) {
       return previous;
-    } else if (!isExpired(refreshTokenExpires, timestamp, margin)) {
+    }
+
+    if (refreshToken && !isExpired(refreshTokenExpires, timestamp, margin)) {
       try {
-        const refreshResponse = await refresh({ serverUrl, clientId, clientSecret, refreshToken });
+        const refreshResponse = await refresh({ serverUrl, clientId, clientSecret, refreshToken, apiKey });
         return toAuth(refreshResponse, timestamp);
       } catch (error) {
         if (error instanceof KeycloakAuthError) {
-          return toAuth(await login({ serverUrl, clientId, clientSecret }), timestamp);
+          return toAuth(await login({ serverUrl, clientId, clientSecret, apiKey }), timestamp);
         } else {
           throw error;
         }
       }
     }
   }
-  const loginResponse = await login({ serverUrl, clientId, clientSecret });
+  const loginResponse = await login({ serverUrl, clientId, clientSecret, apiKey });
   return toAuth(loginResponse, timestamp);
 };

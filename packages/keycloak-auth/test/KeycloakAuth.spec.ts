@@ -46,4 +46,23 @@ describe('Integration test', () => {
     await auth.authenticate();
     await auth.authenticate();
   });
+
+  it('Should perform authentication with apiKey', async () => {
+    nock('http://auth', { reqheaders: { 'X-API-Key': 'test-api-key' } })
+      .post(
+        '/auth/realms/my-realm/protocol/openid-connect/token',
+        'grant_type=client_credentials&client_id=test-portal&client_secret=11-22-33',
+      )
+      .reply(200, response);
+
+    const auth = new KeycloakAuth({
+      serverUrl: 'http://auth/auth/realms/my-realm/protocol/openid-connect/token',
+      clientId: 'test-portal',
+      clientSecret: '11-22-33',
+      apiKey: 'test-api-key',
+      margin: 0,
+    });
+
+    await auth.authenticate();
+  });
 });

@@ -1,12 +1,17 @@
 {
   "name": "@ovotech/keycloak-auth",
-  "version": "2.0.5",
+  "version": "2.1.0",
   "main": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
   "description": "Keycloak Auth",
   "author": "Boost Internal Tools <boost-bit-tech@ovoenergy.com>",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ovotech/bit-node-tools.git",
+    "directory": "packages/keycloak-auth"
+  },
   "devDependencies": {
     "@types/axios": "^0.14.0",
     "@types/jest": "^24.0.13",

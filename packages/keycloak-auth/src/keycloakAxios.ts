@@ -6,6 +6,7 @@ export interface KeycloakAxiosOptions {
   serverUrl: string;
   clientId: string;
   clientSecret: string;
+  apiKey?: string;
   margin?: number;
 }
 
