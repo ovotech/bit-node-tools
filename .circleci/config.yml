@@ -69,12 +69,14 @@ workflows:
   test:
     jobs:
       - test:
+          context: boost-btt
           filters:
             branches:
               ignore: master
   deploy:
     jobs:
       - test:
+          context: boost-btt
           filters:
             branches:
               only: master
