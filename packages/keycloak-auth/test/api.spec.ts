@@ -120,4 +120,37 @@ describe('Api test', () => {
     const response3 = await authenticate({ ...params, previous: response2 });
     await authenticate({ ...params, previous: response3 });
   });
+
+  it('Should call auth endpoints with apiKey', async () => {
+    nock('http://auth', { reqheaders: { 'X-API-Key': 'test-api-key' } })
+      .post(
+        '/auth/realms/my-realm/protocol/openid-connect/token',
+        'grant_type=client_credentials&client_id=test-portal&client_secret=11-22-33',
+      )
+      .reply(200, response);
+
+    nock('http://auth', { reqheaders: { 'X-API-Key': 'test-api-key' } })
+      .post(
+        '/auth/realms/my-realm/protocol/openid-connect/token',
+        'grant_type=refresh_token&client_id=test-portal&client_secret=11-22-33&refresh_token=refresh-1',
+      )
+      .reply(200, { ...response, refresh_token: 'refresh-2', access_token: 'access-2' });
+
+    const params = {
+      serverUrl: 'http://auth/auth/realms/my-realm/protocol/openid-connect/token',
+      clientId: 'test-portal',
+      clientSecret: '11-22-33',
+      apiKey: 'test-api-key',
+      margin: 0,
+    };
+
+    const response1 = await authenticate(params);
+    const response2 = await authenticate({ ...params, previous: response1 });
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    const response3 = await authenticate({ ...params, previous: response2 });
+
+    expect(response1).toEqual(expect.objectContaining({ accessToken: 'access-1', refreshToken: 'refresh-1' }));
+    expect(response2).toEqual(expect.objectContaining({ accessToken: 'access-1', refreshToken: 'refresh-1' }));
+    expect(response3).toEqual(expect.objectContaining({ accessToken: 'access-2', refreshToken: 'refresh-2' }));
+  });
 });
