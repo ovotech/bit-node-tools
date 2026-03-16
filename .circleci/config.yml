@@ -1,8 +1,5 @@
 version: 2
 
-npmrc: &npmrc
-  run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-
 npmrc-git: &npmrc-git
   run: echo "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" > ~/.npmrc
 
@@ -54,14 +51,12 @@ jobs:
     steps:
       - checkout
       - *restore-cache
-      - *npmrc
+      - *npmrc-git
       - run: yarn config set yarn-offline-mirror ~/.cache/yarn
       - run: yarn --frozen-lockfile
       - run: yarn build
       - run: git config user.email "ovotech-ci@ovoenergy.com"
       - run: git config user.name "Ovotech CI"
-      - run: yarn lerna publish from-package --yes --no-verify-access
-      - *npmrc-git
       - run: yarn lerna publish from-package --yes --registry https://npm.pkg.github.com
 
 workflows:
