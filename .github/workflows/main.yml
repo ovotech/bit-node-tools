@@ -72,8 +72,41 @@ jobs:
       - name: Test
         run: yarn test
 
-  publish:
+  prepare-publish:
     needs: test
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '12'
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/yarn
+          key: v1-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            v1-
+
+      - name: Configure yarn
+        run: yarn config set yarn-offline-mirror ~/.cache/yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Setup npmrc
+        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
+
+      - name: List changed packages
+        run: yarn lerna exec --concurrency 1 'if [ "$(npm view $LERNA_PACKAGE_NAME version --registry=https://npm.pkg.github.com/ 2>/dev/null || echo "0.0.0")" != "$(node -p "require(\"./package.json\").version")" ]; then echo "Will publish $LERNA_PACKAGE_NAME@$(node -p "require(\"./package.json\").version")"; fi'
+
+  publish:
+    needs: prepare-publish
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     environment:
