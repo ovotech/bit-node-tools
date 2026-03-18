@@ -7,6 +7,11 @@
   "types": "dist/index.d.ts",
   "author": "Ivan Kerin <ikerin@gmail.com>",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ovotech/bit-node-tools.git",
+    "directory": "packages/keycloak-auth"
+  },
   "scripts": {
     "lint-prettier": "prettier --list-different {src,test}/**/*.ts",
     "lint-tslint": "tslint --config tslint.json '{src,test}/**/*.ts'",
