@@ -76,6 +76,8 @@ jobs:
     needs: test
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
+    outputs:
+      has_changes: ${{ steps.check_changes.outputs.has_changes }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -103,17 +105,26 @@ jobs:
         run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
 
       - name: List changed packages
+        id: check_changes
         run: |
           echo "### Following pending deployments found" >> $GITHUB_STEP_SUMMARY
           yarn lerna exec --loglevel silent --concurrency 1 -- \
             'VERSION=$(node -p "require(\"./package.json\").version"); \
             if [ "$(npm view $LERNA_PACKAGE_NAME version --registry=https://npm.pkg.github.com/ 2>/dev/null || echo "0.0.0")" != "$VERSION" ]; then \
               echo "- **$LERNA_PACKAGE_NAME** - will publish version $VERSION" >> $GITHUB_STEP_SUMMARY; \
+              echo "true" > $GITHUB_WORKSPACE/.has_changes; \
             fi'
+          if [ -f $GITHUB_WORKSPACE/.has_changes ]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            rm $GITHUB_WORKSPACE/.has_changes
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "- None" >> $GITHUB_STEP_SUMMARY
+          fi
 
   publish:
     needs: prepare-publish
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master' && needs.prepare-publish.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
     environment:
       name: github-npm-registry
