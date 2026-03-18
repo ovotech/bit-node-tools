@@ -103,7 +103,13 @@ jobs:
         run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
 
       - name: List changed packages
-        run: yarn lerna exec --concurrency 1 'if [ "$(npm view $LERNA_PACKAGE_NAME version --registry=https://npm.pkg.github.com/ 2>/dev/null || echo "0.0.0")" != "$(node -p "require(\"./package.json\").version")" ]; then echo "Will publish $LERNA_PACKAGE_NAME@$(node -p "require(\"./package.json\").version")"; fi'
+        run: |
+          echo "### Following packages will be published" >> $GITHUB_STEP_SUMMARY
+          yarn lerna exec --loglevel silent --concurrency 1 -- \
+            'VERSION=$(node -p "require(\"./package.json\").version"); \
+            if [ "$(npm view $LERNA_PACKAGE_NAME version --registry=https://npm.pkg.github.com/ 2>/dev/null || echo "0.0.0")" != "$VERSION" ]; then \
+              echo "- **$LERNA_PACKAGE_NAME** - will publish version $VERSION" >> $GITHUB_STEP_SUMMARY; \
+            fi'
 
   publish:
     needs: prepare-publish
