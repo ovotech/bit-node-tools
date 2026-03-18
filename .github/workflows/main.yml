@@ -67,7 +67,7 @@ jobs:
         run: yarn build
 
       - name: Wait for server
-        run: .circleci/wait-for-server.sh
+        run: .github/workflows/wait-for-server.sh
 
       - name: Test
         run: yarn test
