@@ -83,7 +83,9 @@ yarn lint
 
 ## Deployment
 
-Deployment is performed by lerna automatically on merge / push to master. You'll need to bump the package version numbers yourself. Only updated packages with newer versions will be pushed to the npm registry.
+1. MANUALLY bump the package version  along with your changes
+2. On merge to master lerna will pick up on the changes and output what will be published in the GitHub actions job `prepare-publish`
+3. MANUALLY approve deployment for the GitHub actions job `publish`
 
 ## Built With
 
