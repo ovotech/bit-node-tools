@@ -7,6 +7,11 @@
   "types": "dist/index.d.ts",
   "author": "Ivan Kerin <ikerin@gmail.com>",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ovotech/bit-node-tools.git",
+    "directory": "packages/keycloak-auth"
+  },
   "dependencies": {
     "@ovotech/schema-registry-api": "^1.0.3",
     "avsc": "^5.4.10"

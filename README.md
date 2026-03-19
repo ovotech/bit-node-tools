@@ -1,6 +1,6 @@
 # BIT Kafka Tools
 
-[![CircleCI](https://circleci.com/gh/ovotech/bit-node-tools.svg?style=svg&circle-token=ae40b0f9ff7943343688a0319478e70091e37fbe)](https://circleci.com/gh/ovotech/bit-node-tools)
+[![Build Status](https://github.com/ovotech/bit-node-tools/actions/workflows/main.yml/badge.svg)](https://github.com/ovotech/bit-node-tools/actions/workflows/main.yml)
 
 BIT Team tools for working with Kafka, Avro and other misc stuff. They are split into several independent packages that can be imported separately.
 
@@ -84,7 +84,7 @@ yarn lint
 ## Deployment
 
 1. MANUALLY bump the package version  along with your changes
-2. On merge to master lerna will pick up on the changes and output what will be published in the GitHub actions job `prepare-publish`
+2. On merge to master lerna will pick up on the changes and output what will be published in the GitHub actions pipeline under `prepare-publish summary`
 3. MANUALLY approve deployment for the GitHub actions job `publish`
 
 ## Built With

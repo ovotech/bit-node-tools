@@ -42,15 +42,15 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '12'
 
       - name: Cache dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/yarn
           key: v1-${{ hashFiles('**/yarn.lock') }}
@@ -76,17 +76,19 @@ jobs:
     needs: test
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
+    outputs:
+      has_changes: ${{ steps.check_changes.outputs.has_changes }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '12'
 
       - name: Cache dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/yarn
           key: v1-${{ hashFiles('**/yarn.lock') }}
@@ -103,26 +105,34 @@ jobs:
         run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
 
       - name: List changed packages
+        id: check_changes
         run: |
-          echo "### Following packages will be published" >> $GITHUB_STEP_SUMMARY
-          yarn lerna exec --loglevel silent --concurrency 1 -- \
+          echo "### Following pending deployments found" >> $GITHUB_STEP_SUMMARY
+          OUTPUT=$(yarn lerna exec --loglevel silent --concurrency 1 -- \
             'VERSION=$(node -p "require(\"./package.json\").version"); \
             if [ "$(npm view $LERNA_PACKAGE_NAME version --registry=https://npm.pkg.github.com/ 2>/dev/null || echo "0.0.0")" != "$VERSION" ]; then \
-              echo "- **$LERNA_PACKAGE_NAME** - will publish version $VERSION" >> $GITHUB_STEP_SUMMARY; \
-            fi'
+              echo "- **$LERNA_PACKAGE_NAME** - will publish version $VERSION"; \
+            fi' | grep '\- \*\*' || true)
+          if [ -n "$OUTPUT" ]; then
+            echo "$OUTPUT" >> $GITHUB_STEP_SUMMARY
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "- None" >> $GITHUB_STEP_SUMMARY
+          fi
 
   publish:
     needs: prepare-publish
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master' && needs.prepare-publish.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
     environment:
       name: github-npm-registry
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '12'
 
@@ -130,7 +140,7 @@ jobs:
         run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
 
       - name: Cache dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/yarn
           key: v1-${{ hashFiles('**/yarn.lock') }}

@@ -7,6 +7,11 @@
   "types": "dist/index.d.ts",
   "author": "Manikant Sharma <manikant.sharma@ovo.com>",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ovotech/bit-node-tools.git",
+    "directory": "packages/keycloak-auth"
+  },
   "scripts": {
     "test": "jest --runInBand",
     "start": "node ./src/index.ts",

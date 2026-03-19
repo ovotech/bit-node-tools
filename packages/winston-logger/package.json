@@ -7,6 +7,11 @@
   "description": "Winston logger wrapper",
   "author": "Boost Internal Tools <boost-bit-tech@ovoenergy.com>",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ovotech/bit-node-tools.git",
+    "directory": "packages/keycloak-auth"
+  },
   "devDependencies": {
     "@types/jest": "^24.0.13",
     "@types/node": "^11.11.4",

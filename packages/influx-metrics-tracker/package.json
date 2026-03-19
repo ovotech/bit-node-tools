@@ -7,6 +7,11 @@
   "types": "dist/index.d.ts",
   "author": "Hayden Field <hayden.field@ovoenergy.com>",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ovotech/bit-node-tools.git",
+    "directory": "packages/keycloak-auth"
+  },
   "scripts": {
     "test": "jest --runInBand",
     "lint-prettier": "prettier --list-different {src,test}/**/*.ts",
