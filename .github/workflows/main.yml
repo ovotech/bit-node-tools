@@ -108,15 +108,14 @@ jobs:
         id: check_changes
         run: |
           echo "### Following pending deployments found" >> $GITHUB_STEP_SUMMARY
-          yarn lerna exec --loglevel silent --concurrency 1 -- \
+          OUTPUT=$(yarn lerna exec --loglevel silent --concurrency 1 -- \
             'VERSION=$(node -p "require(\"./package.json\").version"); \
             if [ "$(npm view $LERNA_PACKAGE_NAME version --registry=https://npm.pkg.github.com/ 2>/dev/null || echo "0.0.0")" != "$VERSION" ]; then \
-              echo "- **$LERNA_PACKAGE_NAME** - will publish version $VERSION" >> $GITHUB_STEP_SUMMARY; \
-              echo "true" > $GITHUB_WORKSPACE/.has_changes; \
-            fi'
-          if [ -f $GITHUB_WORKSPACE/.has_changes ]; then
+              echo "- **$LERNA_PACKAGE_NAME** - will publish version $VERSION"; \
+            fi' | grep '\- \*\*' || true)
+          if [ -n "$OUTPUT" ]; then
+            echo "$OUTPUT" >> $GITHUB_STEP_SUMMARY
             echo "has_changes=true" >> $GITHUB_OUTPUT
-            rm $GITHUB_WORKSPACE/.has_changes
           else
             echo "has_changes=false" >> $GITHUB_OUTPUT
             echo "- None" >> $GITHUB_STEP_SUMMARY
