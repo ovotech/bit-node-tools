@@ -42,7 +42,7 @@ export abstract class AxiosDataSource extends DataSource {
   async request(config: AxiosRequestConfig) {
     try {
       return await this.api.request(config);
-    } catch (error) {
+    } catch (error: any) {
       if (error.response) {
         const {
           status,

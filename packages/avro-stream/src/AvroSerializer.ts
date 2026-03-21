@@ -14,7 +14,7 @@ export class AvroSerializer<TValue = any> extends AvroSchemaTransform {
         ...request,
         messages: request.messages.map(message => constructMessage({ schemaId, buffer: type.toBuffer(message) })),
       });
-    } catch (error) {
+    } catch (error: any) {
       callback(new AvroSerializerError<TValue>(error.message, request, encoding, error));
     }
   }

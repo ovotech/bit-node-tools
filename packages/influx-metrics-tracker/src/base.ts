@@ -43,7 +43,7 @@ export abstract class MetricsTracker {
         timestamp: timestamp || new Date(),
       });
       return;
-    } catch (err) {
+    } catch (err: any) {
       this.logger.error('Error tracking Influx metric', {
         metric: measurementName,
         tags: JSON.stringify(validTags),
