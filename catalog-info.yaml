@@ -14,4 +14,3 @@ spec:
   type: library
   lifecycle: production
   owner: retail-payg
-  system: bit-node-tools
