@@ -1,16 +1,5 @@
 ---
 apiVersion: backstage.io/v1alpha1
-kind: System
-metadata:
-  name: bit-node-tools
-  description: Misc node tools from the Boost Internal Tools team
-  annotations:
-    github.com/project-slug: ovotech/bit-node-tools
-spec:
-  owner: boost-bit
-  domain: infrastructure-and-enablement
----
-apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: bit-node-tools
@@ -22,7 +11,7 @@ metadata:
     - internal
     - typescript
 spec:
-  type: service
+  type: library
   lifecycle: production
-  owner: boost-bit
+  owner: retail-payg
   system: bit-node-tools
