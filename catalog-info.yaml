@@ -1,0 +1,16 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: bit-node-tools
+  description: Misc node tools from the Boost Internal Tools team
+  annotations:
+    github.com/project-slug: ovotech/bit-node-tools
+    backstage.io/source-location: url:https://github.com/ovotech/bit-node-tools/tree/main
+  tags:
+    - internal
+    - typescript
+spec:
+  type: library
+  lifecycle: production
+  owner: retail-payg
