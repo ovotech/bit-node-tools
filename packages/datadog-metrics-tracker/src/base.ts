@@ -42,7 +42,7 @@ export abstract class MetricsTracker {
         value,
       });
       return;
-    } catch (err) {
+    } catch (err: any) {
       this.logger.error('Error tracking Datadog metric', {
         metric: measurementName,
         tags: JSON.stringify(validTags),
@@ -63,7 +63,7 @@ export abstract class MetricsTracker {
       return Object.entries(tags)
         .filter(([_, value]) => value?.length === 0)
         .reduce((names: string[], [key, _]) => names.concat([key]), []);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error Datadog metric - getInvalidTagNames', {
         metric: measurementName,
         tags: JSON.stringify(tags),

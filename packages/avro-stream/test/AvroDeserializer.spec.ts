@@ -40,7 +40,7 @@ describe('AvroDeserializer test', () => {
 
     sourceStream.pipe(serializer).pipe(sinkStream);
 
-    await new Promise(resolve => {
+    await new Promise<void>(resolve => {
       sinkStream.on('finish', () => {
         expect(schemaResolverMock.fromId).toHaveBeenCalledTimes(4);
         expect(schemaResolverMock.fromId).toHaveBeenNthCalledWith(1, 1);
@@ -61,7 +61,7 @@ describe('AvroDeserializer test', () => {
 
     sourceStream.pipe(serializer).pipe(sinkStream);
 
-    await new Promise(resolve => {
+    await new Promise<void>(resolve => {
       serializer.on('error', (error: AvroDeserializerError) => {
         expect(error).toBeInstanceOf(AvroDeserializerError);
         expect(error).toMatchObject({

@@ -23,7 +23,7 @@ export const createTopic: CommandModule<{}, CreateTopicArgs> = {
     const client = new KafkaClient(kafkaClient);
     const { topic, partitions, 'replication-factor': replicationFactor } = args;
 
-    await new Promise(resolve => client.on('ready', resolve));
+    await new Promise(resolve => client.on('ready', () => resolve(null)));
 
     try {
       await new Promise((resolve, reject) =>
@@ -39,12 +39,12 @@ export const createTopic: CommandModule<{}, CreateTopicArgs> = {
                   partitions,
                 )} {green replication factor} ${String(replicationFactor)}\n`,
               );
-              client.close(resolve);
+              client.close(() => resolve(null));
             }
           }
         }),
       );
-    } catch (error) {
+    } catch (error: any) {
       process.stderr.write(chalk`{red Error ${error.message}}\n`);
     }
   },

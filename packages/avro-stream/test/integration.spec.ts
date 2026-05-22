@@ -13,9 +13,9 @@ import { AvroSerializer } from '../src';
 const createTopics = async (topics: string[]) => {
   const producer = new Producer(new KafkaClient({ kafkaHost: 'localhost:29092' }));
 
-  await new Promise(resolve => producer.on('ready', resolve));
+  await new Promise<void>(resolve => producer.on('ready', resolve));
 
-  return await new Promise((resolve, reject) =>
+  return await new Promise<void>((resolve, reject) =>
     producer.createTopics(topics, false, error => {
       if (error) {
         reject(error);
@@ -52,7 +52,7 @@ describe('Integration test', () => {
 
     sourceStream.pipe(serializer).pipe(sinkStream);
 
-    await new Promise(resolve => {
+    await new Promise<void>(resolve => {
       sinkStream.on('finish', async () => {
         for (const [itemIndex, item] of sinkStream.data.entries()) {
           const type = Type.forSchema(item.schema);
@@ -71,7 +71,7 @@ describe('Integration test', () => {
     });
   });
 
-  it('Test Deserializer with kafka', async () => {
+  it('Test Deserializer with kafka', async (cb) => {
     const sourceStream = new ReadableMock(unqiueSourceData, { objectMode: true });
     const sinkStream = new WritableMock({ objectMode: true });
     const topics = unqiueSourceData.map(item => item.topic);
@@ -96,7 +96,7 @@ describe('Integration test', () => {
     consumerStream.pipe(deserializer).pipe(sinkStream);
     sourceStream.pipe(serializer).pipe(producerStream);
 
-    await new Promise(resolve => {
+    await new Promise<void>(resolve => {
       sinkStream.on('finish', () => {
         for (let index = 0; index < messagesCount; index++) {
           expect(sinkStream.data[index]).toMatchSnapshot({
@@ -109,9 +109,10 @@ describe('Integration test', () => {
         consumerStream.close(resolve);
       });
     });
-  }, 15000);
+    cb()
+  }, 25000);
 
-  it('Test AvroTopicSender with kafka', async () => {
+  it('Test AvroTopicSender with kafka', async (cb) => {
     const topic = uuid.v4();
     const sender = new AvroTopicSender<{ accountId: string }>({
       topic,
@@ -145,7 +146,7 @@ describe('Integration test', () => {
     stopStreamOnCount(1, consumerStream);
     sender.send({ accountId: '234' });
 
-    await new Promise(resolve => {
+    await new Promise<void>(resolve => {
       sinkStream.on('finish', () => {
         expect(sinkStream.data).toEqual([
           expect.objectContaining({
@@ -158,5 +159,6 @@ describe('Integration test', () => {
         consumerStream.close(resolve);
       });
     });
-  }, 15000);
+    cb();
+  }, 25000);
 });

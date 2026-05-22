@@ -40,7 +40,7 @@ describe('Integration test', () => {
 
     sourceStream.pipe(serializer).pipe(sinkStream);
 
-    await new Promise(resolve => {
+    await new Promise<void>(resolve => {
       sinkStream.on('finish', () => {
         expect(sinkStream.data).toMatchSnapshot();
         resolve();

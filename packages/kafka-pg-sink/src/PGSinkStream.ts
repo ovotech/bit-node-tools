@@ -66,8 +66,8 @@ export class PGSinkStream<TValue = any> extends Writable {
       const config = this.configForTopic(chunk.topic);
       await this.pg.query(...insertQuery(config.table, [config.resolver(chunk)]));
       callback(null);
-    } catch (error) {
-      callback(new PGSinkError<TValue>(error.message, chunk, encoding, error));
+    } catch (error: any) {
+      callback(new PGSinkError<TValue>(error?.message, chunk, encoding, error));
     }
   }
 
@@ -84,7 +84,7 @@ export class PGSinkStream<TValue = any> extends Writable {
       }
 
       callback(null);
-    } catch (error) {
+    } catch (error: any) {
       callback(new PGSinkMultipleError<TValue>(error.message, chunks, error));
     }
   }

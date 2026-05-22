@@ -17,7 +17,7 @@ export class AvroDeserializer extends AvroSchemaTransform {
       const type = this.typeForSchema(schema);
       const transformedMessage: AvroMessage = { ...message, schema, value: type.fromBuffer(buffer) };
       callback(undefined, transformedMessage);
-    } catch (error) {
+    } catch (error: any) {
       callback(new AvroDeserializerError(error.message, message, encoding, error));
     }
   }

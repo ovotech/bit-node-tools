@@ -20,7 +20,7 @@ export class MockAvroSerializer<TValue = any> extends AvroSchemaTransform {
       messages.forEach(message => this.push(message));
 
       callback();
-    } catch (error) {
+    } catch (error: any) {
       callback(new AvroSerializerError<TValue>(error.message, request, encoding, error));
     }
   }
